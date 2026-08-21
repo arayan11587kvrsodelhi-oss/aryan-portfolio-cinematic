@@ -93,7 +93,8 @@ export default function Nav({ onOpenResume }: NavProps) {
             onClick={() => playSFX('nav')}
             onMouseEnter={() => playSFX('hover')}
             className="font-display text-sm md:text-base tracking-widest font-semibold flex items-center gap-2.5 group"
-            data-cursor="default"
+            data-magnetic
+            data-cursor="open"
           >
             <span className="w-2.5 h-2.5 rounded-full bg-accent group-hover:scale-125 transition-transform duration-300 shadow-[0_0_10px_var(--accent)]" />
             <span className="text-foreground tracking-[0.14em]">
@@ -115,6 +116,7 @@ export default function Nav({ onOpenResume }: NavProps) {
                     className={`transition-colors relative py-1 text-xs tracking-wider ${
                       isActive ? 'text-accent font-medium' : 'text-muted hover:text-foreground'
                     }`}
+                    data-magnetic
                     data-cursor="open"
                   >
                     {l.label}
@@ -143,7 +145,9 @@ export default function Nav({ onOpenResume }: NavProps) {
                   onOpenResume()
                 }}
                 onMouseEnter={() => playSFX('hover')}
+                data-magnetic
                 data-cursor="open"
+                data-cursor-text="RESUME"
                 className="text-eyebrow text-xs border border-border bg-surface/60 hover:border-accent/60 hover:text-accent px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 min-h-[38px]"
               >
                 <FileText size={13} className="text-accent" />
@@ -155,7 +159,9 @@ export default function Nav({ onOpenResume }: NavProps) {
               href="#contact"
               onClick={() => playSFX('click')}
               onMouseEnter={() => playSFX('hover')}
+              data-magnetic
               data-cursor="open"
+              data-cursor-text="CONTACT"
               className="text-eyebrow text-xs border border-accent/50 bg-accent/10 text-accent hover:bg-accent hover:text-background px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 shadow-[0_0_15px_rgba(53,224,224,0.15)] min-h-[38px]"
             >
               <span>Get in Touch</span>

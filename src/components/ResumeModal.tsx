@@ -64,6 +64,8 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
           aria-modal="true"
           aria-labelledby="resume-title"
           onClick={handleClose}
+          data-cursor="close"
+          data-cursor-text="CLOSE"
         >
           <motion.div
             initial={{ scale: 0.94, opacity: 0, y: 24 }}
@@ -87,6 +89,9 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   onMouseEnter={() => playSFX('hover')}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border text-xs font-display text-muted hover:text-foreground hover:border-accent transition-colors min-h-[38px]"
                   aria-label="Print or save as PDF"
+                  data-magnetic
+                  data-cursor="open"
+                  data-cursor-text="PRINT"
                 >
                   <Printer size={13} />
                   <span className="hidden sm:inline">Print / PDF</span>
@@ -96,6 +101,9 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   onClick={() => playSFX('click')}
                   onMouseEnter={() => playSFX('hover')}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent/15 border border-accent text-xs font-display text-accent hover:bg-accent hover:text-background transition-colors min-h-[38px]"
+                  data-magnetic
+                  data-cursor="open"
+                  data-cursor-text="EMAIL"
                 >
                   <Mail size={13} />
                   <span className="hidden sm:inline">Email Copy</span>
@@ -106,6 +114,9 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   onMouseEnter={() => playSFX('hover')}
                   className="p-2 text-muted hover:text-foreground hover:bg-white/10 rounded-full transition-colors ml-1 min-h-[40px] min-w-[40px] flex items-center justify-center"
                   aria-label="Close resume preview"
+                  data-magnetic
+                  data-cursor="close"
+                  data-cursor-text="CLOSE"
                 >
                   <X size={18} />
                 </button>

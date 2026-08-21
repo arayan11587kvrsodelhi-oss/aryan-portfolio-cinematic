@@ -416,7 +416,9 @@ export default function Work() {
                           setActiveModalProject(active)
                         }}
                         onMouseEnter={() => playSFX('hover')}
-                        data-cursor="open"
+                        data-magnetic
+                        data-cursor="view"
+                        data-cursor-text="CASE STUDY"
                         className="inline-flex items-center gap-2 bg-accent/20 border border-accent text-accent hover:bg-accent hover:text-background transition-all px-5 py-3 rounded-full text-xs md:text-sm font-display font-medium shadow-[0_0_20px_rgba(53,224,224,0.25)] min-h-[44px]"
                       >
                         <Maximize2 size={15} />
@@ -431,7 +433,9 @@ export default function Work() {
                             rel="noopener noreferrer"
                             onClick={() => playSFX('click')}
                             onMouseEnter={() => playSFX('hover')}
+                            data-magnetic
                             data-cursor="open"
+                            data-cursor-text="LIVE"
                             className="inline-flex items-center gap-1.5 text-accent hover:text-white transition-colors font-medium min-h-[44px] px-1"
                           >
                             <span>Live Demo</span>
@@ -445,7 +449,9 @@ export default function Work() {
                             rel="noopener noreferrer"
                             onClick={() => playSFX('click')}
                             onMouseEnter={() => playSFX('hover')}
+                            data-magnetic
                             data-cursor="open"
+                            data-cursor-text="GITHUB"
                             className="inline-flex items-center gap-1.5 text-muted hover:text-foreground transition-colors font-medium min-h-[44px] px-1"
                           >
                             <Github size={14} />
@@ -464,7 +470,9 @@ export default function Work() {
                 onMouseEnter={() => playSFX('hover')}
                 className="work-arrow work-arrow--left"
                 aria-label="Previous project"
-                data-cursor="drag"
+                data-magnetic
+                data-cursor="open"
+                data-cursor-text="PREV"
               >
                 <ArrowLeft size={18} />
               </button>
@@ -473,7 +481,9 @@ export default function Work() {
                 onMouseEnter={() => playSFX('hover')}
                 className="work-arrow work-arrow--right"
                 aria-label="Next project"
-                data-cursor="drag"
+                data-magnetic
+                data-cursor="open"
+                data-cursor-text="NEXT"
               >
                 <ArrowRight size={18} />
               </button>

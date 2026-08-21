@@ -66,18 +66,7 @@ export default function Hero({ onOpenResume }: HeroProps) {
     return () => ctx.revert()
   }, [])
 
-  // Magnetic button physics
-  const handleMagnetic = (e: React.MouseEvent<HTMLElement>) => {
-    const btn = e.currentTarget
-    const rect = btn.getBoundingClientRect()
-    const x = (e.clientX - rect.left - rect.width / 2) * 0.28
-    const y = (e.clientY - rect.top - rect.height / 2) * 0.28
-    gsap.to(btn, { x, y, duration: 0.35, ease: 'power3.out' })
-  }
 
-  const handleMagneticLeave = (e: React.MouseEvent<HTMLElement>) => {
-    gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.4)' })
-  }
 
   const renderChars = (text: string) =>
     text.split('').map((char, i) => (
@@ -136,12 +125,10 @@ export default function Hero({ onOpenResume }: HeroProps) {
             <a
               href="#work"
               onClick={() => playSFX('click')}
-              onMouseEnter={(e) => {
-                playSFX('hover')
-              }}
-              onMouseMove={handleMagnetic}
-              onMouseLeave={handleMagneticLeave}
+              onMouseEnter={() => playSFX('hover')}
+              data-magnetic
               data-cursor="open"
+              data-cursor-text="EXPLORE"
               className="inline-flex items-center gap-3 px-8 py-4 bg-accent text-background font-display font-semibold text-sm md:text-base rounded-full hover:bg-white transition-all shadow-[0_0_35px_rgba(53,224,224,0.35)] hover:shadow-[0_0_45px_rgba(255,255,255,0.45)] min-h-[48px]"
             >
               <span>Explore Work</span>
@@ -155,9 +142,9 @@ export default function Hero({ onOpenResume }: HeroProps) {
                   onOpenResume()
                 }}
                 onMouseEnter={() => playSFX('hover')}
-                onMouseMove={handleMagnetic}
-                onMouseLeave={handleMagneticLeave}
+                data-magnetic
                 data-cursor="open"
+                data-cursor-text="RESUME"
                 className="inline-flex items-center gap-2.5 px-7 py-4 border border-border bg-surface/70 text-foreground font-display text-sm md:text-base rounded-full hover:border-accent hover:text-accent transition-all backdrop-blur-md min-h-[48px]"
               >
                 <FileText size={16} className="text-accent" />
@@ -169,9 +156,9 @@ export default function Hero({ onOpenResume }: HeroProps) {
                 href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Resume%20Request%20-%20Aryan%20Sharma"
                 onClick={() => playSFX('click')}
                 onMouseEnter={() => playSFX('hover')}
-                onMouseMove={handleMagnetic}
-                onMouseLeave={handleMagneticLeave}
+                data-magnetic
                 data-cursor="open"
+                data-cursor-text="RESUME"
                 className="inline-flex items-center gap-2 px-7 py-4 border border-border bg-surface/70 text-foreground font-display text-sm md:text-base rounded-full hover:border-accent hover:text-accent transition-all backdrop-blur-md min-h-[48px]"
               >
                 <span>View Resume</span>
@@ -229,7 +216,9 @@ export default function Hero({ onOpenResume }: HeroProps) {
           onClick={() => playSFX('click')}
           onMouseEnter={() => playSFX('hover')}
           className="flex items-center gap-3 text-muted hover:text-accent transition-colors py-2"
+          data-magnetic
           data-cursor="open"
+          data-cursor-text="SCROLL"
         >
           <span className="tracking-widest text-xs">SCROLL TO EXPLORE</span>
           <span className="scroll-line" />

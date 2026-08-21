@@ -20,7 +20,8 @@ export default function SoundToggle({ showLabel = true, className = '' }: SoundT
       }}
       aria-pressed={sfxEnabled}
       aria-label={sfxEnabled ? 'Mute sound effects' : 'Enable sound effects'}
-      data-cursor="open"
+      data-magnetic
+      data-cursor="sound"
       className={`group relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300 min-h-[38px] ${
         sfxEnabled
           ? 'border-accent/60 bg-accent/10 text-accent shadow-[0_0_15px_rgba(53,224,224,0.2)] hover:bg-accent/20'

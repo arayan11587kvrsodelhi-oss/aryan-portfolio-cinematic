@@ -433,46 +433,127 @@ a {
   pointer-events: none;
 }
 
-/* Custom Cursor */
+/* Custom Desktop Cursor & Physics */
+@media (pointer: fine) and (hover: hover) {
+  body.custom-cursor-active,
+  body.custom-cursor-active a,
+  body.custom-cursor-active button,
+  body.custom-cursor-active [role="button"],
+  body.custom-cursor-active label,
+  body.custom-cursor-active summary {
+    cursor: none !important;
+  }
+
+  body.custom-cursor-active input,
+  body.custom-cursor-active textarea,
+  body.custom-cursor-active [contenteditable="true"] {
+    cursor: text !important;
+  }
+}
+
 .cursor-dot {
   position: fixed;
   top: 0;
   left: 0;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--accent);
   pointer-events: none;
-  z-index: 101;
+  z-index: 1002;
+  opacity: 0;
   mix-blend-mode: difference;
-  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px var(--accent), 0 0 20px rgba(53, 224, 224, 0.5);
   transition: opacity 0.2s ease;
+  will-change: transform, opacity;
 }
 
 .cursor-ring {
   position: fixed;
   top: 0;
   left: 0;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  border: 1px solid var(--foreground);
+  border: 1px solid rgba(244, 240, 232, 0.45);
   pointer-events: none;
-  z-index: 100;
-  transform: translate(-50%, -50%);
+  z-index: 1001;
+  opacity: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
-  font-size: 0.52rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  background: rgba(7, 8, 10, 0.2);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  transition: opacity 0.25s ease;
+  will-change: transform, width, height, opacity;
+}
+
+.cursor-ring--open {
+  box-shadow: 0 0 24px rgba(53, 224, 224, 0.25), inset 0 0 12px rgba(53, 224, 224, 0.1);
+}
+
+.cursor-ring--view {
+  box-shadow: 0 0 35px rgba(53, 224, 224, 0.35), inset 0 0 15px rgba(53, 224, 224, 0.15);
+}
+
+.cursor-ring--drag {
+  box-shadow: 0 0 25px rgba(53, 224, 224, 0.3);
+}
+
+.cursor-aura {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(53, 224, 224, 0.3) 0%, rgba(53, 224, 224, 0.05) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 1000;
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.cursor-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--foreground);
-  white-space: nowrap;
-  background: rgba(7, 8, 10, 0.12);
-  backdrop-filter: blur(2px);
-  transition: opacity 0.2s ease;
+  color: #ffffff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+.cursor-ripple {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  pointer-events: none;
+  z-index: 1000;
+  translate: -50% -50%;
+  animation: cursorShockwave 0.48s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+@keyframes cursorShockwave {
+  0% {
+    width: 8px;
+    height: 8px;
+    opacity: 0.95;
+    box-shadow: 0 0 12px var(--accent);
+  }
+  100% {
+    width: 64px;
+    height: 64px;
+    opacity: 0;
+    box-shadow: 0 0 2px transparent;
+  }
 }
 
 button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
@@ -502,7 +583,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 
 @media (max-width: 900px) {
-  .cursor-dot, .cursor-ring {
+  .cursor-dot, .cursor-ring, .cursor-aura, .cursor-ripple {
     display: none !important;
   }
   .intro-orbit {
