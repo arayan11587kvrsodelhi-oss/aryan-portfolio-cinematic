@@ -19,9 +19,7 @@ import {
   Sparkles,
   LayoutGrid,
   Film,
-  Code2,
-  CreditCard,
-  Coffee
+  Code2
 } from 'lucide-react'
 import { projects, Project } from '../data/projects'
 
@@ -38,7 +36,7 @@ export default function Work() {
   const stageRef = useRef<HTMLDivElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
   const inViewRef = useRef(false)
-  const touchX = useRef<number | null>(null)
+  const touchStartPos = useRef<{ x: number; y: number } | null>(null)
   const modalCloseRef = useRef<HTMLButtonElement>(null)
   const modalTriggerRef = useRef<HTMLButtonElement>(null)
 
@@ -119,7 +117,7 @@ export default function Work() {
     }
   }, [])
 
-  // Keyboard navigation
+  // Keyboard navigation & modal focus trapping
   useEffect(() => {
     const el = stageRef.current
     if (!el) return
@@ -209,26 +207,26 @@ export default function Work() {
             <div className="flex items-center p-1 rounded-full border border-border bg-surface/80 backdrop-blur">
               <button
                 onClick={() => setViewMode('carousel')}
-                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-display transition-all ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-display transition-all ${
                   viewMode === 'carousel'
-                    ? 'bg-accent text-background font-medium shadow-[0_0_12px_rgba(53,224,224,0.3)]'
+                    ? 'bg-accent text-background font-semibold shadow-[0_0_12px_rgba(53,224,224,0.3)]'
                     : 'text-muted hover:text-foreground'
                 }`}
                 aria-label="Cinematic stage view"
               >
-                <Film size={13} />
+                <Film size={14} />
                 <span>Cinematic Stage</span>
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-display transition-all ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-display transition-all ${
                   viewMode === 'grid'
-                    ? 'bg-accent text-background font-medium shadow-[0_0_12px_rgba(53,224,224,0.3)]'
+                    ? 'bg-accent text-background font-semibold shadow-[0_0_12px_rgba(53,224,224,0.3)]'
                     : 'text-muted hover:text-foreground'
                 }`}
                 aria-label="Grid catalog view"
               >
-                <LayoutGrid size={13} />
+                <LayoutGrid size={14} />
                 <span>All Projects ({projects.length})</span>
               </button>
             </div>
@@ -244,19 +242,24 @@ export default function Work() {
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
               onTouchStart={(e) => {
-                touchX.current = e.touches[0].clientX
+                touchStartPos.current = {
+                  x: e.touches[0].clientX,
+                  y: e.touches[0].clientY,
+                }
               }}
               onTouchEnd={(e) => {
-                if (touchX.current == null) return
-                const dx = e.changedTouches[0].clientX - touchX.current
-                if (Math.abs(dx) > 45) {
+                if (!touchStartPos.current) return
+                const dx = e.changedTouches[0].clientX - touchStartPos.current.x
+                const dy = e.changedTouches[0].clientY - touchStartPos.current.y
+                // Only trigger if horizontal swipe is dominant over vertical scroll
+                if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
                   dx < 0 ? next() : prev()
                 }
-                touchX.current = null
+                touchStartPos.current = null
               }}
             >
               {/* Top Progress Tab Rail */}
-              <div className="absolute top-0 left-0 right-0 z-30 flex gap-1.5 md:gap-2.5 p-4 md:p-6 bg-gradient-to-b from-background/95 via-background/60 to-transparent backdrop-blur-[3px]">
+              <div className="absolute top-0 left-0 right-0 z-30 flex gap-1.5 md:gap-2.5 p-3 sm:p-4 md:p-6 bg-gradient-to-b from-background/95 via-background/60 to-transparent backdrop-blur-[3px]">
                 {carouselProjects.map((p, i) => (
                   <button
                     key={p.number}
@@ -387,7 +390,7 @@ export default function Work() {
                         ref={modalTriggerRef}
                         onClick={() => setActiveModalProject(active)}
                         data-cursor="open"
-                        className="inline-flex items-center gap-2 bg-accent/20 border border-accent text-accent hover:bg-accent hover:text-background transition-all px-5 py-3 rounded-full text-xs md:text-sm font-display font-medium shadow-[0_0_20px_rgba(53,224,224,0.25)]"
+                        className="inline-flex items-center gap-2 bg-accent/20 border border-accent text-accent hover:bg-accent hover:text-background transition-all px-5 py-3 rounded-full text-xs md:text-sm font-display font-medium shadow-[0_0_20px_rgba(53,224,224,0.25)] min-h-[44px]"
                       >
                         <Maximize2 size={15} />
                         <span>Explore Full Case Study</span>
@@ -400,7 +403,7 @@ export default function Work() {
                             target="_blank"
                             rel="noopener noreferrer"
                             data-cursor="open"
-                            className="inline-flex items-center gap-1.5 text-accent hover:text-white transition-colors font-medium"
+                            className="inline-flex items-center gap-1.5 text-accent hover:text-white transition-colors font-medium min-h-[44px] px-1"
                           >
                             <span>Live Demo</span>
                             <ArrowUpRight size={14} />
@@ -412,7 +415,7 @@ export default function Work() {
                             target="_blank"
                             rel="noopener noreferrer"
                             data-cursor="open"
-                            className="inline-flex items-center gap-1.5 text-muted hover:text-foreground transition-colors font-medium"
+                            className="inline-flex items-center gap-1.5 text-muted hover:text-foreground transition-colors font-medium min-h-[44px] px-1"
                           >
                             <Github size={14} />
                             <span>Source Code</span>
@@ -472,9 +475,9 @@ export default function Work() {
                 <button
                   key={cat}
                   onClick={() => setActiveFilter(cat)}
-                  className={`text-eyebrow text-xs px-4 py-2 rounded-full border transition-all ${
+                  className={`text-eyebrow text-xs px-4 py-2.5 rounded-full border transition-all min-h-[44px] ${
                     activeFilter === cat
-                      ? 'border-accent bg-accent text-background font-medium shadow-[0_0_12px_rgba(53,224,224,0.3)]'
+                      ? 'border-accent bg-accent text-background font-semibold shadow-[0_0_12px_rgba(53,224,224,0.3)]'
                       : 'border-border bg-surface/70 text-muted hover:border-accent/40 hover:text-foreground'
                   }`}
                 >
@@ -545,7 +548,7 @@ export default function Work() {
                   <div className="p-5 pt-0 border-t border-border/40 flex items-center justify-between gap-3 text-xs mt-3">
                     <button
                       onClick={() => setActiveModalProject(p)}
-                      className="text-accent hover:underline font-display flex items-center gap-1"
+                      className="text-accent hover:underline font-display flex items-center gap-1 min-h-[44px]"
                     >
                       <span>Deep Dive</span>
                       <Maximize2 size={12} />
@@ -557,7 +560,7 @@ export default function Work() {
                           href={p.demoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-muted hover:text-white transition-colors"
+                          className="text-muted hover:text-white transition-colors p-2"
                           aria-label={`Open demo for ${p.title}`}
                         >
                           <ExternalLink size={14} />
@@ -568,7 +571,7 @@ export default function Work() {
                           href={p.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-muted hover:text-white transition-colors"
+                          className="text-muted hover:text-white transition-colors p-2"
                           aria-label={`View GitHub repository for ${p.title}`}
                         >
                           <Github size={14} />
@@ -583,7 +586,7 @@ export default function Work() {
         )}
       </div>
 
-      {/* Interactive Case Study Deep-Dive Modal */}
+      {/* Interactive Case Study Deep-Dive Modal with Sticky Header on Mobile */}
       <AnimatePresence>
         {activeModalProject && (
           <motion.div
@@ -591,7 +594,7 @@ export default function Work() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.28 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 md:p-8 bg-background/92 backdrop-blur-md overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 md:p-8 bg-background/92 backdrop-blur-md overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-labelledby="case-study-title"
@@ -603,11 +606,11 @@ export default function Work() {
               exit={{ scale: 0.94, opacity: 0, y: 24 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-4xl bg-surface border border-border shadow-2xl overflow-hidden rounded-md my-auto max-h-[92vh] flex flex-col text-foreground"
+              className="relative w-full max-w-4xl bg-surface border border-border shadow-2xl overflow-hidden rounded-md my-auto max-h-[94vh] flex flex-col text-foreground"
             >
-              {/* Modal Header */}
-              <div className="flex items-center justify-between p-5 md:p-6 border-b border-border bg-background/80 backdrop-blur-md">
-                <div className="flex items-center gap-3">
+              {/* Sticky Modal Header */}
+              <div className="sticky top-0 z-20 flex items-center justify-between p-4 sm:p-5 md:p-6 border-b border-border bg-background/95 backdrop-blur-md">
+                <div className="flex items-center gap-2.5 sm:gap-3">
                   <span className="text-eyebrow text-accent border border-accent/30 bg-accent/5 px-2.5 py-1 rounded">
                     PROJECT {activeModalProject.number}
                   </span>
@@ -623,22 +626,22 @@ export default function Work() {
                 <button
                   ref={modalCloseRef}
                   onClick={() => setActiveModalProject(null)}
-                  className="p-2 text-muted hover:text-foreground hover:bg-white/10 rounded-full transition-colors"
-                  aria-label="Close modal"
+                  className="p-2 text-muted hover:text-foreground hover:bg-white/10 rounded-full transition-colors min-h-[44px] min-width-[44px] flex items-center justify-center"
+                  aria-label="Close case study dialog"
                 >
                   <X size={20} />
                 </button>
               </div>
 
               {/* Modal Body */}
-              <div className="p-6 md:p-10 overflow-y-auto space-y-8">
+              <div className="p-5 sm:p-8 md:p-10 overflow-y-auto space-y-8">
                 {/* Hero Title & Image Showcase */}
                 <div className="grid md:grid-cols-12 gap-6 items-center">
                   <div className="md:col-span-7">
                     <span className="text-accent text-sm font-display">{activeModalProject.tagline}</span>
                     <h2
                       id="case-study-title"
-                      className="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-white mt-1"
+                      className="font-display text-2xl sm:text-4xl md:text-5xl font-semibold leading-tight text-white mt-1"
                     >
                       {activeModalProject.title}
                     </h2>
@@ -740,15 +743,15 @@ export default function Work() {
                 </div>
               </div>
 
-              {/* Modal Footer Links */}
-              <div className="p-5 md:p-6 border-t border-border bg-background/90 flex flex-wrap items-center justify-between gap-4">
+              {/* Sticky Modal Footer Links */}
+              <div className="sticky bottom-0 z-20 p-4 sm:p-5 md:p-6 border-t border-border bg-background/95 backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   {activeModalProject.demoUrl && (
                     <a
                       href={activeModalProject.demoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background font-display text-xs md:text-sm font-semibold rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.35)]"
+                      className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-accent text-background font-display text-xs md:text-sm font-semibold rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.35)] min-h-[44px]"
                     >
                       <span>Launch Live Demo</span>
                       <ExternalLink size={14} />
@@ -759,17 +762,17 @@ export default function Work() {
                       href={activeModalProject.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 border border-border bg-surface text-foreground hover:border-accent hover:text-accent font-display text-xs md:text-sm rounded-full transition-all"
+                      className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 border border-border bg-surface text-foreground hover:border-accent hover:text-accent font-display text-xs md:text-sm rounded-full transition-all min-h-[44px]"
                     >
                       <Github size={15} />
-                      <span>View Repository</span>
+                      <span>View Code</span>
                     </a>
                   )}
                 </div>
 
                 <button
                   onClick={() => setActiveModalProject(null)}
-                  className="text-eyebrow text-muted hover:text-white transition-colors text-xs"
+                  className="text-eyebrow text-muted hover:text-white transition-colors text-xs p-2 min-h-[44px]"
                 >
                   ESC OR CLICK OUTSIDE TO CLOSE
                 </button>

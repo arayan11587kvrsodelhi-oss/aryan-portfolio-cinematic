@@ -17,7 +17,7 @@ export default function Cursor() {
   const [isTouch, setIsTouch] = useState(true)
 
   useEffect(() => {
-    // Check if device is desktop with fine pointer
+    // Check if device is desktop with fine pointer & hover capability
     const isFinePointer = window.matchMedia('(pointer: fine) and (hover: hover)').matches
     if (!isFinePointer) {
       setIsTouch(true)
@@ -31,8 +31,8 @@ export default function Cursor() {
 
     const ringX = gsap.quickTo(ring, 'x', { duration: 0.45, ease: 'power3.out' })
     const ringY = gsap.quickTo(ring, 'y', { duration: 0.45, ease: 'power3.out' })
-    const dotX = gsap.quickTo(dot, 'x', { duration: 0.1, ease: 'power3.out' })
-    const dotY = gsap.quickTo(dot, 'y', { duration: 0.1, ease: 'power3.out' })
+    const dotX = gsap.quickTo(dot, 'x', { duration: 0.08, ease: 'power3.out' })
+    const dotY = gsap.quickTo(dot, 'y', { duration: 0.08, ease: 'power3.out' })
 
     const onMove = (e: MouseEvent) => {
       dotX(e.clientX)
@@ -53,12 +53,26 @@ export default function Cursor() {
       }
     }
 
+    const onMouseLeaveDoc = () => {
+      if (dot) dot.style.opacity = '0'
+      if (ring) ring.style.opacity = '0'
+    }
+
+    const onMouseEnterDoc = () => {
+      if (dot) dot.style.opacity = '1'
+      if (ring) ring.style.opacity = '1'
+    }
+
     window.addEventListener('mousemove', onMove, { passive: true })
     window.addEventListener('mouseover', onOver, { passive: true })
+    document.addEventListener('mouseleave', onMouseLeaveDoc)
+    document.addEventListener('mouseenter', onMouseEnterDoc)
 
     return () => {
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mouseover', onOver)
+      document.removeEventListener('mouseleave', onMouseLeaveDoc)
+      document.removeEventListener('mouseenter', onMouseEnterDoc)
     }
   }, [])
 
@@ -73,22 +87,22 @@ export default function Cursor() {
     if (state === 'view') {
       scale = 2.4
       borderColor = 'var(--accent)'
-      backgroundColor = 'rgba(7, 8, 10, 0.65)'
+      backgroundColor = 'rgba(7, 8, 10, 0.7)'
     } else if (state === 'open') {
-      scale = 1.9
+      scale = 1.85
       borderColor = 'var(--accent)'
       backgroundColor = 'rgba(53, 224, 224, 0.12)'
     } else if (state === 'drag') {
       scale = 2.2
       borderColor = 'var(--accent)'
-      backgroundColor = 'rgba(7, 8, 10, 0.65)'
+      backgroundColor = 'rgba(7, 8, 10, 0.7)'
     }
 
     gsap.to(ring, {
       scale,
       borderColor,
       backgroundColor,
-      duration: 0.3,
+      duration: 0.28,
       ease: 'power3.out',
     })
   }, [state])
@@ -97,8 +111,8 @@ export default function Cursor() {
 
   return (
     <>
-      <div ref={dotRef} className="cursor-dot pointer-events-none" />
-      <div ref={ringRef} className="cursor-ring pointer-events-none">
+      <div ref={dotRef} className="cursor-dot pointer-events-none" aria-hidden="true" />
+      <div ref={ringRef} className="cursor-ring pointer-events-none" aria-hidden="true">
         {LABELS[state]}
       </div>
     </>

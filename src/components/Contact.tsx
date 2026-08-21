@@ -66,7 +66,7 @@ function MagneticCTA() {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       data-cursor="open"
-      className="magnetic group inline-flex items-center gap-3 rounded-full border border-accent/70 bg-accent/15 px-8 py-5 text-base sm:text-lg font-display text-accent hover:bg-accent hover:text-background hover:shadow-[0_0_50px_rgba(53,224,224,0.4)] transition-all duration-300 font-medium"
+      className="magnetic group inline-flex items-center gap-3 rounded-full border border-accent/70 bg-accent/15 px-8 py-4 sm:py-5 text-base sm:text-lg font-display text-accent hover:bg-accent hover:text-background hover:shadow-[0_0_50px_rgba(53,224,224,0.4)] transition-all duration-300 font-medium min-h-[48px]"
     >
       <span>Start a Conversation</span>
       <ArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" size={22} />
@@ -179,6 +179,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-4xl grid md:grid-cols-2 gap-4 text-left border-y border-border/80 py-8 md:py-10 bg-surface/40 p-6 md:p-8 rounded-md my-4 backdrop-blur-sm"
+          aria-label="Direct message form"
         >
           <div className="md:col-span-2 flex flex-wrap items-end justify-between gap-4 mb-2">
             <div>
@@ -200,6 +201,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
               autoComplete="name"
               className="contact-input"
               placeholder="e.g. Alex Mercer"
+              aria-required="true"
             />
           </label>
 
@@ -212,6 +214,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
               autoComplete="email"
               className="contact-input"
               placeholder="alex@company.com"
+              aria-required="true"
             />
           </label>
 
@@ -223,11 +226,13 @@ export default function Contact({ onOpenResume }: ContactProps) {
               rows={4}
               className="contact-input resize-y"
               placeholder="Tell me about the project, opportunity, timeline, or scope."
+              aria-required="true"
             />
           </label>
 
           <div className="md:col-span-2 flex flex-wrap items-center justify-between gap-4 pt-2">
             <p
+              id="form-status"
               className={`text-xs ${
                 formStatus === 'error'
                   ? 'text-red-400 font-medium'
@@ -248,7 +253,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
 
             <button
               type="submit"
-              className="inline-flex items-center gap-2 bg-accent text-background px-6 py-3 rounded-full font-display font-medium text-sm hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)]"
+              className="inline-flex items-center gap-2 bg-accent text-background px-6 py-3 rounded-full font-display font-medium text-sm hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)] min-h-[44px]"
               data-cursor="open"
             >
               <span>Draft Email Message</span>
@@ -264,7 +269,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
           <button
             onClick={copyEmail}
             data-cursor="open"
-            className="inline-flex items-center gap-2 px-7 py-5 border border-border bg-surface text-muted hover:text-accent hover:border-accent/60 rounded-full text-base font-display transition-all"
+            className="inline-flex items-center gap-2 px-7 py-4 sm:py-5 border border-border bg-surface text-muted hover:text-accent hover:border-accent/60 rounded-full text-base font-display transition-all min-h-[48px]"
           >
             {copied ? (
               <>
@@ -288,7 +293,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
             <button
               onClick={onOpenResume}
               data-cursor="open"
-              className="inline-flex items-center gap-2 px-6 py-5 border border-border bg-surface text-muted hover:text-foreground hover:border-accent/60 rounded-full text-base font-display transition-all"
+              className="inline-flex items-center gap-2 px-6 py-4 sm:py-5 border border-border bg-surface text-muted hover:text-foreground hover:border-accent/60 rounded-full text-base font-display transition-all min-h-[48px]"
             >
               <FileText size={18} className="text-accent" />
               <span>Preview Resume</span>
@@ -296,7 +301,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
           )}
         </div>
 
-        {/* Direct Contact Links */}
+        {/* Direct Contact Links with generous touch targets */}
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 mt-8 text-eyebrow border-t border-border/40 pt-8 w-full max-w-3xl">
           {LINKS.map((l) => (
             <a
@@ -304,10 +309,10 @@ export default function Contact({ onOpenResume }: ContactProps) {
               href={l.href}
               target={l.href.startsWith('http') ? '_blank' : undefined}
               rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="flex items-center gap-2 text-muted hover:text-accent transition-colors"
+              className="flex items-center gap-2 text-muted hover:text-accent transition-colors py-2 px-1 min-h-[44px]"
               data-cursor="open"
             >
-              <l.icon size={15} className="text-accent" />
+              <l.icon size={16} className="text-accent" />
               <span>{l.label}</span>
             </a>
           ))}
@@ -325,7 +330,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
 
           <button
             onClick={scrollToTop}
-            className="inline-flex items-center gap-1.5 text-muted hover:text-accent transition-colors font-display"
+            className="inline-flex items-center gap-1.5 text-muted hover:text-accent transition-colors font-display p-2 min-h-[44px]"
             aria-label="Scroll back to top"
           >
             <span>Back to top</span>

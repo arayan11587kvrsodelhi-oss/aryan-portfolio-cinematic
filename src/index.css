@@ -79,19 +79,19 @@ a {
 
 /* Typography Hierarchy */
 .text-hero {
-  font-size: clamp(3.5rem, 11vw, 9.5rem);
+  font-size: clamp(2.8rem, 10.5vw, 9.5rem);
   line-height: 0.88;
   letter-spacing: -0.05em;
 }
 
 .text-display {
-  font-size: clamp(2.2rem, 5.2vw, 4.8rem);
+  font-size: clamp(2rem, 5vw, 4.8rem);
   line-height: 0.98;
   letter-spacing: -0.04em;
 }
 
 .text-statement {
-  font-size: clamp(1.6rem, 3.8vw, 3.4rem);
+  font-size: clamp(1.4rem, 3.5vw, 3.2rem);
   line-height: 1.15;
   letter-spacing: -0.025em;
 }
@@ -259,6 +259,7 @@ a {
   position: relative;
   height: clamp(520px, 76vh, 820px);
   box-shadow: 0 30px 100px rgba(0, 0, 0, 0.45);
+  touch-action: pan-y;
 }
 
 .work-tab {
@@ -267,7 +268,8 @@ a {
   gap: 5px;
   background: none;
   border: none;
-  padding: 0 2px;
+  padding: 4px 2px;
+  min-height: 44px;
   cursor: pointer;
   color: var(--foreground);
   flex: 1;
@@ -320,8 +322,10 @@ a {
 
 .work-pause {
   flex: 0 0 auto;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
+  min-height: 44px;
+  min-width: 44px;
   border-radius: 50%;
   border: 1px solid rgba(244, 240, 232, 0.2);
   background: rgba(7, 8, 10, 0.5);
@@ -343,8 +347,10 @@ a {
   top: 50%;
   transform: translateY(-50%);
   z-index: 25;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
+  min-height: 44px;
+  min-width: 44px;
   border-radius: 50%;
   border: 1px solid rgba(244, 240, 232, 0.2);
   background: rgba(7, 8, 10, 0.45);
@@ -368,6 +374,7 @@ a {
 .work-thumbs {
   scrollbar-width: thin;
   scrollbar-color: var(--accent) transparent;
+  touch-action: pan-x;
 }
 
 .work-thumb {
@@ -439,6 +446,7 @@ a {
   z-index: 101;
   mix-blend-mode: difference;
   transform: translate(-50%, -50%);
+  transition: opacity 0.2s ease;
 }
 
 .cursor-ring {
@@ -464,6 +472,7 @@ a {
   white-space: nowrap;
   background: rgba(7, 8, 10, 0.12);
   backdrop-filter: blur(2px);
+  transition: opacity 0.2s ease;
 }
 
 button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
@@ -502,11 +511,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
     right: -35vw;
   }
   .text-hero {
-    font-size: clamp(3.2rem, 16vw, 6.5rem);
+    font-size: clamp(2.8rem, 15vw, 6.5rem);
   }
   .work-arrow {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
   }
   .work-arrow--left { left: 8px; }
   .work-arrow--right { right: 8px; }
@@ -514,23 +523,23 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 @media (max-width: 640px) {
   :root {
-    --spacing-section: clamp(4rem, 16vw, 6.5rem);
+    --spacing-section: clamp(3.8rem, 14vw, 6rem);
   }
   .hero-grid {
-    background-size: 48px 48px;
+    background-size: 44px 44px;
   }
   .ambient {
-    filter: blur(60px);
+    filter: blur(55px);
   }
   .text-display {
-    font-size: clamp(2.2rem, 11vw, 3.8rem);
+    font-size: clamp(1.9rem, 10vw, 3.4rem);
   }
   .work-stage {
-    height: clamp(500px, 84vh, 740px);
+    height: clamp(480px, 82vh, 700px);
   }
   .work-thumb {
-    width: 110px;
-    height: 68px;
+    width: 105px;
+    height: 64px;
   }
 }
 

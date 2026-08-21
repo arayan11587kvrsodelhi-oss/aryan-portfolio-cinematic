@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
@@ -9,9 +9,7 @@ import {
   ShieldCheck,
   GraduationCap,
   Sparkles,
-  FileText,
-  Terminal,
-  Cpu
+  FileText
 } from 'lucide-react'
 import portrait from '../assets/photos/portrait.jpg'
 
@@ -81,7 +79,7 @@ export default function About({ onOpenResume }: AboutProps) {
         </div>
 
         <div className="grid lg:grid-cols-12 gap-8 md:gap-12 items-stretch">
-          {/* Portrait Image Specimen */}
+          {/* Portrait Image Specimen with Explicit Dimensions */}
           <div
             className="lg:col-span-5 relative min-h-[480px] sm:min-h-[540px] md:min-h-[620px] overflow-hidden bg-surface border border-border rounded-md group"
             data-cursor="view"
@@ -89,6 +87,8 @@ export default function About({ onOpenResume }: AboutProps) {
             <img
               src={portrait}
               alt="Aryan Sharma portrait"
+              width={600}
+              height={800}
               loading="lazy"
               decoding="async"
               className="about-image absolute inset-0 w-full h-full object-cover object-top will-change-transform grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
@@ -179,7 +179,7 @@ export default function About({ onOpenResume }: AboutProps) {
                 {onOpenResume ? (
                   <button
                     onClick={onOpenResume}
-                    className="inline-flex items-center gap-2 text-eyebrow border border-accent/50 bg-accent/10 text-accent px-5 py-3 rounded-full hover:bg-accent hover:text-background transition-all duration-300 shadow-[0_0_15px_rgba(53,224,224,0.2)]"
+                    className="inline-flex items-center gap-2 text-eyebrow border border-accent/50 bg-accent/10 text-accent px-5 py-3 rounded-full hover:bg-accent hover:text-background transition-all duration-300 shadow-[0_0_15px_rgba(53,224,224,0.2)] min-h-[44px]"
                     data-cursor="open"
                   >
                     <FileText size={14} />
@@ -188,7 +188,7 @@ export default function About({ onOpenResume }: AboutProps) {
                 ) : (
                   <a
                     href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Resume%20Request%20-%20Aryan%20Sharma"
-                    className="inline-flex items-center gap-2 text-eyebrow border border-accent/50 bg-accent/10 text-accent px-5 py-3 rounded-full hover:bg-accent hover:text-background transition-all duration-300 shadow-[0_0_15px_rgba(53,224,224,0.2)]"
+                    className="inline-flex items-center gap-2 text-eyebrow border border-accent/50 bg-accent/10 text-accent px-5 py-3 rounded-full hover:bg-accent hover:text-background transition-all duration-300 shadow-[0_0_15px_rgba(53,224,224,0.2)] min-h-[44px]"
                     data-cursor="open"
                   >
                     <Download size={14} />

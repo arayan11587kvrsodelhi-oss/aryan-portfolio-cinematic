@@ -96,14 +96,14 @@ export default function Hero({ onOpenResume }: HeroProps) {
       <div className="hero-fade flex flex-wrap items-center justify-between text-eyebrow relative z-10 gap-3">
         <div className="flex items-center gap-2.5">
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_10px_var(--accent)]" />
-          <span className="text-foreground/90 tracking-widest">NEW DELHI, INDIA</span>
+          <span className="text-foreground/90 tracking-widest text-xs">NEW DELHI, INDIA</span>
         </div>
         <div className="flex items-center gap-4">
           <span className="hidden sm:inline-flex items-center gap-1.5 border border-accent/40 text-accent bg-accent/5 px-3 py-1 text-[0.65rem] tracking-widest rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-accent" />
             <span>AVAILABLE FOR OPPORTUNITIES</span>
           </span>
-          <span className="text-muted text-xs hidden md:inline">BCA · TIPS (GGSIPU)</span>
+          <span className="text-muted text-xs hidden md:inline font-mono">BCA · TIPS (GGSIPU)</span>
         </div>
       </div>
 
@@ -136,7 +136,7 @@ export default function Hero({ onOpenResume }: HeroProps) {
               onMouseMove={handleMagnetic}
               onMouseLeave={handleMagneticLeave}
               data-cursor="open"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-accent text-background font-display font-semibold text-sm md:text-base rounded-full hover:bg-white transition-all shadow-[0_0_35px_rgba(53,224,224,0.35)] hover:shadow-[0_0_45px_rgba(255,255,255,0.45)]"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-accent text-background font-display font-semibold text-sm md:text-base rounded-full hover:bg-white transition-all shadow-[0_0_35px_rgba(53,224,224,0.35)] hover:shadow-[0_0_45px_rgba(255,255,255,0.45)] min-h-[48px]"
             >
               <span>Explore Work</span>
               <ArrowDown size={16} />
@@ -148,7 +148,7 @@ export default function Hero({ onOpenResume }: HeroProps) {
                 onMouseMove={handleMagnetic}
                 onMouseLeave={handleMagneticLeave}
                 data-cursor="open"
-                className="inline-flex items-center gap-2.5 px-7 py-4 border border-border bg-surface/70 text-foreground font-display text-sm md:text-base rounded-full hover:border-accent hover:text-accent transition-all backdrop-blur-md"
+                className="inline-flex items-center gap-2.5 px-7 py-4 border border-border bg-surface/70 text-foreground font-display text-sm md:text-base rounded-full hover:border-accent hover:text-accent transition-all backdrop-blur-md min-h-[48px]"
               >
                 <FileText size={16} className="text-accent" />
                 <span>View Resume</span>
@@ -160,7 +160,7 @@ export default function Hero({ onOpenResume }: HeroProps) {
                 onMouseMove={handleMagnetic}
                 onMouseLeave={handleMagneticLeave}
                 data-cursor="open"
-                className="inline-flex items-center gap-2 px-7 py-4 border border-border bg-surface/70 text-foreground font-display text-sm md:text-base rounded-full hover:border-accent hover:text-accent transition-all backdrop-blur-md"
+                className="inline-flex items-center gap-2 px-7 py-4 border border-border bg-surface/70 text-foreground font-display text-sm md:text-base rounded-full hover:border-accent hover:text-accent transition-all backdrop-blur-md min-h-[48px]"
               >
                 <span>View Resume</span>
                 <ArrowUpRight size={16} />
@@ -169,7 +169,7 @@ export default function Hero({ onOpenResume }: HeroProps) {
           </div>
         </div>
 
-        {/* Hero Portrait Specimen Card */}
+        {/* Hero Portrait Specimen Card with Zero Layout Shift */}
         <div
           ref={portraitCardRef}
           id="hero-portrait"
@@ -178,8 +178,10 @@ export default function Hero({ onOpenResume }: HeroProps) {
         >
           <img
             src={portrait}
-            alt="Aryan Sharma portrait photo"
-            loading="eager"
+            alt="Aryan Sharma portrait"
+            width={290}
+            height={380}
+            fetchPriority="high"
             decoding="async"
             className="w-full h-full object-cover grayscale contrast-105 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
           />
@@ -190,7 +192,7 @@ export default function Hero({ onOpenResume }: HeroProps) {
               <span className="w-1.5 h-1.5 rounded-full bg-accent" />
               <span className="text-white font-medium">ARYAN SHARMA</span>
             </div>
-            <span className="text-[0.62rem] text-muted">DEV / 01</span>
+            <span className="text-[0.62rem] text-muted font-mono">DEV / 01</span>
           </div>
         </div>
       </div>
@@ -211,7 +213,7 @@ export default function Hero({ onOpenResume }: HeroProps) {
 
         <a
           href="#work"
-          className="flex items-center gap-3 text-muted hover:text-accent transition-colors"
+          className="flex items-center gap-3 text-muted hover:text-accent transition-colors py-2"
           data-cursor="open"
         >
           <span className="tracking-widest text-xs">SCROLL TO EXPLORE</span>

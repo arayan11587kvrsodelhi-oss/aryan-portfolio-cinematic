@@ -33,25 +33,25 @@ export const projects: Project[] = [
   {
     number: '01',
     title: 'VELORA',
-    category: 'Fintech',
-    tagline: 'Intelligent Modern Banking & Financial Ecosystem Prototype',
-    description: 'A flagship modern fintech product experience designed with high-performance UI engineering, interactive financial telemetry, simulated transactions, savings vault logic, and smooth momentum scrolling.',
-    problemSolved: 'Bridging high-frequency personal financial management with a fluid, distraction-free visual interface. Solves the fragmented experience of tracking multi-currency spending, savings velocity, and card controls in a single unified dashboard.',
+    category: 'Fintech Product',
+    tagline: 'Modern Banking & Financial Telemetry Prototype',
+    description: 'A flagship modern fintech application built with high-performance UI engineering, interactive financial telemetry, simulated transactions, savings vault logic, and smooth momentum scrolling.',
+    problemSolved: 'Transforms complex multi-currency banking and personal money management into an intuitive, high-clarity digital interface. Eliminates fragmented financial tracking through a unified real-time dashboard.',
     keyFeatures: [
-      'Interactive financial dashboard with dynamic balance graphs',
-      'Simulated multi-currency fund transfers and instantaneous ledger updates',
-      'Automated savings vaults with target progression tracking',
-      'Card security controls (instant lock, spending limits, virtual card generation)',
-      'Intelligent financial insights and categorized monthly spending analytics',
-      'Responsive interface optimized for desktop, tablet, and mobile workflows'
+      'Interactive financial dashboard with dynamic balance visualization graphs',
+      'Simulated multi-currency fund transfers with instant ledger recalculation',
+      'Automated savings vaults with real-time target progression tracking',
+      'Comprehensive card security suite (freeze toggle, spend limits, virtual card generation)',
+      'Intelligent spending breakdown analytics by category and month',
+      'Responsive design optimized across 320px mobile to 4K ultra-wide monitors'
     ],
     architectureDetails: [
-      'Client-side state simulation with optimistic UI updates',
-      'Custom momentum scroll kinematics powered by Lenis',
-      'Framer Motion spring physics for real-time card transitions',
-      'Modular component design structured for high maintainability'
+      'State-driven simulation engine with optimistic UI feedback',
+      'Momentum scroll kinematics synchronized via Lenis',
+      'Framer Motion spring physics for 60fps card transitions',
+      'Modular TypeScript architecture structured for scalable enterprise growth'
     ],
-    myContribution: 'Architected the complete product prototype, interactive state models, financial visualization components, and frontend motion design.',
+    myContribution: 'Architected the complete product interface, state simulation models, data visualization components, and frontend motion design.',
     tech: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Framer Motion', 'Lenis'],
     image: veloraImage,
     demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/velora-fintech-landing-page/',
@@ -65,21 +65,21 @@ export const projects: Project[] = [
     title: 'AMBER HOUR',
     category: 'Creative Web',
     tagline: 'Cinematic Small-Batch Artisanal Coffee Experience',
-    description: 'An editorial visual storytelling experience capturing the intimate ritual of morning coffee brewing through responsive typography, physics-driven interactions, and atmosphere.',
-    problemSolved: 'Transforming an artisanal consumer product website from a static product catalog into an atmospheric, tactile digital narrative that evokes the patience and craftsmanship of specialty coffee.',
+    description: 'An atmospheric visual storytelling web experience capturing the craft and mindfulness of specialty coffee brewing through responsive typography, physics-based interactions, and cinematic design.',
+    problemSolved: 'Elevates an artisanal consumer brand beyond traditional static catalogs into an engaging, tactile digital narrative that evokes the precision, aroma, and patience of specialty coffee.',
     keyFeatures: [
-      'Interactive draggable roast curve mapping 6 distinct roasting phases',
+      'Interactive draggable roast curve mapping 6 precise roasting temperature phases',
       'Scroll-filling ritual brewing timeline with step-by-step extraction guides',
-      'Scroll-triggered cinematic reveals using native IntersectionObserver',
-      'Warm editorial typography hierarchy and bespoke color harmonies',
-      'Responsive media handling with zero layout shifts and progressive rendering'
+      'Scroll-triggered cinematic reveals powered by native IntersectionObserver',
+      'Refined editorial typography hierarchy and bespoke warm dark color harmonies',
+      'Progressive media handling with zero layout shift (CLS: 0)'
     ],
     architectureDetails: [
-      'Hardware-accelerated transforms and requestAnimationFrame loops',
-      'Lightweight vanilla CSS variables synchronized with React state',
-      'Mobile-optimized touch physics for gesture-based roasting curve'
+      'Hardware-accelerated CSS transforms and requestAnimationFrame loops',
+      'Dynamic CSS custom variables synchronized with React state',
+      'Mobile-optimized touch physics for gesture-based roasting curves'
     ],
-    myContribution: 'Conceptualized the art direction, engineered custom interactive roasting curves, and implemented the full responsive web experience.',
+    myContribution: 'Directed the visual aesthetic, engineered custom interactive roasting curves, and implemented the full responsive web experience.',
     tech: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Framer Motion'],
     image: amberHourImage,
     demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/amber-hour/',
@@ -94,17 +94,17 @@ export const projects: Project[] = [
     category: 'Creative Development',
     tagline: 'Cinematic Developer Portfolio & Interaction Laboratory',
     description: 'Personal creative engineering portfolio highlighting interactive web development, high-fidelity motion choreography, and structured technical showcases.',
-    problemSolved: 'Crafting a distinctive digital presence that balances technical credibility as a BCA student with memorable creative frontend and motion engineering.',
+    problemSolved: 'Establishes a distinctive digital presence that highlights technical rigor as a BCA student alongside high-craft creative frontend and motion engineering.',
     keyFeatures: [
       'Synchronized GSAP ScrollTrigger and Lenis smooth momentum scrolling',
       'Framer Motion spring physics and staggered typography reveals',
-      'Interactive case study deep-dive modal system',
+      'Interactive case study deep-dive modal system with focus management',
       'Desktop custom trailing cursor with contextual interaction states',
-      'Responsive design tested across 320px to 4K displays'
+      'Complete accessibility compliance with prefers-reduced-motion support'
     ],
     architectureDetails: [
-      'Zero unnecessary third-party dependencies',
-      'Full prefers-reduced-motion accessibility compliance',
+      'Zero unnecessary third-party dependencies for minimal bundle weight',
+      'Full semantic HTML5 structure and WCAG-compliant contrast levels',
       'Strict TypeScript type safety and modular components'
     ],
     myContribution: 'Designed the visual identity, implemented all motion systems, and built the complete web application.',
@@ -119,15 +119,15 @@ export const projects: Project[] = [
   {
     number: '04',
     title: 'SCIENTIFIC CALCULATOR',
-    category: 'Tools',
-    tagline: 'Browser-Based Scientific & Mathematical Computing Interface',
+    category: 'Tools & Utilities',
+    tagline: 'Browser-Based Scientific & Mathematical Computing Tool',
     description: 'A focused, responsive mathematical calculator providing standard arithmetic, scientific functions, degree/radian mode switching, and keyboard-friendly execution.',
-    problemSolved: 'Delivering an instant, distraction-free calculation tool directly in the browser with precise order-of-operations parsing.',
+    problemSolved: 'Delivers an instant, distraction-free calculation tool directly in the browser with precise order-of-operations parsing.',
     keyFeatures: [
-      'Comprehensive scientific trigonometric and logarithmic functions',
+      'Comprehensive trigonometric and logarithmic scientific functions',
       'Degree and Radian angle computation toggle',
       'Full keyboard listener support for rapid calculation',
-      'Formula history memory and parenthesis hierarchy evaluation'
+      'Parenthesis hierarchy evaluation and calculation memory'
     ],
     myContribution: 'Engineered the calculator parser logic and responsive tactile keypad interface.',
     tech: ['HTML5', 'CSS3', 'JavaScript'],
@@ -143,7 +143,7 @@ export const projects: Project[] = [
     category: 'Personal Branding',
     tagline: 'Minimalist Interactive Developer Profile Card',
     description: 'A compact, shareable digital business card communicating core skills, availability status, and social entry points with clean typography and instant load times.',
-    problemSolved: 'Creating a lightweight, highly portable profile snippet for quick introductions across developer communities and hiring managers.',
+    problemSolved: 'Provides a lightweight, highly portable profile snippet for quick introductions across developer communities and hiring managers.',
     keyFeatures: [
       'Live availability status indicator',
       'Concise developer introduction and stack breakdown',
@@ -164,7 +164,7 @@ export const projects: Project[] = [
     category: 'Automotive Web',
     tagline: 'Automotive Digital Experience & Performance Showcase',
     description: 'An aggressive, high-contrast automotive web study inspired by the legendary Nissan GT-R, exploring vehicle specifications, engineering data, and dark mode visuals.',
-    problemSolved: 'Translating motorsport aesthetic aggression and telemetry data into a structured web interface.',
+    problemSolved: 'Translates motorsport aesthetic aggression and telemetry data into a structured web interface.',
     keyFeatures: [
       'High-contrast dark automotive visual direction',
       'Performance specification highlights (0-100 km/h, Twin-Turbo V6 specs)',
@@ -184,7 +184,7 @@ export const projects: Project[] = [
     category: 'Web Security',
     tagline: 'Full-Featured Developer Portfolio with Integrated Authentication',
     description: 'A comprehensive multi-view portfolio system integrated with user authentication entry points, registration flows, protected views, and developer project showcases.',
-    problemSolved: 'Demonstrating the convergence of client-side portfolio presentation with structured authentication screens and input validation.',
+    problemSolved: 'Demonstrates the convergence of client-side portfolio presentation with structured authentication screens and input validation.',
     keyFeatures: [
       'Dedicated login and registration viewports',
       'Client-side form validation with real-time error handling',
@@ -205,7 +205,7 @@ export const projects: Project[] = [
     category: 'Landing Page',
     tagline: 'Responsive Business & Creative Agency Landing Page',
     description: 'A sleek, conversion-focused business landing page created for Northstar Studio showcasing creative services, case study highlights, client testimonials, and pricing tiers.',
-    problemSolved: 'Providing a structured, professional agency landing page layout that guides prospective clients through services, proof of work, and clear calls to action.',
+    problemSolved: 'Provides a structured, professional agency landing page layout that guides prospective clients through services, proof of work, and clear calls to action.',
     keyFeatures: [
       'Structured services and capability breakdown',
       'Interactive pricing tiers with feature comparisons',
@@ -223,10 +223,10 @@ export const projects: Project[] = [
   {
     number: '09',
     title: 'CURRPENSE',
-    category: 'Tools',
+    category: 'Tools & Utilities',
     tagline: 'Rapid Real-Time Currency Exchange Calculator',
     description: 'A clean, lightweight currency conversion application supporting major global currencies with intuitive input controls and instant calculation.',
-    problemSolved: 'Eliminating the clutter of traditional exchange calculators with a fast, lightweight, and responsive browser utility.',
+    problemSolved: 'Eliminates the clutter of traditional exchange calculators with a fast, lightweight, and responsive browser utility.',
     keyFeatures: [
       'Multi-currency dropdown selection and swapping',
       'Real-time conversion calculation as user types',
@@ -247,7 +247,7 @@ export const projects: Project[] = [
     category: 'Web Security',
     tagline: 'Secure Authentication & Account Recovery Client Interface',
     description: 'A purpose-built authentication client featuring sign-in, account creation, password recovery, and client-side password strength verification.',
-    problemSolved: 'Providing a reusable, accessible, and secure user entry gateway following modern UX standards for authentication.',
+    problemSolved: 'Provides a reusable, accessible, and secure user entry gateway following modern UX standards for authentication.',
     keyFeatures: [
       'Login, registration, and forgot-password flows',
       'Interactive password visibility toggle and strength meter',

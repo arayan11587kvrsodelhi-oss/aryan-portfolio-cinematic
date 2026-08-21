@@ -9,7 +9,6 @@ import {
   Briefcase,
   Code2,
   Shield,
-  Layers,
   MapPin,
   ExternalLink
 } from 'lucide-react'
@@ -49,7 +48,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.28 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 md:p-8 bg-background/90 backdrop-blur-md overflow-y-auto"
+          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 md:p-8 bg-background/92 backdrop-blur-md overflow-y-auto"
           role="dialog"
           aria-modal="true"
           aria-labelledby="resume-title"
@@ -61,20 +60,20 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             exit={{ scale: 0.94, opacity: 0, y: 24 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-4xl bg-surface border border-border shadow-2xl rounded-md my-auto max-h-[92vh] flex flex-col overflow-hidden text-foreground print:max-h-none print:shadow-none print:border-none"
+            className="relative w-full max-w-4xl bg-surface border border-border shadow-2xl rounded-md my-auto max-h-[94vh] flex flex-col overflow-hidden text-foreground print:max-h-none print:shadow-none print:border-none"
           >
-            {/* Modal Header Bar */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-background/80 print:hidden">
-              <div className="flex items-center gap-3">
-                <span className="text-eyebrow text-accent border border-accent/40 bg-accent/5 px-2.5 py-1">
+            {/* Sticky Header Bar */}
+            <div className="sticky top-0 z-20 flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-border bg-background/95 backdrop-blur-md print:hidden">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <span className="text-eyebrow text-accent border border-accent/40 bg-accent/5 px-2.5 py-1 rounded text-[0.62rem] sm:text-xs">
                   OFFICIAL RESUME · ARYAN SHARMA
                 </span>
-                <span className="text-eyebrow text-muted hidden sm:inline">BCA · TIPS DELHI</span>
+                <span className="text-eyebrow text-muted hidden md:inline font-mono">BCA · TIPS DELHI</span>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={handlePrint}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-border text-xs font-display text-muted hover:text-foreground hover:border-accent transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border text-xs font-display text-muted hover:text-foreground hover:border-accent transition-colors min-h-[38px]"
                   aria-label="Print or save as PDF"
                 >
                   <Printer size={13} />
@@ -82,7 +81,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 </button>
                 <a
                   href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Resume%20Request%20-%20Aryan%20Sharma"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-accent/15 border border-accent text-xs font-display text-accent hover:bg-accent hover:text-background transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent/15 border border-accent text-xs font-display text-accent hover:bg-accent hover:text-background transition-colors min-h-[38px]"
                 >
                   <Mail size={13} />
                   <span className="hidden sm:inline">Email Copy</span>
@@ -90,7 +89,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 <button
                   ref={closeButtonRef}
                   onClick={onClose}
-                  className="p-1.5 text-muted hover:text-foreground hover:bg-white/10 rounded-full transition-colors ml-1"
+                  className="p-2 text-muted hover:text-foreground hover:bg-white/10 rounded-full transition-colors ml-1 min-h-[40px] min-w-[40px] flex items-center justify-center"
                   aria-label="Close resume preview"
                 >
                   <X size={18} />
@@ -99,7 +98,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             </div>
 
             {/* Resume Document Content */}
-            <div className="p-6 sm:p-10 overflow-y-auto space-y-8 print:p-0">
+            <div className="p-5 sm:p-8 md:p-10 overflow-y-auto space-y-8 print:p-0">
               {/* Header Title Section */}
               <div className="border-b border-border/80 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
@@ -109,9 +108,8 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   <p className="text-accent text-base sm:text-lg font-medium mt-1">
                     Creative Frontend Developer &amp; BCA Student
                   </p>
-                  <p className="text-muted text-xs sm:text-sm flex items-center gap-2 mt-1">
-                    <MapPin size={14} className="text-accent" />
-                    <span>New Delhi, India</span>
+                  <p className="text-muted text-xs sm:text-sm flex flex-wrap items-center gap-2 mt-1">
+                    <span className="flex items-center gap-1"><MapPin size={13} className="text-accent" /> New Delhi, India</span>
                     <span>·</span>
                     <span>Open to Developer Roles &amp; High-Impact Projects</span>
                   </p>
@@ -138,7 +136,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   <GraduationCap size={18} />
                   <h2 id="resume-edu" className="text-sm font-semibold tracking-wider uppercase text-accent">Education</h2>
                 </div>
-                <div className="bg-background/40 border border-border/60 p-4 rounded">
+                <div className="bg-background/40 border border-border/60 p-4 rounded-md">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <h3 className="font-display font-medium text-base text-white">
                       Bachelor of Computer Applications (BCA)
@@ -161,25 +159,25 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   <h2 id="resume-skills" className="text-sm font-semibold tracking-wider uppercase text-accent">Technical Skills &amp; Stack</h2>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-3 text-xs">
-                  <div className="bg-background/40 border border-border/60 p-3.5 rounded">
+                  <div className="bg-background/40 border border-border/60 p-3.5 rounded-md">
                     <span className="text-white font-medium block mb-1.5">Frontend &amp; UI Engineering</span>
                     <p className="text-muted leading-relaxed">
                       React.js, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS, Responsive Design, Design Systems
                     </p>
                   </div>
-                  <div className="bg-background/40 border border-border/60 p-3.5 rounded">
+                  <div className="bg-background/40 border border-border/60 p-3.5 rounded-md">
                     <span className="text-white font-medium block mb-1.5">Motion &amp; Interaction</span>
                     <p className="text-muted leading-relaxed">
                       Framer Motion, GSAP, ScrollTrigger, Lenis Smooth Scroll, SVG Animation, Canvas kinematics
                     </p>
                   </div>
-                  <div className="bg-background/40 border border-border/60 p-3.5 rounded">
+                  <div className="bg-background/40 border border-border/60 p-3.5 rounded-md">
                     <span className="text-white font-medium block mb-1.5">Backend, APIs &amp; Data</span>
                     <p className="text-muted leading-relaxed">
                       Node.js, Express.js, RESTful APIs, MySQL, SQL Architecture, Client-side State Architecture
                     </p>
                   </div>
-                  <div className="bg-background/40 border border-border/60 p-3.5 rounded">
+                  <div className="bg-background/40 border border-border/60 p-3.5 rounded-md">
                     <span className="text-white font-medium block mb-1.5">Tools, Security &amp; Workflow</span>
                     <p className="text-muted leading-relaxed">
                       Git, GitHub, Vite, VS Code, Postman, Figma, Web Application Security, Client Input Sanitization
@@ -197,7 +195,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
                 <div className="space-y-4 text-xs">
                   {/* VELORA */}
-                  <div className="bg-background/40 border border-border/60 p-4 rounded">
+                  <div className="bg-background/40 border border-border/60 p-4 rounded-md">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                       <div className="flex items-center gap-2">
                         <h3 className="font-display font-medium text-sm text-white">VELORA — Modern Fintech Banking Experience</h3>
@@ -213,7 +211,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   </div>
 
                   {/* Amber Hour */}
-                  <div className="bg-background/40 border border-border/60 p-4 rounded">
+                  <div className="bg-background/40 border border-border/60 p-4 rounded-md">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                       <div className="flex items-center gap-2">
                         <h3 className="font-display font-medium text-sm text-white">Amber Hour — Cinematic Coffee Experience</h3>
@@ -229,7 +227,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   </div>
 
                   {/* Portfolio & Security Tools */}
-                  <div className="bg-background/40 border border-border/60 p-4 rounded">
+                  <div className="bg-background/40 border border-border/60 p-4 rounded-md">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                       <h3 className="font-display font-medium text-sm text-white">Auth Client &amp; Web Security Tooling</h3>
                       <span className="text-muted font-mono">HTML5 · CSS3 · JavaScript · Web Security</span>
@@ -254,19 +252,19 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               </section>
             </div>
 
-            {/* Modal Footer */}
-            <div className="p-4 sm:p-5 border-t border-border bg-background/80 flex flex-wrap items-center justify-between gap-3 print:hidden">
+            {/* Sticky Footer */}
+            <div className="sticky bottom-0 z-20 p-4 sm:p-5 border-t border-border bg-background/95 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 print:hidden">
               <div className="flex items-center gap-3">
                 <a
                   href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Opportunity%20Inquiry%20-%20Aryan%20Sharma"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-background font-display text-xs sm:text-sm font-medium rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)]"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-background font-display text-xs sm:text-sm font-semibold rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)] min-h-[44px]"
                 >
                   <span>Connect with Aryan</span>
                   <ArrowUpRight size={14} />
                 </a>
                 <button
                   onClick={handlePrint}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 border border-border bg-surface text-foreground hover:border-accent hover:text-accent font-display text-xs sm:text-sm rounded-full transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 border border-border bg-surface text-foreground hover:border-accent hover:text-accent font-display text-xs sm:text-sm rounded-full transition-colors min-h-[44px]"
                 >
                   <Printer size={14} />
                   <span>Print Document</span>
@@ -275,7 +273,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
               <button
                 onClick={onClose}
-                className="text-eyebrow text-muted hover:text-white transition-colors"
+                className="text-eyebrow text-muted hover:text-white transition-colors text-xs p-2 min-h-[44px]"
               >
                 ESC TO CLOSE
               </button>
