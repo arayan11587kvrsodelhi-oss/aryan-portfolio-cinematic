@@ -6,7 +6,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 const ENTRIES = [
   [
-    '2023 — Present',
+    '2025 — Present',
     'Bachelor of Computer Applications (BCA)',
     'Trinity Institute of Professional Studies (GGSIPU, Delhi)',
     'Program focused on computer science fundamentals, data structures, web application development, database management systems, and network security.',

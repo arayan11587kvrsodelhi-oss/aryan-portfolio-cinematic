@@ -122,7 +122,7 @@ export default function About() {
                   <span className="text-eyebrow">EDUCATION</span>
                 </div>
                 <p className="mt-2 font-display text-lg sm:text-xl text-foreground">Bachelor of Computer Applications</p>
-                <p className="text-muted text-xs sm:text-sm mt-0.5">Trinity Institute of Professional Studies, Delhi</p>
+                <p className="text-muted text-xs sm:text-sm mt-0.5">Trinity Institute of Professional Studies, Delhi · 2025–Present</p>
               </div>
 
               <div className="sm:col-span-5 sm:justify-self-end">

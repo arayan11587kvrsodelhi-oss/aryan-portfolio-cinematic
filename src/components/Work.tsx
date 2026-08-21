@@ -31,13 +31,15 @@ export default function Work() {
   const inViewRef = useRef(false)
   const touchX = useRef<number | null>(null)
 
-  const total = projects.length
   const [index, setIndex] = useState(0)
   const [dir, setDir] = useState(1)
   const [paused, setPaused] = useState(false)
+  const [showAll, setShowAll] = useState(false)
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null)
 
-  const active = projects[index]
+  const visibleProjects = showAll ? projects : projects.filter((project) => project.featured)
+  const total = visibleProjects.length
+  const active = visibleProjects[index]
 
   const goTo = (i: number, direction: number) => {
     setDir(direction)
@@ -159,7 +161,7 @@ export default function Work() {
           >
             {/* Top Progress Tabs */}
             <div className="absolute top-0 left-0 right-0 z-30 flex gap-1.5 md:gap-2 p-3 md:p-6 bg-gradient-to-b from-background/90 via-background/40 to-transparent backdrop-blur-[2px]">
-              {projects.map((p, i) => (
+              {visibleProjects.map((p, i) => (
                 <button
                   key={p.number}
                   onClick={() => goTo(i, i > index ? 1 : -1)}
@@ -319,7 +321,7 @@ export default function Work() {
 
           {/* Thumbnail Rail */}
           <div className="work-thumbs mt-5 md:mt-6 flex gap-3 overflow-x-auto pb-2">
-            {projects.map((p, i) => (
+            {visibleProjects.map((p, i) => (
               <button
                 key={p.number}
                 onClick={() => goTo(i, i > index ? 1 : -1)}
@@ -332,6 +334,19 @@ export default function Work() {
                 </span>
               </button>
             ))}
+          </div>
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={() => {
+                setShowAll((value) => !value)
+                setIndex(0)
+              }}
+              className="inline-flex items-center gap-2 text-eyebrow text-accent hover:text-white transition-colors"
+              data-cursor="open"
+            >
+              <span>{showAll ? 'SHOW FEATURED PROJECTS' : 'VIEW ALL PROJECTS'}</span>
+              <ArrowUpRight size={14} />
+            </button>
           </div>
         </div>
       </div>

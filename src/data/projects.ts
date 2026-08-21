@@ -1,10 +1,16 @@
-import p1 from '../assets/photos/ecommerce.jpg'
-import p2 from '../assets/photos/project-mockups.svg'
-import p3 from '../assets/photos/project-password.svg'
-import p4 from '../assets/photos/profile-card.jpg'
-import p5 from '../assets/photos/project-security.svg'
-import p6 from '../assets/photos/nissan.jpg'
-import lumora from '../assets/photos/project-lumora.svg'
+import veloraImage from '../assets/photos/velora.png'
+import amberHourImage from '../assets/photos/amber-hour.png'
+import portfolioImage from '../assets/photos/portfolio.png'
+import calculatorImage from '../assets/photos/calculator.png'
+import portfolioCardImage from '../assets/photos/portfolio-card.png'
+import portfolioV3Image from '../assets/photos/portfolio-v3.png'
+import portfolioAuthImage from '../assets/photos/portfolio-auth.png'
+import portfolioClassicImage from '../assets/photos/portfolio-classic.png'
+import businessLandingImage from '../assets/photos/business-landing.png'
+import currpenseImage from '../assets/photos/currpense.png'
+import authClientImage from '../assets/photos/auth-client.png'
+import aryanImage from '../assets/photos/aryan-project.png'
+import nissanImage from '../assets/photos/nissan.jpg'
 
 export interface Project {
   number: string
@@ -19,134 +25,157 @@ export interface Project {
   demoUrl?: string
   githubUrl?: string
   accentNote: string
+  featured: boolean
 }
 
 export const projects: Project[] = [
   {
-    number: '01',
-    title: 'E-Commerce Website',
-    category: 'Web Development',
-    description: 'A responsive shopping experience with product discovery, filtering, cart interactions and a clean storefront interface built from scratch.',
-    problemSolved: 'Small storefronts often lack fast, clutter-free interfaces that allow instant product browsing and seamless cart management across devices without heavy framework overhead.',
-    keyFeatures: [
-      'Real-time product search and instant category filter',
-      'Dynamic shopping cart summary with persistent count',
-      'Fully responsive grid layout for mobile and desktop',
-      'Custom CSS variables design system for rapid theme customization'
-    ],
-    myContribution: 'Single-handedly designed and developed the entire frontend layout, state management, and asset structure using clean vanilla web standards.',
-    tech: ['HTML5', 'CSS3', 'JavaScript'],
-    image: p1,
-    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/aryan/blob/main/ecom.html',
-    accentNote: 'Storefront build'
+    number: '01', title: 'VELORA', category: 'Fintech',
+    description: 'A modern fintech product prototype with an interactive financial dashboard, simulated transactions, savings, financial insights, smooth scrolling and premium UI interactions.',
+    problemSolved: 'A product prototype for spending smarter, saving effortlessly, and staying in control from one intelligent platform.',
+    keyFeatures: ['Interactive financial dashboard', 'Simulated transactions and savings', 'Financial insights', 'Smooth scrolling and premium UI interactions'],
+    myContribution: 'Product prototype and frontend experience.',
+    tech: ['React', 'TypeScript', 'Vite', 'CSS / Tailwind', 'Lenis', 'Framer Motion', 'Recharts'],
+    image: veloraImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/velora-fintech-landing-page/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/velora-fintech-landing-page',
+    accentNote: 'Your money. Your momentum.', featured: true
   },
   {
-    number: '02',
-    title: 'Loading Page',
-    category: 'Creative Frontend',
-    description: 'A motion-first loading experience designed to make the transition into a product feel intentional instead of waiting on a blank screen.',
-    problemSolved: 'Web entry points are frequently abrupt or visually unrefined, leading to higher initial bounce rates during app resource hydration.',
-    keyFeatures: [
-      'Smooth numerical progress percentage tracking',
-      'SVG mask choreography and path reveals',
-      'Lightweight asynchronous asset preloader',
-      'Custom easing curves for tactile motion feedback'
-    ],
-    myContribution: 'Formulated the motion choreography and built custom CSS keyframe triggers with JavaScript timing hooks.',
-    tech: ['HTML5', 'CSS3', 'JavaScript'],
-    image: p2,
-    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/aryan/blob/main/loadpage.html',
-    accentNote: 'Motion study'
+    number: '02', title: 'AMBER HOUR', category: 'Creative Web',
+    description: 'A cinematic coffee experience focused on immersive visual storytelling, animation and premium web interactions.',
+    problemSolved: 'A small-batch coffee concept for the slow part of the morning: the kettle, the window, and the ten minutes before anything else starts.',
+    keyFeatures: ['Draggable roast curve with six roast stages', 'Scroll-triggered reveals', 'Scroll-filling ritual timeline', 'Native IntersectionObserver and requestAnimationFrame motion'],
+    myContribution: 'Cinematic frontend experience built with hand-rolled CSS and React.',
+    tech: ['Vite', 'React', 'TypeScript', 'CSS', 'Framer Motion'],
+    image: amberHourImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/amber-hour/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/amber-hour',
+    accentNote: 'Small batch / first light', featured: true
   },
   {
-    number: '03',
-    title: 'Password Checker',
-    category: 'Web Security',
-    description: 'A responsive password-strength interface that evaluates input in real time and communicates security feedback clearly to the user.',
-    problemSolved: 'Users routinely set weak passwords due to vague security criteria during account setup.',
-    keyFeatures: [
-      'Real-time entropy and character dynamic strength evaluation',
-      'Visual indicator status bar with reactive color coding',
-      'Requirement checklist tracking length, numbers, and symbols',
-      'Accessible focus states and screen-reader friendly cues'
-    ],
-    myContribution: 'Engineered regex-based strength algorithm and reactive UI state updates to deliver instant security insight to end users.',
-    tech: ['HTML5', 'CSS3', 'JavaScript'],
-    image: p3,
-    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/aryan/blob/main/secure.html',
-    accentNote: 'Security UI'
+    number: '03', title: 'ARYAN SHARMA CINEMATIC PORTFOLIO', category: 'Creative Development',
+    description: 'My personal creative developer portfolio focused on cinematic motion, interactive UI and modern frontend development.',
+    problemSolved: 'A personal platform for presenting creative frontend work through motion, interaction and a deliberate visual system.',
+    keyFeatures: ['Cinematic scrolling', 'GSAP and ScrollTrigger animations', 'Lenis smooth scrolling', 'Responsive mobile animation strategy'],
+    myContribution: 'Designed and developed the portfolio experience.',
+    tech: ['React', 'TypeScript', 'Vite', 'GSAP', 'Lenis', 'Framer Motion'],
+    image: portfolioImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/aryan-portfolio-cinematic/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/aryan-portfolio-cinematic',
+    accentNote: 'Web / creative developer', featured: true
   },
   {
-    number: '04',
-    title: 'Portfolio Card',
-    category: 'Personal Branding',
-    description: 'A compact portfolio identity card combining profile information, skills, social links and a dark visual system into a reusable presentation.',
-    problemSolved: 'Creators need a lightweight, high-density digital identity card that consolidates contacts, skills, and bio into a single shareable link.',
-    keyFeatures: [
-      'Glassmorphism aesthetic with high contrast typography',
-      'Quick copy and direct action social links',
-      'Integrated skill tags and interactive profile breakdown',
-      'Ultra-responsive viewport scaling'
-    ],
-    myContribution: 'Conceptualized and crafted the dark visual identity system, layout architecture, and responsive styling.',
-    tech: ['HTML5', 'CSS3', 'JavaScript'],
-    image: p4,
-    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/aryan/blob/main/portfoliocard.html',
-    accentNote: 'Marketplace template'
+    number: '04', title: 'CALCULATOR', category: 'Tools',
+    description: 'A scientific calculator published as a focused web tool.',
+    problemSolved: 'A compact browser-based space for scientific calculations.',
+    keyFeatures: ['Degree mode', 'Scientific functions', 'Parentheses and exponent operations', 'Keyboard-friendly calculator controls'],
+    myContribution: 'Built the calculator interface and interaction logic.',
+    tech: ['HTML', 'CSS', 'JavaScript'],
+    image: calculatorImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/calc/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/calc',
+    accentNote: 'Scientific tool', featured: true
   },
   {
-    number: '05',
-    title: 'Authentication System',
-    category: 'Cybersecurity',
-    description: 'A login, registration and forgot-password flow built as a standalone client, focused on clean validation states and a secure-feeling UX.',
-    problemSolved: 'User onboarding flows need explicit client-side validation to prevent bad payload submissions while keeping the user informed at every step.',
-    keyFeatures: [
-      'Sign-in, registration, and password reset multi-screen state flow',
-      'Client-side real-time form sanitization and error highlights',
-      'Password visibility toggles and active state indicators',
-      'Production-ready dark theme UI with keyboard accessibility'
-    ],
-    myContribution: 'Developed the full client interaction, UI state engine, validation rules, and responsive design.',
-    tech: ['HTML5', 'CSS3', 'JavaScript'],
-    image: p5,
+    number: '05', title: 'PORTFOLIO CARD', category: 'Personal Branding',
+    description: 'A compact developer portfolio card with a focused personal introduction and technology list.',
+    problemSolved: 'A concise, shareable presentation of Aryan Sharma’s developer profile.',
+    keyFeatures: ['Project availability status', 'Profile introduction', 'Technology list', 'Direct portfolio presentation'],
+    myContribution: 'Built the responsive portfolio card.',
+    tech: ['HTML', 'CSS', 'JavaScript', 'Node.js', 'Git'],
+    image: portfolioCardImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/portfolio-card/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/portfolio-card',
+    accentNote: 'Developer identity', featured: true
+  },
+  {
+    number: '06', title: 'PORTFOLIO V3', category: 'Creative Development',
+    description: 'A published portfolio iteration presenting Aryan Sharma as a full-stack developer and creative technologist.',
+    problemSolved: 'A further portfolio exploration for presenting modern web experiences and technical work.',
+    keyFeatures: ['About, skills, projects and experience sections', 'Creative technologist positioning', 'Responsive published experience'],
+    myContribution: 'Built and published this portfolio iteration.',
+    tech: ['React', 'TypeScript', 'Vite'],
+    image: portfolioV3Image,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/portfolio-v3/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/portfolio-v3',
+    accentNote: 'Portfolio iteration', featured: true
+  },
+  {
+    number: '07', title: 'NISSAN GTR CLONE', category: 'Automotive Web',
+    description: 'A public HTML repository exploring a Nissan GTR themed web experience.',
+    problemSolved: 'An automotive interface exploration published as a standalone web project.',
+    keyFeatures: ['Automotive visual direction', 'Standalone HTML project'],
+    myContribution: 'Built the published repository project.',
+    tech: ['HTML'], image: nissanImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/nissan-gtr-clone/ezgif-5e46aafc1c78ffbc-jpg',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/nissan-gtr-clone',
+    accentNote: 'Automotive study', featured: true
+  },
+  {
+    number: '08', title: 'ARYAN PORTFOLIO AUTH', category: 'Web Development',
+    description: 'A portfolio site with authentication screens, personal profile content and project presentation.',
+    problemSolved: 'A portfolio exploration combining personal presentation with login and registration entry points.',
+    keyFeatures: ['About, skills, projects and contact sections', 'Login and register screens'],
+    myContribution: 'Built the published portfolio and auth experience.',
+    tech: ['HTML', 'CSS', 'JavaScript'], image: portfolioAuthImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/aryan-portfolio-auth/auth-system/public/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/aryan-portfolio-auth',
+    accentNote: 'Portfolio / auth', featured: true
+  },
+  {
+    number: '09', title: 'PORTFOLIO', category: 'Personal Branding',
+    description: 'A published portfolio site for Aryan Sharma as a BCA student and web developer.',
+    problemSolved: 'A focused personal site for presenting profile information and web development work.',
+    keyFeatures: ['About, skills, projects and contact sections', 'Responsive portfolio presentation'],
+    myContribution: 'Built the published portfolio experience.',
+    tech: ['HTML', 'CSS', 'JavaScript'], image: portfolioClassicImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/portfolio/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/portfolio',
+    accentNote: 'Web developer portfolio', featured: true
+  },
+  {
+    number: '10', title: 'RESPONSIVE BUSINESS LANDING PAGE', category: 'Landing Page',
+    description: 'A responsive business landing page published as Northstar Studio.',
+    problemSolved: 'A business-facing presentation for services, portfolio work and pricing.',
+    keyFeatures: ['Services section', 'Portfolio section', 'Pricing section', 'Responsive layout'],
+    myContribution: 'Built the published landing page experience.',
+    tech: ['HTML', 'CSS', 'JavaScript'], image: businessLandingImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/Responsive-Business-Landing-Page/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/Responsive-Business-Landing-Page',
+    accentNote: 'Northstar Studio', featured: false
+  },
+  {
+    number: '11', title: 'CURRPENSE', category: 'Tools',
+    description: 'A published currency converter with amount, currency selection and conversion controls.',
+    problemSolved: 'A compact browser tool for converting between common currencies.',
+    keyFeatures: ['Currency selection', 'Conversion controls', 'Exchange-rate display'],
+    myContribution: 'Built the published currency converter.',
+    tech: ['JavaScript', 'HTML', 'CSS'], image: currpenseImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/currpense/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/currpense',
+    accentNote: 'Currency converter', featured: false
+  },
+  {
+    number: '12', title: 'AUTH CLIENT', category: 'Web Security',
+    description: 'A focused authentication client with login, registration and password recovery entry points.',
+    problemSolved: 'A concise interface for common account access flows.',
+    keyFeatures: ['Login form', 'Register flow entry point', 'Forgot-password entry point'],
+    myContribution: 'Built the published authentication client interface.',
+    tech: ['HTML', 'CSS'], image: authClientImage,
     demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/auth-client/',
     githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/auth-client',
-    accentNote: 'Security first'
+    accentNote: 'Login interface', featured: false
   },
   {
-    number: '06',
-    title: 'Automotive Experience',
-    category: 'Creative Development',
-    description: 'A cinematic automotive interface experiment using large imagery, dark contrast and interaction-driven composition to create a premium product feel.',
-    problemSolved: 'Standard automotive showcases suffer from static media that fails to convey modern vehicle performance and elegance.',
-    keyFeatures: [
-      'Large high-definition visual imagery with depth layers',
-      'Dynamic focal shifts and hover parallax effect',
-      'Interactive spec breakdown panels',
-      'Smooth keyframe and transition choreography'
-    ],
-    myContribution: 'Architected component structure in React and developed parallax mouse-tracking logic to evoke a luxury showroom feel.',
-    tech: ['React', 'CSS3', 'JavaScript'],
-    image: p6,
-    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/',
-    accentNote: 'Visual experiment'
-  },
-  {
-    number: '07',
-    title: 'Lumora',
-    category: 'Creative Development',
-    description: 'A luxury perfume concept built around cinematic storytelling, atmospheric visuals and scroll-driven transitions inspired by high-end product advertising.',
-    problemSolved: 'High-end products demand digital storytelling that elevates brand luxury beyond flat static images.',
-    keyFeatures: [
-      'Scroll-driven storytelling synced with GSAP ScrollTrigger',
-      'Layered visual depth and scaling typography',
-      'Atmospheric lighting and ambient backdrop gradients',
-      'Multi-device fluid layout responsiveness'
-    ],
-    myContribution: 'Built the full interactive experience in React, programming scroll choreography and visual state shifts.',
-    tech: ['React', 'GSAP', 'ScrollTrigger', 'Tailwind CSS'],
-    image: lumora,
-    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/',
-    accentNote: 'Scroll story'
+    number: '13', title: 'ARYAN', category: 'Web Development',
+    description: 'A public HTML repository with a deployed homepage.',
+    problemSolved: 'A standalone web project published for experimentation and presentation.',
+    keyFeatures: ['Published homepage', 'Standalone HTML project'],
+    myContribution: 'Built the published web project.',
+    tech: ['HTML'], image: aryanImage,
+    demoUrl: 'https://aryan-sable.vercel.app',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/aryan',
+    accentNote: 'Published web project', featured: false
   },
 ]
