@@ -68,11 +68,36 @@ function MagneticCTA() {
 
 export default function Contact() {
   const [copied, setCopied] = useState(false)
+  const [copyError, setCopyError] = useState(false)
+  const [formStatus, setFormStatus] = useState<'idle' | 'error' | 'sent'>('idle')
 
-  const copyEmail = () => {
-    navigator.clipboard.writeText('arayan11587kvrsodelhi@gmail.com')
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2500)
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText('arayan11587kvrsodelhi@gmail.com')
+      setCopied(true)
+      setCopyError(false)
+    } catch {
+      setCopyError(true)
+      setCopied(false)
+    }
+    setTimeout(() => { setCopied(false); setCopyError(false) }, 2500)
+  }
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const form = new FormData(event.currentTarget)
+    const name = String(form.get('name') || '').trim()
+    const email = String(form.get('email') || '').trim()
+    const message = String(form.get('message') || '').trim()
+    if (!name || !email || !message || !email.includes('@')) {
+      setFormStatus('error')
+      return
+    }
+    const subject = encodeURIComponent(`Portfolio inquiry from ${name}`)
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)
+    window.location.href = `mailto:arayan11587kvrsodelhi@gmail.com?subject=${subject}&body=${body}`
+    setFormStatus('sent')
+    event.currentTarget.reset()
   }
 
   return (
@@ -111,6 +136,37 @@ export default function Contact() {
           ))}
         </div>
 
+        <form onSubmit={handleSubmit} className="w-full max-w-5xl grid md:grid-cols-2 gap-4 text-left border-y border-border/60 py-8 md:py-10">
+          <div className="md:col-span-2 flex items-end justify-between gap-4">
+            <div>
+              <span className="text-eyebrow text-accent">DIRECT INQUIRY</span>
+              <h3 className="font-display text-2xl md:text-3xl mt-2">Tell me what you’re building.</h3>
+            </div>
+            <span className="text-eyebrow text-muted hidden sm:block">NO BACKEND / EMAIL DRAFT</span>
+          </div>
+          <label className="flex flex-col gap-2 text-eyebrow text-muted">
+            Name
+            <input name="name" required autoComplete="name" className="contact-input" placeholder="Your name" />
+          </label>
+          <label className="flex flex-col gap-2 text-eyebrow text-muted">
+            Email
+            <input name="email" required type="email" autoComplete="email" className="contact-input" placeholder="you@example.com" />
+          </label>
+          <label className="md:col-span-2 flex flex-col gap-2 text-eyebrow text-muted">
+            Message
+            <textarea name="message" required rows={4} className="contact-input resize-y" placeholder="A few lines about the project, role, or idea." />
+          </label>
+          <div className="md:col-span-2 flex flex-wrap items-center justify-between gap-4">
+            <p className={`text-sm ${formStatus === 'error' ? 'text-red-300' : 'text-muted'}`} aria-live="polite">
+              {formStatus === 'error' ? 'Add your name, a valid email, and a message.' : formStatus === 'sent' ? 'Your email draft is ready. Send it to complete the inquiry.' : 'I usually reply within a few working days.'}
+            </p>
+            <button type="submit" className="inline-flex items-center gap-2 bg-accent text-background px-5 py-3 rounded-full font-display text-sm hover:bg-white transition-colors" data-cursor="open">
+              <span>Open Email Draft</span>
+              <ArrowUpRight size={15} />
+            </button>
+          </div>
+        </form>
+
         {/* Main CTA Action */}
         <div className="flex flex-col sm:flex-row items-center gap-4 my-4">
           <MagneticCTA />
@@ -123,6 +179,11 @@ export default function Contact() {
               <>
                 <Check size={16} className="text-accent" />
                 <span className="text-accent">Email Copied!</span>
+              </>
+            ) : copyError ? (
+              <>
+                <Mail size={16} />
+                <span className="text-accent">Copy unavailable</span>
               </>
             ) : (
               <>

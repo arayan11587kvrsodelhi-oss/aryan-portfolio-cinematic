@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
 
@@ -14,6 +14,8 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('')
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const wasOpenRef = useRef(false)
 
   useEffect(() => {
     const onScroll = () => {
@@ -37,6 +39,22 @@ export default function Nav() {
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : ''
+    if (wasOpenRef.current && !open) menuButtonRef.current?.focus()
+    wasOpenRef.current = open
+    return () => { document.body.style.overflow = '' }
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [open])
 
   return (
     <>
@@ -99,8 +117,10 @@ export default function Nav() {
 
           {/* Mobile Menu Button */}
           <button
+            ref={menuButtonRef}
             className="md:hidden text-foreground p-2 rounded hover:bg-white/10 transition-colors"
             aria-label="Toggle navigation menu"
+            aria-controls="mobile-navigation"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
@@ -118,6 +138,9 @@ export default function Nav() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
             className="fixed inset-0 z-40 bg-background/98 backdrop-blur-xl flex flex-col justify-between px-8 py-24 md:hidden"
+            id="mobile-navigation"
+            role="dialog"
+            aria-label="Mobile navigation"
           >
             <div className="flex flex-col gap-6">
               <span className="text-eyebrow text-accent">NAVIGATION</span>
@@ -126,6 +149,7 @@ export default function Nav() {
                   key={l.href}
                   href={l.href}
                   onClick={() => setOpen(false)}
+                  aria-current={activeSection === l.href.substring(1) ? 'page' : undefined}
                   className="text-display font-display hover:text-accent transition-colors"
                 >
                   {l.label}

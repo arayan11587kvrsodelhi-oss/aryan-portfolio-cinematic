@@ -15,6 +15,12 @@ import Contact from './components/Contact'
 export default function App(){
  useLenis()
  const [progress,setProgress]=useState(0)
- useEffect(()=>{const onScroll=()=>{const h=document.documentElement.scrollHeight-innerHeight;setProgress(h>0?scrollY/h:0)};addEventListener('scroll',onScroll,{passive:true});onScroll();return()=>removeEventListener('scroll',onScroll)},[])
- return <><div className="scroll-progress" style={{transform:`scaleX(${progress})`}}/><div className="grain"/><div className="ambient ambient-a"/><div className="ambient ambient-b"/><Cursor/><SignatureMorph/><Nav/><main><Hero/><Intro/><Work/><About/><Skills/><Services/><Experience/><Contact/></main></>
+ useEffect(()=>{
+  let frame=0
+  const update=()=>{frame=0;const h=document.documentElement.scrollHeight-innerHeight;setProgress(h>0?scrollY/h:0)}
+  const onScroll=()=>{if(!frame)frame=requestAnimationFrame(update)}
+  addEventListener('scroll',onScroll,{passive:true});update()
+  return()=>{removeEventListener('scroll',onScroll);cancelAnimationFrame(frame)}
+ },[])
+ return <><a className="skip-link" href="#main-content">Skip to content</a><div className="scroll-progress" style={{transform:`scaleX(${progress})`}}/><div className="grain"/><div className="ambient ambient-a"/><div className="ambient ambient-b"/><Cursor/><SignatureMorph/><Nav/><main id="main-content"><Hero/><Intro/><Work/><About/><Skills/><Services/><Experience/><Contact/></main></>
 }

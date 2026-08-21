@@ -30,6 +30,8 @@ export default function Work() {
   const imageContainerRef = useRef<HTMLDivElement>(null)
   const inViewRef = useRef(false)
   const touchX = useRef<number | null>(null)
+  const modalCloseRef = useRef<HTMLButtonElement>(null)
+  const modalTriggerRef = useRef<HTMLButtonElement>(null)
 
   const [index, setIndex] = useState(0)
   const [dir, setDir] = useState(1)
@@ -83,14 +85,21 @@ export default function Work() {
     io.observe(el)
 
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && activeModalProject) { setActiveModalProject(null); modalTriggerRef.current?.focus(); return }
       if (!inViewRef.current || activeModalProject) return
       if (e.key === 'ArrowRight') next()
       if (e.key === 'ArrowLeft') prev()
-      if (e.key === 'Escape' && activeModalProject) setActiveModalProject(null)
     }
     window.addEventListener('keydown', onKey)
     return () => { io.disconnect(); window.removeEventListener('keydown', onKey) }
   }, [index, activeModalProject])
+
+  useEffect(() => {
+    if (!activeModalProject) return
+    document.body.style.overflow = 'hidden'
+    modalCloseRef.current?.focus()
+    return () => { document.body.style.overflow = '' }
+  }, [activeModalProject])
 
   // Mouse move 3D tilt effect on active image container
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -271,6 +280,7 @@ export default function Work() {
                   {/* Actions & Deep Dive CTA */}
                   <div className="md:col-span-4 lg:col-span-4 flex flex-wrap md:flex-col items-start md:items-end justify-between md:justify-end gap-4">
                     <button
+                      ref={modalTriggerRef}
                       onClick={() => setActiveModalProject(active)}
                       data-cursor="open"
                       className="inline-flex items-center gap-2 bg-accent/15 border border-accent text-accent hover:bg-accent hover:text-background transition-all px-5 py-3 rounded-full text-xs md:text-sm font-display font-medium shadow-[0_0_20px_rgba(53,224,224,0.2)]"
@@ -360,6 +370,9 @@ export default function Work() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-background/90 backdrop-blur-md overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="case-study-title"
             onClick={() => setActiveModalProject(null)}
           >
             <motion.div
@@ -379,6 +392,7 @@ export default function Work() {
                   <span className="text-eyebrow text-muted hidden sm:inline">{activeModalProject.category}</span>
                 </div>
                 <button
+                  ref={modalCloseRef}
                   onClick={() => setActiveModalProject(null)}
                   className="p-2 text-muted hover:text-foreground hover:bg-white/10 rounded-full transition-colors"
                   aria-label="Close modal"
@@ -392,7 +406,7 @@ export default function Work() {
                 {/* Hero Title & Image */}
                 <div className="grid md:grid-cols-12 gap-6 items-center">
                   <div className="md:col-span-7">
-                    <h2 className="font-display text-3xl md:text-5xl leading-tight">{activeModalProject.title}</h2>
+                    <h2 id="case-study-title" className="font-display text-3xl md:text-5xl leading-tight">{activeModalProject.title}</h2>
                     <p className="text-muted mt-3 leading-relaxed">{activeModalProject.description}</p>
                   </div>
                   <div className="md:col-span-5 h-48 md:h-56 rounded border border-border overflow-hidden relative">

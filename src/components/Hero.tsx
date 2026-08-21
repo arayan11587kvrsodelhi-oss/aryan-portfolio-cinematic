@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { ArrowDown, ArrowUpRight, Sparkles, Code2, ShieldCheck, ExternalLink } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, Sparkles, Code2, ShieldCheck } from 'lucide-react'
 import portrait from '../assets/photos/portrait.jpg'
 
 export default function Hero() {
@@ -122,18 +122,18 @@ export default function Hero() {
               data-cursor="open"
               className="inline-flex items-center gap-3 px-7 py-4 bg-accent text-background font-display font-medium text-sm md:text-base rounded-full hover:bg-white transition-all shadow-[0_0_30px_rgba(53,224,224,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)]"
             >
-              <span>Explore Selected Work</span>
+              <span>Explore Work</span>
               <ArrowDown size={16} />
             </a>
 
             <a
-              href="#contact"
+              href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Resume%20Request%20-%20Aryan%20Sharma"
               onMouseMove={handleMagnetic}
               onMouseLeave={handleMagneticLeave}
               data-cursor="open"
               className="inline-flex items-center gap-2 px-7 py-4 border border-border bg-surface/50 text-foreground font-display text-sm md:text-base rounded-full hover:border-accent hover:text-accent transition-all backdrop-blur-sm"
             >
-              <span>Get in Touch</span>
+              <span>View Resume</span>
               <ArrowUpRight size={16} />
             </a>
           </div>
