@@ -1,35 +1,94 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Code, Server, Database, Wrench, Shield, Terminal } from 'lucide-react'
+import {
+  Code,
+  Server,
+  Database,
+  Wrench,
+  Shield,
+  Layers,
+  Sparkles,
+  Zap
+} from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const CATEGORIES = [
+interface SkillGroup {
+  title: string
+  subtitle: string
+  icon: typeof Code
+  items: { name: string; tag?: string }[]
+}
+
+const CATEGORIES: SkillGroup[] = [
   {
-    title: 'Frontend Development',
+    title: 'Frontend & UI Engineering',
+    subtitle: 'High-performance interactive interfaces',
     icon: Code,
-    items: ['HTML5', 'CSS3', 'JavaScript (ES6+)', 'React.js', 'Tailwind CSS', 'Framer Motion'],
+    items: [
+      { name: 'React.js', tag: 'Core' },
+      { name: 'TypeScript', tag: 'Type-Safe' },
+      { name: 'JavaScript (ES6+)', tag: 'Modern' },
+      { name: 'HTML5', tag: 'Semantic' },
+      { name: 'CSS3 / Vanilla CSS', tag: 'Design' },
+      { name: 'Tailwind CSS', tag: 'Utility' },
+    ],
+  },
+  {
+    title: 'Motion & Interaction',
+    subtitle: 'Kinematic animations & gesture physics',
+    icon: Zap,
+    items: [
+      { name: 'Framer Motion', tag: 'Spring Physics' },
+      { name: 'GSAP / ScrollTrigger', tag: 'Choreography' },
+      { name: 'Lenis Smooth Scroll', tag: 'Momentum' },
+      { name: 'Canvas / SVG Animations', tag: 'Vector' },
+    ],
   },
   {
     title: 'Backend & APIs',
+    subtitle: 'Server runtimes & network communication',
     icon: Server,
-    items: ['Node.js', 'Express', 'PHP', 'REST APIs'],
+    items: [
+      { name: 'Node.js', tag: 'Runtime' },
+      { name: 'Express.js', tag: 'REST' },
+      { name: 'RESTful API Architecture', tag: 'Endpoints' },
+      { name: 'HTTP / Client State', tag: 'Async' },
+    ],
   },
   {
-    title: 'Database & Data',
+    title: 'Database & Data Systems',
+    subtitle: 'Relational data models & queries',
     icon: Database,
-    items: ['MySQL', 'SQL Architecture', 'Data Modeling'],
+    items: [
+      { name: 'MySQL', tag: 'Relational' },
+      { name: 'SQL Schema Architecture', tag: 'Structure' },
+      { name: 'Data Modeling', tag: 'Entities' },
+    ],
   },
   {
-    title: 'Tools & Workflow',
+    title: 'Tools, Workflow & Design',
+    subtitle: 'Developer tooling & prototyping',
     icon: Wrench,
-    items: ['Git & GitHub', 'VS Code', 'Vite', 'Postman'],
+    items: [
+      { name: 'Git & GitHub', tag: 'VCS' },
+      { name: 'Vite', tag: 'Bundler' },
+      { name: 'VS Code', tag: 'IDE' },
+      { name: 'Postman', tag: 'Testing' },
+      { name: 'Figma', tag: 'UI/UX' },
+    ],
   },
   {
-    title: 'Cybersecurity',
+    title: 'Web Application Security',
+    subtitle: 'Client security & safe workflows',
     icon: Shield,
-    items: ['Web Security', 'Authentication Flows', 'Network Security', 'Input Sanitization'],
+    items: [
+      { name: 'Authentication Architecture', tag: 'Tokens' },
+      { name: 'Client Input Sanitization', tag: 'Security' },
+      { name: 'Password Security UI', tag: 'Auth' },
+      { name: 'OWASP Best Practices', tag: 'Standards' },
+    ],
   },
 ]
 
@@ -41,12 +100,12 @@ export default function Skills() {
       gsap.utils.toArray<HTMLElement>('.skill-card').forEach((card, i) => {
         gsap.fromTo(
           card,
-          { opacity: 0, y: 28 },
+          { opacity: 0, y: 30 },
           {
             opacity: 1,
             y: 0,
             duration: 0.75,
-            delay: i * 0.08,
+            delay: (i % 3) * 0.08,
             ease: 'power3.out',
             scrollTrigger: { trigger: card, start: 'top 88%' },
           }
@@ -61,11 +120,14 @@ export default function Skills() {
       <div className="max-w-container mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
           <div>
-            <span className="text-eyebrow text-accent">TECHNICAL TOOLKIT / 04</span>
-            <h2 className="font-display text-display mt-3">Skills &amp; Technologies.</h2>
+            <span className="text-eyebrow text-accent flex items-center gap-2">
+              <Sparkles size={13} />
+              <span>TECHNICAL TOOLKIT / 05</span>
+            </span>
+            <h2 className="font-display text-display mt-2">Skills &amp; Technologies.</h2>
           </div>
           <p className="text-muted text-sm max-w-sm">
-            Core stack and foundational engineering tools applied across web apps, UI systems, and security experiments.
+            Core engineering stack, motion frameworks, backend services, and web security methodologies applied across production builds.
           </p>
         </div>
 
@@ -73,25 +135,37 @@ export default function Skills() {
           {CATEGORIES.map((c) => (
             <div
               key={c.title}
-              className="skill-card bg-surface/70 border border-border/80 p-6 rounded-sm hover:border-accent/40 transition-all duration-300 group"
+              className="skill-card bg-surface/80 border border-border p-6 rounded-md hover:border-accent/40 hover:shadow-xl hover:shadow-cyan-950/20 transition-all duration-300 group flex flex-col justify-between"
             >
-              <div className="flex items-center gap-3 mb-5">
-                <span className="p-2.5 rounded bg-accent/10 border border-accent/20 text-accent group-hover:bg-accent group-hover:text-background transition-all">
-                  <c.icon size={18} />
-                </span>
-                <h3 className="font-display text-lg text-foreground font-medium">{c.title}</h3>
-              </div>
+              <div>
+                <div className="flex items-center gap-3.5 mb-2">
+                  <span className="p-2.5 rounded bg-accent/10 border border-accent/20 text-accent group-hover:bg-accent group-hover:text-background transition-all duration-300 shadow-[0_0_12px_rgba(53,224,224,0.15)]">
+                    <c.icon size={18} />
+                  </span>
+                  <div>
+                    <h3 className="font-display text-lg text-white font-medium">{c.title}</h3>
+                    <p className="text-xs text-muted">{c.subtitle}</p>
+                  </div>
+                </div>
 
-              <ul className="flex flex-wrap gap-2">
-                {c.items.map((item) => (
-                  <li
-                    key={item}
-                    className="text-xs text-muted border border-border/70 bg-background/50 px-3 py-1.5 rounded-sm hover:border-accent/50 hover:text-accent transition-colors"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
+                <div className="h-px bg-border/60 my-4" />
+
+                <ul className="flex flex-wrap gap-2">
+                  {c.items.map((item) => (
+                    <li
+                      key={item.name}
+                      className="text-xs text-foreground/80 border border-border/80 bg-background/60 px-3 py-1.5 rounded hover:border-accent/50 hover:text-accent transition-colors flex items-center gap-1.5"
+                    >
+                      <span>{item.name}</span>
+                      {item.tag && (
+                        <span className="text-[0.6rem] font-mono text-muted bg-surface/80 px-1 py-0.2 rounded border border-border/40">
+                          {item.tag}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           ))}
         </div>

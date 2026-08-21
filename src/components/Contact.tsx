@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import {
   ArrowUpRight,
@@ -13,8 +13,16 @@ import {
   Sparkles,
   Briefcase,
   Users,
-  Code
+  Code,
+  ArrowUp,
+  Clock,
+  Send,
+  FileText
 } from 'lucide-react'
+
+interface ContactProps {
+  onOpenResume?: () => void
+}
 
 const LINKS = [
   { label: 'Email', icon: Mail, href: 'mailto:arayan11587kvrsodelhi@gmail.com', value: 'arayan11587kvrsodelhi@gmail.com' },
@@ -25,10 +33,10 @@ const LINKS = [
 ]
 
 const INTENTS = [
-  { icon: Code, title: 'Custom Projects', desc: 'Interactive websites, creative frontend builds, and dynamic tools.' },
-  { icon: Sparkles, title: 'Creative Collaboration', desc: 'Co-building bold ideas with designers, developers, and founders.' },
-  { icon: Briefcase, title: 'Opportunities', desc: 'Open for full-time roles, internships, and high-impact freelance work.' },
-  { icon: Users, title: 'Networking', desc: 'Connecting with fellow developers, mentors, and cybersecurity enthusiasts.' },
+  { icon: Code, title: 'Frontend & UI Engineering', desc: 'Building high-performance interactive web apps, design systems, and dynamic tools.' },
+  { icon: Sparkles, title: 'Creative Motion & Web', desc: 'Co-creating atmospheric web experiences with rich storytelling and physics animations.' },
+  { icon: Briefcase, title: 'Engineering Opportunities', desc: 'Available for full-time developer roles, internships, and high-impact freelance projects.' },
+  { icon: Users, title: 'Networking & Security', desc: 'Connecting with developers, designers, mentors, and cybersecurity enthusiasts.' },
 ]
 
 function MagneticCTA() {
@@ -54,11 +62,11 @@ function MagneticCTA() {
   return (
     <a
       ref={ref}
-      href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Portfolio%20Inquiry"
+      href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Portfolio%20Inquiry%20-%20Aryan%20Sharma"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       data-cursor="open"
-      className="magnetic group inline-flex items-center gap-3 rounded-full border border-accent/60 bg-accent/10 px-8 py-5 text-lg font-display text-accent hover:bg-accent hover:text-background hover:shadow-[0_0_60px_rgba(53,224,224,0.4)] transition-all duration-300"
+      className="magnetic group inline-flex items-center gap-3 rounded-full border border-accent/70 bg-accent/15 px-8 py-5 text-base sm:text-lg font-display text-accent hover:bg-accent hover:text-background hover:shadow-[0_0_50px_rgba(53,224,224,0.4)] transition-all duration-300 font-medium"
     >
       <span>Start a Conversation</span>
       <ArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" size={22} />
@@ -66,10 +74,28 @@ function MagneticCTA() {
   )
 }
 
-export default function Contact() {
+export default function Contact({ onOpenResume }: ContactProps) {
   const [copied, setCopied] = useState(false)
   const [copyError, setCopyError] = useState(false)
-  const [formStatus, setFormStatus] = useState<'idle' | 'error' | 'sent'>('idle')
+  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'error' | 'sent'>('idle')
+  const [delhiTime, setDelhiTime] = useState('')
+
+  // Live IST Clock
+  useEffect(() => {
+    const updateTime = () => {
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      }
+      setDelhiTime(new Intl.DateTimeFormat('en-US', options).format(new Date()))
+    }
+    updateTime()
+    const timer = setInterval(updateTime, 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   const copyEmail = async () => {
     try {
@@ -80,24 +106,37 @@ export default function Contact() {
       setCopyError(true)
       setCopied(false)
     }
-    setTimeout(() => { setCopied(false); setCopyError(false) }, 2500)
+    setTimeout(() => {
+      setCopied(false)
+      setCopyError(false)
+    }, 2800)
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setFormStatus('submitting')
+
     const form = new FormData(event.currentTarget)
     const name = String(form.get('name') || '').trim()
     const email = String(form.get('email') || '').trim()
     const message = String(form.get('message') || '').trim()
+
     if (!name || !email || !message || !email.includes('@')) {
       setFormStatus('error')
       return
     }
-    const subject = encodeURIComponent(`Portfolio inquiry from ${name}`)
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)
-    window.location.href = `mailto:arayan11587kvrsodelhi@gmail.com?subject=${subject}&body=${body}`
-    setFormStatus('sent')
-    event.currentTarget.reset()
+
+    // Pre-fill email client draft
+    setTimeout(() => {
+      const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`)
+      const body = encodeURIComponent(`Hi Aryan,\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)
+      window.location.href = `mailto:arayan11587kvrsodelhi@gmail.com?subject=${subject}&body=${body}`
+      setFormStatus('sent')
+    }, 400)
+  }
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -105,21 +144,21 @@ export default function Contact() {
       <div className="contact-glow pointer-events-none" />
 
       <div className="max-w-container mx-auto flex flex-col items-center text-center relative z-10">
-        {/* Eyebrow badge */}
+        {/* Eyebrow Badge */}
         <div className="inline-flex items-center gap-2 text-eyebrow text-accent border border-accent/30 bg-accent/5 px-3.5 py-1.5 rounded-full mb-6">
           <MessageSquare size={13} />
           <span>OPEN FOR COLLABORATION &amp; ROLES</span>
         </div>
 
         {/* Display Title */}
-        <h2 className="font-display text-display max-w-4xl tracking-tight leading-[0.95]">
+        <h2 className="font-display text-display max-w-4xl tracking-tight leading-[0.95] text-white">
           LET'S BUILD SOMETHING <br />
           <span className="text-accent">EXTRAORDINARY.</span>
         </h2>
 
-        {/* Subtitle statement */}
+        {/* Subtitle Statement */}
         <p className="text-muted text-base md:text-xl max-w-2xl mt-6 leading-relaxed">
-          Whether you have a groundbreaking project in mind, an open position on your engineering team, or simply want to connect — my inbox is always open.
+          Whether you have a breakthrough project in mind, an engineering role on your team, or want to connect — my inbox is always open.
         </p>
 
         {/* Intent Cards */}
@@ -127,75 +166,138 @@ export default function Contact() {
           {INTENTS.map((item) => (
             <div
               key={item.title}
-              className="bg-surface/60 border border-border/80 p-5 rounded hover:border-accent/50 transition-colors group"
+              className="bg-surface/80 border border-border p-5 rounded-md hover:border-accent/50 hover:shadow-lg hover:shadow-cyan-950/20 transition-all duration-300 group"
             >
               <item.icon size={20} className="text-accent mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="font-display text-base text-foreground mb-1">{item.title}</h3>
+              <h3 className="font-display text-base text-white font-medium mb-1">{item.title}</h3>
               <p className="text-muted text-xs leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="w-full max-w-5xl grid md:grid-cols-2 gap-4 text-left border-y border-border/60 py-8 md:py-10">
-          <div className="md:col-span-2 flex items-end justify-between gap-4">
+        {/* Direct Contact Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-4xl grid md:grid-cols-2 gap-4 text-left border-y border-border/80 py-8 md:py-10 bg-surface/40 p-6 md:p-8 rounded-md my-4 backdrop-blur-sm"
+        >
+          <div className="md:col-span-2 flex flex-wrap items-end justify-between gap-4 mb-2">
             <div>
               <span className="text-eyebrow text-accent">DIRECT INQUIRY</span>
-              <h3 className="font-display text-2xl md:text-3xl mt-2">Tell me what you’re building.</h3>
+              <h3 className="font-display text-2xl md:text-3xl text-white font-medium mt-1">
+                Tell me what you’re building.
+              </h3>
             </div>
-            <span className="text-eyebrow text-muted hidden sm:block">NO BACKEND / EMAIL DRAFT</span>
+            <span className="text-eyebrow text-muted text-xs font-mono">
+              PRE-FILLED EMAIL DRAFT
+            </span>
           </div>
+
           <label className="flex flex-col gap-2 text-eyebrow text-muted">
-            Name
-            <input name="name" required autoComplete="name" className="contact-input" placeholder="Your name" />
+            Your Name
+            <input
+              name="name"
+              required
+              autoComplete="name"
+              className="contact-input"
+              placeholder="e.g. Alex Mercer"
+            />
           </label>
+
           <label className="flex flex-col gap-2 text-eyebrow text-muted">
-            Email
-            <input name="email" required type="email" autoComplete="email" className="contact-input" placeholder="you@example.com" />
+            Email Address
+            <input
+              name="email"
+              required
+              type="email"
+              autoComplete="email"
+              className="contact-input"
+              placeholder="alex@company.com"
+            />
           </label>
+
           <label className="md:col-span-2 flex flex-col gap-2 text-eyebrow text-muted">
             Message
-            <textarea name="message" required rows={4} className="contact-input resize-y" placeholder="A few lines about the project, role, or idea." />
+            <textarea
+              name="message"
+              required
+              rows={4}
+              className="contact-input resize-y"
+              placeholder="Tell me about the project, opportunity, timeline, or scope."
+            />
           </label>
-          <div className="md:col-span-2 flex flex-wrap items-center justify-between gap-4">
-            <p className={`text-sm ${formStatus === 'error' ? 'text-red-300' : 'text-muted'}`} aria-live="polite">
-              {formStatus === 'error' ? 'Add your name, a valid email, and a message.' : formStatus === 'sent' ? 'Your email draft is ready. Send it to complete the inquiry.' : 'I usually reply within a few working days.'}
+
+          <div className="md:col-span-2 flex flex-wrap items-center justify-between gap-4 pt-2">
+            <p
+              className={`text-xs ${
+                formStatus === 'error'
+                  ? 'text-red-400 font-medium'
+                  : formStatus === 'sent'
+                  ? 'text-accent font-medium'
+                  : 'text-muted'
+              }`}
+              aria-live="polite"
+            >
+              {formStatus === 'error'
+                ? 'Please provide your name, a valid email, and a message.'
+                : formStatus === 'sent'
+                ? '✓ Email draft generated! Complete and send via your email client.'
+                : formStatus === 'submitting'
+                ? 'Preparing your email draft...'
+                : 'I typically respond within 24–48 hours.'}
             </p>
-            <button type="submit" className="inline-flex items-center gap-2 bg-accent text-background px-5 py-3 rounded-full font-display text-sm hover:bg-white transition-colors" data-cursor="open">
-              <span>Open Email Draft</span>
-              <ArrowUpRight size={15} />
+
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 bg-accent text-background px-6 py-3 rounded-full font-display font-medium text-sm hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)]"
+              data-cursor="open"
+            >
+              <span>Draft Email Message</span>
+              <Send size={14} />
             </button>
           </div>
         </form>
 
-        {/* Main CTA Action */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 my-4">
+        {/* Primary Action Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-4 my-6">
           <MagneticCTA />
+
           <button
             onClick={copyEmail}
             data-cursor="open"
-            className="inline-flex items-center gap-2 px-6 py-4 border border-border bg-surface text-muted hover:text-accent hover:border-accent/60 rounded-full text-sm font-display transition-colors"
+            className="inline-flex items-center gap-2 px-7 py-5 border border-border bg-surface text-muted hover:text-accent hover:border-accent/60 rounded-full text-base font-display transition-all"
           >
             {copied ? (
               <>
-                <Check size={16} className="text-accent" />
-                <span className="text-accent">Email Copied!</span>
+                <Check size={18} className="text-accent" />
+                <span className="text-accent font-medium">Email Copied to Clipboard!</span>
               </>
             ) : copyError ? (
               <>
-                <Mail size={16} />
-                <span className="text-accent">Copy unavailable</span>
+                <Mail size={18} />
+                <span className="text-accent">arayan11587kvrsodelhi@gmail.com</span>
               </>
             ) : (
               <>
-                <Copy size={16} />
+                <Copy size={18} />
                 <span>Copy Email Address</span>
               </>
             )}
           </button>
+
+          {onOpenResume && (
+            <button
+              onClick={onOpenResume}
+              data-cursor="open"
+              className="inline-flex items-center gap-2 px-6 py-5 border border-border bg-surface text-muted hover:text-foreground hover:border-accent/60 rounded-full text-base font-display transition-all"
+            >
+              <FileText size={18} className="text-accent" />
+              <span>Preview Resume</span>
+            </button>
+          )}
         </div>
 
         {/* Direct Contact Links */}
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 mt-10 text-eyebrow border-t border-border/40 pt-8 w-full max-w-3xl">
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 mt-8 text-eyebrow border-t border-border/40 pt-8 w-full max-w-3xl">
           {LINKS.map((l) => (
             <a
               key={l.label}
@@ -211,10 +313,24 @@ export default function Contact() {
           ))}
         </div>
 
-        {/* Footer info */}
-        <div className="mt-14 pt-8 border-t border-border/20 w-full flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
-          <span>© {new Date().getFullYear()} Aryan Sharma. All rights reserved.</span>
-          <span>Designed &amp; Developed with React, GSAP, Tailwind &amp; Lenis</span>
+        {/* Footer Meta Bar */}
+        <div className="mt-14 pt-8 border-t border-border/30 w-full flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
+          <div className="flex items-center gap-2 font-mono text-[0.72rem]">
+            <Clock size={13} className="text-accent" />
+            <span>NEW DELHI (IST):</span>
+            <span className="text-foreground font-medium">{delhiTime || '5:30 PM'}</span>
+          </div>
+
+          <span>© {new Date().getFullYear()} Aryan Sharma. Engineered with React, Vite, Framer Motion &amp; Lenis.</span>
+
+          <button
+            onClick={scrollToTop}
+            className="inline-flex items-center gap-1.5 text-muted hover:text-accent transition-colors font-display"
+            aria-label="Scroll back to top"
+          >
+            <span>Back to top</span>
+            <ArrowUp size={13} />
+          </button>
         </div>
       </div>
     </section>

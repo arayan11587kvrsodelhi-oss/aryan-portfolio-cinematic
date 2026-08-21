@@ -15,14 +15,23 @@ import {
   X,
   Maximize2,
   ExternalLink,
-  Layers
+  Layers,
+  Sparkles,
+  LayoutGrid,
+  Film,
+  Code2,
+  CreditCard,
+  Coffee
 } from 'lucide-react'
 import { projects, Project } from '../data/projects'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const AUTOPLAY_MS = 7500
+const AUTOPLAY_MS = 8000
 const EASE = [0.16, 1, 0.3, 1] as const
+
+type ViewMode = 'carousel' | 'grid'
+type FilterCategory = 'ALL' | 'FLAGSHIP' | 'FINTECH' | 'CREATIVE' | 'SECURITY' | 'TOOLS'
 
 export default function Work() {
   const rootRef = useRef<HTMLElement>(null)
@@ -36,12 +45,23 @@ export default function Work() {
   const [index, setIndex] = useState(0)
   const [dir, setDir] = useState(1)
   const [paused, setPaused] = useState(false)
-  const [showAll, setShowAll] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>('carousel')
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>('ALL')
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null)
 
-  const visibleProjects = showAll ? projects : projects.filter((project) => project.featured)
-  const total = visibleProjects.length
-  const active = visibleProjects[index]
+  // Filtered project lists
+  const carouselProjects = projects.filter((p) => p.featured)
+  const total = carouselProjects.length
+  const active = carouselProjects[index] || carouselProjects[0]
+
+  const filteredGridProjects = projects.filter((p) => {
+    if (activeFilter === 'FLAGSHIP') return p.featured && (p.title === 'VELORA' || p.title === 'AMBER HOUR')
+    if (activeFilter === 'FINTECH') return p.category.toLowerCase().includes('fintech')
+    if (activeFilter === 'CREATIVE') return p.category.toLowerCase().includes('creative') || p.category.toLowerCase().includes('automotive')
+    if (activeFilter === 'SECURITY') return p.category.toLowerCase().includes('security')
+    if (activeFilter === 'TOOLS') return p.category.toLowerCase().includes('tool') || p.category.toLowerCase().includes('landing')
+    return true
+  })
 
   const goTo = (i: number, direction: number) => {
     setDir(direction)
@@ -50,55 +70,90 @@ export default function Work() {
   const next = () => goTo(index + 1, 1)
   const prev = () => goTo(index - 1, -1)
 
-  // Section header + stage entrance
+  // Section entrance animation
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.work-heading',
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: rootRef.current, start: 'top 80%' } }
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.85,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: rootRef.current, start: 'top 80%' },
+        }
       )
       gsap.fromTo(
         '.work-stage-wrap',
-        { y: 60, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, delay: 0.1, ease: 'power3.out', scrollTrigger: { trigger: rootRef.current, start: 'top 72%' } }
+        { y: 45, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.95,
+          delay: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: rootRef.current, start: 'top 72%' },
+        }
       )
       gsap.fromTo(
         '.work-thumb',
-        { y: 24, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.05, duration: 0.6, ease: 'power3.out', scrollTrigger: { trigger: '.work-thumbs', start: 'top 92%' } }
+        { y: 20, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.04,
+          duration: 0.6,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '.work-thumbs', start: 'top 92%' },
+        }
       )
     }, rootRef)
     return () => ctx.revert()
   }, [])
 
-  // Respect reduced-motion
+  // Reduced motion preference
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(true)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setPaused(true)
+    }
   }, [])
 
-  // In-view + keyboard navigation
+  // Keyboard navigation
   useEffect(() => {
     const el = stageRef.current
     if (!el) return
-    const io = new IntersectionObserver(([e]) => { inViewRef.current = e.isIntersecting }, { threshold: 0.3 })
+    const io = new IntersectionObserver(([entry]) => {
+      inViewRef.current = entry.isIntersecting
+    }, { threshold: 0.25 })
     io.observe(el)
 
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && activeModalProject) { setActiveModalProject(null); modalTriggerRef.current?.focus(); return }
-      if (!inViewRef.current || activeModalProject) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && activeModalProject) {
+        setActiveModalProject(null)
+        modalTriggerRef.current?.focus()
+        return
+      }
+      if (!inViewRef.current || activeModalProject || viewMode !== 'carousel') return
       if (e.key === 'ArrowRight') next()
       if (e.key === 'ArrowLeft') prev()
     }
-    window.addEventListener('keydown', onKey)
-    return () => { io.disconnect(); window.removeEventListener('keydown', onKey) }
-  }, [index, activeModalProject])
 
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      io.disconnect()
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [index, activeModalProject, viewMode])
+
+  // Body scroll lock on modal open
   useEffect(() => {
     if (!activeModalProject) return
     document.body.style.overflow = 'hidden'
     modalCloseRef.current?.focus()
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [activeModalProject])
 
   // Mouse move 3D tilt effect on active image container
@@ -111,8 +166,8 @@ export default function Work() {
     const y = e.clientY - rect.top
     const centerX = rect.width / 2
     const centerY = rect.height / 2
-    const rotateX = ((y - centerY) / centerY) * -4
-    const rotateY = ((x - centerX) / centerX) * 4
+    const rotateX = ((y - centerY) / centerY) * -3.5
+    const rotateY = ((x - centerX) / centerX) * 3.5
 
     gsap.to(el, {
       rotateX,
@@ -120,7 +175,7 @@ export default function Work() {
       duration: 0.5,
       ease: 'power2.out',
       transformPerspective: 1000,
-      overwrite: 'auto'
+      overwrite: 'auto',
     })
   }
 
@@ -132,233 +187,400 @@ export default function Work() {
       rotateY: 0,
       duration: 0.6,
       ease: 'power2.out',
-      overwrite: 'auto'
+      overwrite: 'auto',
     })
   }
 
   return (
     <section id="work" ref={rootRef} className="px-6 md:px-10 py-[var(--spacing-section)] border-t border-border">
       <div className="max-w-container mx-auto">
-        {/* Section Heading */}
-        <div className="work-heading flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 md:mb-14">
+        {/* Section Heading & View Switcher */}
+        <div className="work-heading flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-12">
           <div>
-            <span className="text-eyebrow text-accent">CASE STUDIES / 02</span>
-            <h2 className="font-display text-display mt-3">Selected Projects.</h2>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-eyebrow hidden sm:inline text-muted">
-              {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')} PROJECTS
+            <span className="text-eyebrow text-accent flex items-center gap-2">
+              <Sparkles size={13} />
+              <span>FEATURED WORK / 02</span>
             </span>
-            <span className="text-eyebrow text-muted hidden md:inline">DRAG · CLICK · ← →</span>
+            <h2 className="font-display text-display mt-2">Selected Projects.</h2>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {/* View Mode Toggle */}
+            <div className="flex items-center p-1 rounded-full border border-border bg-surface/80 backdrop-blur">
+              <button
+                onClick={() => setViewMode('carousel')}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-display transition-all ${
+                  viewMode === 'carousel'
+                    ? 'bg-accent text-background font-medium shadow-[0_0_12px_rgba(53,224,224,0.3)]'
+                    : 'text-muted hover:text-foreground'
+                }`}
+                aria-label="Cinematic stage view"
+              >
+                <Film size={13} />
+                <span>Cinematic Stage</span>
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-display transition-all ${
+                  viewMode === 'grid'
+                    ? 'bg-accent text-background font-medium shadow-[0_0_12px_rgba(53,224,224,0.3)]'
+                    : 'text-muted hover:text-foreground'
+                }`}
+                aria-label="Grid catalog view"
+              >
+                <LayoutGrid size={13} />
+                <span>All Projects ({projects.length})</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Stage Wrapper */}
-        <div className="work-stage-wrap">
-          <div
-            ref={stageRef}
-            className="work-stage relative w-full overflow-hidden border border-border bg-surface rounded-sm"
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-            onTouchStart={(e) => { touchX.current = e.touches[0].clientX }}
-            onTouchEnd={(e) => {
-              if (touchX.current == null) return
-              const dx = e.changedTouches[0].clientX - touchX.current
-              if (Math.abs(dx) > 48) (dx < 0 ? next() : prev())
-              touchX.current = null
-            }}
-          >
-            {/* Top Progress Tabs */}
-            <div className="absolute top-0 left-0 right-0 z-30 flex gap-1.5 md:gap-2 p-3 md:p-6 bg-gradient-to-b from-background/90 via-background/40 to-transparent backdrop-blur-[2px]">
-              {visibleProjects.map((p, i) => (
+        {/* View Mode 1: Cinematic Carousel Stage */}
+        {viewMode === 'carousel' && (
+          <div className="work-stage-wrap">
+            <div
+              ref={stageRef}
+              className="work-stage relative w-full overflow-hidden border border-border bg-surface rounded-md"
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+              onTouchStart={(e) => {
+                touchX.current = e.touches[0].clientX
+              }}
+              onTouchEnd={(e) => {
+                if (touchX.current == null) return
+                const dx = e.changedTouches[0].clientX - touchX.current
+                if (Math.abs(dx) > 45) {
+                  dx < 0 ? next() : prev()
+                }
+                touchX.current = null
+              }}
+            >
+              {/* Top Progress Tab Rail */}
+              <div className="absolute top-0 left-0 right-0 z-30 flex gap-1.5 md:gap-2.5 p-4 md:p-6 bg-gradient-to-b from-background/95 via-background/60 to-transparent backdrop-blur-[3px]">
+                {carouselProjects.map((p, i) => (
+                  <button
+                    key={p.number}
+                    onClick={() => goTo(i, i > index ? 1 : -1)}
+                    className="work-tab group"
+                    aria-label={`Go to project ${p.number}: ${p.title}`}
+                    data-cursor="open"
+                  >
+                    <span className="work-tab-track">
+                      {i === index && (
+                        <span
+                          key={`fill-${index}`}
+                          className="work-tab-fill"
+                          style={{
+                            animationDuration: `${AUTOPLAY_MS}ms`,
+                            animationPlayState: paused ? 'paused' : 'running',
+                          }}
+                          onAnimationEnd={() => !paused && next()}
+                        />
+                      )}
+                      {i < index && <span className="work-tab-fill work-tab-fill--done" />}
+                    </span>
+                    <div className="flex items-center justify-between">
+                      <span className={`work-tab-label ${i === index ? 'text-accent font-medium' : ''}`}>
+                        {p.number} · {p.title}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+                <button
+                  onClick={() => setPaused((v) => !v)}
+                  className="work-pause"
+                  aria-label={paused ? 'Play autoplay' : 'Pause autoplay'}
+                  data-cursor="open"
+                >
+                  {paused ? <Play size={13} /> : <Pause size={13} />}
+                </button>
+              </div>
+
+              {/* Showcase Image with 3D Parallax Tilt */}
+              <div
+                ref={imageContainerRef}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                className="absolute inset-0 transition-transform duration-300 ease-out"
+              >
+                <AnimatePresence mode="wait" custom={dir}>
+                  <motion.div
+                    key={active.number}
+                    className="absolute inset-0"
+                    custom={dir}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.8, ease: EASE }}
+                  >
+                    <img
+                      src={active.image}
+                      alt={`${active.title} project showcase`}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover"
+                      data-cursor="view"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/65 to-background/25" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/40 to-transparent" />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Content Overlay */}
+              <div className="relative z-20 flex flex-col justify-end h-full p-6 sm:p-8 md:p-12 pointer-events-none">
+                <AnimatePresence mode="wait" custom={dir}>
+                  <motion.div
+                    key={active.number}
+                    custom={dir}
+                    initial={{ y: 24, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -16, opacity: 0 }}
+                    transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
+                    className="grid md:grid-cols-12 gap-6 items-end pointer-events-auto"
+                  >
+                    <div className="md:col-span-8 lg:col-span-8">
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <span className="text-eyebrow text-accent border border-accent/40 bg-background/80 backdrop-blur px-3 py-1 rounded">
+                          {active.category}
+                        </span>
+                        {active.badge && (
+                          <span className="text-eyebrow text-white border border-border bg-surface/80 backdrop-blur px-3 py-1 rounded">
+                            {active.badge}
+                          </span>
+                        )}
+                        <span className="text-eyebrow text-muted-light bg-surface/60 backdrop-blur border border-border px-3 py-1 rounded hidden sm:inline">
+                          {active.accentNote}
+                        </span>
+                      </div>
+
+                      <p className="text-eyebrow text-white/50 mb-1 font-mono">CASE STUDY {active.number}</p>
+                      <h3 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium leading-[1.0] tracking-tight text-white">
+                        {active.title}
+                      </h3>
+
+                      <p className="text-accent text-sm md:text-base font-display mt-1">
+                        {active.tagline}
+                      </p>
+
+                      {/* Problem Solved Summary */}
+                      <p className="mt-3 text-muted text-sm md:text-base leading-relaxed max-w-2xl line-clamp-2 md:line-clamp-3">
+                        {active.description}
+                      </p>
+
+                      {/* Tech Stack Chips */}
+                      <div className="flex flex-wrap gap-2 mt-4">
+                        {active.tech.map((t) => (
+                          <span
+                            key={t}
+                            className="text-eyebrow text-[0.65rem] border border-border/80 bg-background/70 backdrop-blur text-white/90 px-2.5 py-1 rounded"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Actions & Deep Dive */}
+                    <div className="md:col-span-4 lg:col-span-4 flex flex-wrap md:flex-col items-start md:items-end justify-between md:justify-end gap-3.5">
+                      <button
+                        ref={modalTriggerRef}
+                        onClick={() => setActiveModalProject(active)}
+                        data-cursor="open"
+                        className="inline-flex items-center gap-2 bg-accent/20 border border-accent text-accent hover:bg-accent hover:text-background transition-all px-5 py-3 rounded-full text-xs md:text-sm font-display font-medium shadow-[0_0_20px_rgba(53,224,224,0.25)]"
+                      >
+                        <Maximize2 size={15} />
+                        <span>Explore Full Case Study</span>
+                      </button>
+
+                      <div className="flex items-center gap-4 text-xs sm:text-sm pt-1">
+                        {active.demoUrl && (
+                          <a
+                            href={active.demoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-cursor="open"
+                            className="inline-flex items-center gap-1.5 text-accent hover:text-white transition-colors font-medium"
+                          >
+                            <span>Live Demo</span>
+                            <ArrowUpRight size={14} />
+                          </a>
+                        )}
+                        {active.githubUrl && (
+                          <a
+                            href={active.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-cursor="open"
+                            className="inline-flex items-center gap-1.5 text-muted hover:text-foreground transition-colors font-medium"
+                          >
+                            <Github size={14} />
+                            <span>Source Code</span>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Nav Arrows */}
+              <button
+                onClick={prev}
+                className="work-arrow work-arrow--left"
+                aria-label="Previous project"
+                data-cursor="drag"
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <button
+                onClick={next}
+                className="work-arrow work-arrow--right"
+                aria-label="Next project"
+                data-cursor="drag"
+              >
+                <ArrowRight size={18} />
+              </button>
+            </div>
+
+            {/* Thumbnail Rail */}
+            <div className="work-thumbs mt-5 flex gap-3 overflow-x-auto pb-2">
+              {carouselProjects.map((p, i) => (
                 <button
                   key={p.number}
                   onClick={() => goTo(i, i > index ? 1 : -1)}
-                  className="work-tab"
-                  aria-label={`Go to ${p.title}`}
-                  data-cursor="open"
+                  className={`work-thumb ${i === index ? 'is-active' : ''}`}
+                  data-cursor="view"
+                  aria-label={`View ${p.title}`}
                 >
-                  <span className="work-tab-track">
-                    {i === index && (
-                      <span
-                        key={`fill-${index}`}
-                        className="work-tab-fill"
-                        style={{ animationDuration: `${AUTOPLAY_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }}
-                        onAnimationEnd={() => !paused && next()}
-                      />
-                    )}
-                    {i < index && <span className="work-tab-fill work-tab-fill--done" />}
+                  <img src={p.image} alt={p.title} loading="lazy" decoding="async" />
+                  <span className="work-thumb-label">
+                    {p.number} — {p.title}
                   </span>
-                  <span className={`work-tab-label ${i === index ? 'text-accent font-medium' : ''}`}>{p.number}</span>
                 </button>
               ))}
-              <button
-                onClick={() => setPaused((v) => !v)}
-                className="work-pause"
-                aria-label={paused ? 'Play autoplay' : 'Pause autoplay'}
-                data-cursor="open"
-              >
-                {paused ? <Play size={12} /> : <Pause size={12} />}
-              </button>
+            </div>
+          </div>
+        )}
+
+        {/* View Mode 2: Full Catalog Grid View */}
+        {viewMode === 'grid' && (
+          <div className="space-y-6">
+            {/* Category Filter Pills */}
+            <div className="flex flex-wrap items-center gap-2 pb-2">
+              {(['ALL', 'FLAGSHIP', 'FINTECH', 'CREATIVE', 'SECURITY', 'TOOLS'] as FilterCategory[]).map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveFilter(cat)}
+                  className={`text-eyebrow text-xs px-4 py-2 rounded-full border transition-all ${
+                    activeFilter === cat
+                      ? 'border-accent bg-accent text-background font-medium shadow-[0_0_12px_rgba(53,224,224,0.3)]'
+                      : 'border-border bg-surface/70 text-muted hover:border-accent/40 hover:text-foreground'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
 
-            {/* Stage Background Showcase Image with Tilt */}
-            <div
-              ref={imageContainerRef}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              id="work-morph-target"
-              className="absolute inset-0 transition-transform duration-300 ease-out"
-            >
-              <AnimatePresence mode="wait" custom={dir}>
-                <motion.div
-                  key={active.number}
-                  className="absolute inset-0"
-                  custom={dir}
-                  initial={{ opacity: 0, scale: 1.06 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.85, ease: EASE }}
+            {/* Grid of Projects */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredGridProjects.map((p) => (
+                <div
+                  key={p.number}
+                  className="bg-surface border border-border hover:border-accent/50 rounded-md overflow-hidden flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-950/20"
                 >
-                  <img
-                    src={active.image}
-                    alt={`${active.title} project preview`}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover"
-                    data-cursor="view"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/20 to-transparent" />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Case Study Content Overlay */}
-            <div className="relative z-20 flex flex-col justify-end h-full p-6 md:p-10 lg:p-12 pointer-events-none">
-              <AnimatePresence mode="wait" custom={dir}>
-                <motion.div
-                  key={active.number}
-                  custom={dir}
-                  initial={{ y: 24, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -16, opacity: 0 }}
-                  transition={{ duration: 0.55, ease: EASE, delay: 0.1 }}
-                  className="grid md:grid-cols-12 gap-6 items-end pointer-events-auto"
-                >
-                  <div className="md:col-span-8 lg:col-span-8">
-                    <div className="flex flex-wrap items-center gap-2 mb-3">
-                      <span className="text-eyebrow text-accent border border-accent/40 bg-background/80 backdrop-blur px-3 py-1">
-                        {active.category}
-                      </span>
-                      <span className="text-eyebrow text-white/80 bg-surface/80 backdrop-blur border border-border px-3 py-1">
-                        {active.accentNote}
-                      </span>
-                    </div>
-
-                    <p className="text-eyebrow text-white/50 mb-1">CASE STUDY / {active.number}</p>
-                    <h3 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.02] tracking-tight text-white">
-                      {active.title}
-                    </h3>
-
-                    {/* Problem Solved Summary */}
-                    <div className="mt-3 text-muted text-sm md:text-base leading-relaxed max-w-xl line-clamp-2 md:line-clamp-3">
-                      <span className="text-white/90 font-medium">Problem Solved: </span>
-                      {active.problemSolved}
-                    </div>
-
-                    {/* Tech Badges */}
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {active.tech.map((t) => (
-                        <span key={t} className="text-eyebrow border border-border/80 bg-background/60 backdrop-blur text-white/80 px-2.5 py-1">
-                          {t}
+                  <div>
+                    {/* Project Image */}
+                    <div
+                      className="relative h-48 sm:h-52 overflow-hidden cursor-pointer"
+                      onClick={() => setActiveModalProject(p)}
+                      data-cursor="view"
+                    >
+                      <img
+                        src={p.image}
+                        alt={p.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
+                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+                        <span className="text-eyebrow text-accent border border-accent/30 bg-background/80 backdrop-blur px-2.5 py-1 rounded text-[0.62rem]">
+                          {p.category}
                         </span>
-                      ))}
+                        <span className="text-eyebrow text-muted bg-background/80 backdrop-blur px-2 py-0.5 rounded text-[0.62rem] font-mono">
+                          {p.number}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-5">
+                      <h3
+                        onClick={() => setActiveModalProject(p)}
+                        className="font-display text-xl font-medium text-white hover:text-accent transition-colors cursor-pointer"
+                      >
+                        {p.title}
+                      </h3>
+                      <p className="text-muted text-xs leading-relaxed mt-2 line-clamp-2">
+                        {p.description}
+                      </p>
+
+                      {/* Tech Chips */}
+                      <div className="flex flex-wrap gap-1.5 mt-4">
+                        {p.tech.slice(0, 4).map((t) => (
+                          <span
+                            key={t}
+                            className="text-[0.62rem] font-mono text-muted border border-border/80 bg-background/60 px-2 py-0.5 rounded"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Actions & Deep Dive CTA */}
-                  <div className="md:col-span-4 lg:col-span-4 flex flex-wrap md:flex-col items-start md:items-end justify-between md:justify-end gap-4">
+                  {/* Card Footer Actions */}
+                  <div className="p-5 pt-0 border-t border-border/40 flex items-center justify-between gap-3 text-xs mt-3">
                     <button
-                      ref={modalTriggerRef}
-                      onClick={() => setActiveModalProject(active)}
-                      data-cursor="open"
-                      className="inline-flex items-center gap-2 bg-accent/15 border border-accent text-accent hover:bg-accent hover:text-background transition-all px-5 py-3 rounded-full text-xs md:text-sm font-display font-medium shadow-[0_0_20px_rgba(53,224,224,0.2)]"
+                      onClick={() => setActiveModalProject(p)}
+                      className="text-accent hover:underline font-display flex items-center gap-1"
                     >
-                      <Maximize2 size={15} />
-                      <span>View Full Case Study</span>
+                      <span>Deep Dive</span>
+                      <Maximize2 size={12} />
                     </button>
 
-                    <div className="flex items-center gap-4 text-sm pt-1">
-                      {active.demoUrl && (
+                    <div className="flex items-center gap-3">
+                      {p.demoUrl && (
                         <a
-                          href={active.demoUrl}
+                          href={p.demoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          data-cursor="open"
-                          className="inline-flex items-center gap-1.5 text-accent hover:underline transition-colors font-medium"
+                          className="text-muted hover:text-white transition-colors"
+                          aria-label={`Open demo for ${p.title}`}
                         >
-                          <span>Live Demo</span>
-                          <ArrowUpRight size={15} />
+                          <ExternalLink size={14} />
                         </a>
                       )}
-                      {active.githubUrl && (
+                      {p.githubUrl && (
                         <a
-                          href={active.githubUrl}
+                          href={p.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          data-cursor="open"
-                          className="inline-flex items-center gap-1.5 text-white/80 hover:text-accent transition-colors font-medium"
+                          className="text-muted hover:text-white transition-colors"
+                          aria-label={`View GitHub repository for ${p.title}`}
                         >
-                          <Github size={15} />
-                          <span>Source Code</span>
+                          <Github size={14} />
                         </a>
                       )}
                     </div>
                   </div>
-                </motion.div>
-              </AnimatePresence>
+                </div>
+              ))}
             </div>
-
-            {/* Nav Arrows */}
-            <button onClick={prev} className="work-arrow work-arrow--left" aria-label="Previous project" data-cursor="drag">
-              <ArrowLeft size={18} />
-            </button>
-            <button onClick={next} className="work-arrow work-arrow--right" aria-label="Next project" data-cursor="drag">
-              <ArrowRight size={18} />
-            </button>
           </div>
-
-          {/* Thumbnail Rail */}
-          <div className="work-thumbs mt-5 md:mt-6 flex gap-3 overflow-x-auto pb-2">
-            {visibleProjects.map((p, i) => (
-              <button
-                key={p.number}
-                onClick={() => goTo(i, i > index ? 1 : -1)}
-                className={`work-thumb ${i === index ? 'is-active' : ''}`}
-                data-cursor="view"
-              >
-                <img src={p.image} alt={p.title} loading="lazy" decoding="async" />
-                <span className="work-thumb-label">
-                  {p.number} — {p.title}
-                </span>
-              </button>
-            ))}
-          </div>
-          <div className="mt-4 flex justify-end">
-            <button
-              onClick={() => {
-                setShowAll((value) => !value)
-                setIndex(0)
-              }}
-              className="inline-flex items-center gap-2 text-eyebrow text-accent hover:text-white transition-colors"
-              data-cursor="open"
-            >
-              <span>{showAll ? 'SHOW FEATURED PROJECTS' : 'VIEW ALL PROJECTS'}</span>
-              <ArrowUpRight size={14} />
-            </button>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Interactive Case Study Deep-Dive Modal */}
@@ -368,28 +590,35 @@ export default function Work() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-background/90 backdrop-blur-md overflow-y-auto"
+            transition={{ duration: 0.28 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 md:p-8 bg-background/92 backdrop-blur-md overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-labelledby="case-study-title"
             onClick={() => setActiveModalProject(null)}
           >
             <motion.div
-              initial={{ scale: 0.94, opacity: 0, y: 20 }}
+              initial={{ scale: 0.94, opacity: 0, y: 24 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.94, opacity: 0, y: 20 }}
+              exit={{ scale: 0.94, opacity: 0, y: 24 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-4xl bg-surface border border-border shadow-2xl overflow-hidden rounded-md my-auto max-h-[90vh] flex flex-col"
+              className="relative w-full max-w-4xl bg-surface border border-border shadow-2xl overflow-hidden rounded-md my-auto max-h-[92vh] flex flex-col text-foreground"
             >
               {/* Modal Header */}
-              <div className="flex items-center justify-between p-5 md:p-6 border-b border-border bg-background/60">
+              <div className="flex items-center justify-between p-5 md:p-6 border-b border-border bg-background/80 backdrop-blur-md">
                 <div className="flex items-center gap-3">
-                  <span className="text-eyebrow text-accent border border-accent/30 px-2.5 py-1">
+                  <span className="text-eyebrow text-accent border border-accent/30 bg-accent/5 px-2.5 py-1 rounded">
                     PROJECT {activeModalProject.number}
                   </span>
-                  <span className="text-eyebrow text-muted hidden sm:inline">{activeModalProject.category}</span>
+                  <span className="text-eyebrow text-muted hidden sm:inline font-mono">
+                    {activeModalProject.category}
+                  </span>
+                  {activeModalProject.badge && (
+                    <span className="text-eyebrow text-white border border-border bg-surface px-2 py-0.5 rounded text-[0.62rem]">
+                      {activeModalProject.badge}
+                    </span>
+                  )}
                 </div>
                 <button
                   ref={modalCloseRef}
@@ -402,65 +631,108 @@ export default function Work() {
               </div>
 
               {/* Modal Body */}
-              <div className="p-6 md:p-8 overflow-y-auto space-y-8 text-foreground">
-                {/* Hero Title & Image */}
+              <div className="p-6 md:p-10 overflow-y-auto space-y-8">
+                {/* Hero Title & Image Showcase */}
                 <div className="grid md:grid-cols-12 gap-6 items-center">
                   <div className="md:col-span-7">
-                    <h2 id="case-study-title" className="font-display text-3xl md:text-5xl leading-tight">{activeModalProject.title}</h2>
-                    <p className="text-muted mt-3 leading-relaxed">{activeModalProject.description}</p>
+                    <span className="text-accent text-sm font-display">{activeModalProject.tagline}</span>
+                    <h2
+                      id="case-study-title"
+                      className="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-white mt-1"
+                    >
+                      {activeModalProject.title}
+                    </h2>
+                    <p className="text-muted mt-3 text-sm md:text-base leading-relaxed">
+                      {activeModalProject.description}
+                    </p>
                   </div>
-                  <div className="md:col-span-5 h-48 md:h-56 rounded border border-border overflow-hidden relative">
-                    <img src={activeModalProject.image} alt={activeModalProject.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
+                  <div className="md:col-span-5 h-48 md:h-60 rounded-md border border-border overflow-hidden relative shadow-lg">
+                    <img
+                      src={activeModalProject.image}
+                      alt={activeModalProject.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                   </div>
                 </div>
 
                 {/* Case Study Details Grid */}
                 <div className="grid md:grid-cols-2 gap-6 border-t border-border/60 pt-6">
                   {/* Problem Solved */}
-                  <div className="bg-background/40 border border-border p-5 rounded">
-                    <div className="flex items-center gap-2 text-accent font-display text-base mb-3">
+                  <div className="bg-background/50 border border-border p-5 rounded-md">
+                    <div className="flex items-center gap-2 text-accent font-display text-base font-medium mb-3">
                       <AlertCircle size={18} />
-                      <span>The Challenge &amp; Problem</span>
+                      <span>The Challenge &amp; Problem Solved</span>
                     </div>
-                    <p className="text-muted text-sm leading-relaxed">{activeModalProject.problemSolved}</p>
+                    <p className="text-muted text-sm leading-relaxed">
+                      {activeModalProject.problemSolved}
+                    </p>
                   </div>
 
-                  {/* Contribution */}
-                  <div className="bg-background/40 border border-border p-5 rounded">
-                    <div className="flex items-center gap-2 text-accent font-display text-base mb-3">
+                  {/* My Contribution */}
+                  <div className="bg-background/50 border border-border p-5 rounded-md">
+                    <div className="flex items-center gap-2 text-accent font-display text-base font-medium mb-3">
                       <UserCheck size={18} />
-                      <span>My Contribution</span>
+                      <span>My Engineering Contribution</span>
                     </div>
-                    <p className="text-muted text-sm leading-relaxed">{activeModalProject.myContribution}</p>
+                    <p className="text-muted text-sm leading-relaxed">
+                      {activeModalProject.myContribution}
+                    </p>
                   </div>
                 </div>
 
-                {/* Key Features List */}
+                {/* Key Features Breakdown */}
                 <div className="border-t border-border/60 pt-6">
-                  <div className="flex items-center gap-2 font-display text-lg mb-4 text-accent">
+                  <div className="flex items-center gap-2 font-display text-lg mb-4 text-accent font-medium">
                     <CheckCircle2 size={18} />
                     <span>Key Features &amp; Capabilities</span>
                   </div>
                   <ul className="grid sm:grid-cols-2 gap-3">
                     {activeModalProject.keyFeatures.map((feat, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5 text-sm text-muted bg-background/30 p-3 border border-border/40 rounded">
+                      <li
+                        key={idx}
+                        className="flex items-start gap-2.5 text-sm text-muted bg-background/40 p-3.5 border border-border/60 rounded"
+                      >
                         <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
-                        <span>{feat}</span>
+                        <span className="leading-relaxed">{feat}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
+                {/* Architecture Highlights if available */}
+                {activeModalProject.architectureDetails && (
+                  <div className="border-t border-border/60 pt-6">
+                    <div className="flex items-center gap-2 font-display text-base mb-3 text-white font-medium">
+                      <Code2 size={17} className="text-accent" />
+                      <span>Architecture &amp; Implementation Details</span>
+                    </div>
+                    <ul className="space-y-2">
+                      {activeModalProject.architectureDetails.map((arch, idx) => (
+                        <li
+                          key={idx}
+                          className="text-xs sm:text-sm text-muted bg-background/30 px-3.5 py-2.5 border border-border/40 rounded flex items-center gap-2"
+                        >
+                          <span className="text-accent font-mono text-xs">▸</span>
+                          <span>{arch}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {/* Tech Stack */}
                 <div className="border-t border-border/60 pt-6">
-                  <div className="flex items-center gap-2 font-display text-base mb-3">
+                  <div className="flex items-center gap-2 font-display text-base mb-3 text-white font-medium">
                     <Layers size={16} className="text-accent" />
-                    <span>Technologies &amp; Architecture</span>
+                    <span>Technology Stack</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {activeModalProject.tech.map((t) => (
-                      <span key={t} className="text-eyebrow border border-accent/30 bg-accent/5 text-accent px-3 py-1.5">
+                      <span
+                        key={t}
+                        className="text-eyebrow text-xs border border-accent/30 bg-accent/5 text-accent px-3 py-1.5 rounded"
+                      >
                         {t}
                       </span>
                     ))}
@@ -469,14 +741,14 @@ export default function Work() {
               </div>
 
               {/* Modal Footer Links */}
-              <div className="p-5 md:p-6 border-t border-border bg-background/80 flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
+              <div className="p-5 md:p-6 border-t border-border bg-background/90 flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
                   {activeModalProject.demoUrl && (
                     <a
                       href={activeModalProject.demoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background font-display text-xs md:text-sm font-medium rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)]"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-background font-display text-xs md:text-sm font-semibold rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.35)]"
                     >
                       <span>Launch Live Demo</span>
                       <ExternalLink size={14} />
@@ -497,9 +769,9 @@ export default function Work() {
 
                 <button
                   onClick={() => setActiveModalProject(null)}
-                  className="text-eyebrow text-muted hover:text-white transition-colors"
+                  className="text-eyebrow text-muted hover:text-white transition-colors text-xs"
                 >
-                  PRESS ESC OR CLICK TO CLOSE
+                  ESC OR CLICK OUTSIDE TO CLOSE
                 </button>
               </div>
             </motion.div>

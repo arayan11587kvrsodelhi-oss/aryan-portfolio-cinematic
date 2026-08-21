@@ -1,16 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Menu, X, ArrowUpRight } from 'lucide-react'
+import { Menu, X, ArrowUpRight, FileText } from 'lucide-react'
 
 const LINKS = [
   { label: 'Work', href: '#work' },
   { label: 'About', href: '#about' },
-  { label: 'Services', href: '#services' },
+  { label: 'Capabilities', href: '#services' },
   { label: 'Toolkit', href: '#skills' },
+  { label: 'Experience', href: '#experience' },
   { label: 'Contact', href: '#contact' },
 ]
 
-export default function Nav() {
+interface NavProps {
+  onOpenResume?: () => void
+}
+
+export default function Nav({ onOpenResume }: NavProps) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('')
@@ -18,33 +23,40 @@ export default function Nav() {
   const wasOpenRef = useRef(false)
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 40)
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 30)
 
-      // Section intersection detection
-      const sections = LINKS.map((l) => l.href.substring(1))
-      for (const sectionId of sections) {
-        const el = document.getElementById(sectionId)
+      // Section intersection detection with viewport-relative scoring
+      const sections = ['top', 'work', 'about', 'services', 'skills', 'experience', 'contact']
+      const scrollPosition = window.scrollY + window.innerHeight * 0.35
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const id = sections[i]
+        const el = document.getElementById(id)
         if (el) {
-          const rect = el.getBoundingClientRect()
-          if (rect.top <= 200 && rect.bottom >= 200) {
-            setActiveSection(sectionId)
+          const top = el.offsetTop
+          if (scrollPosition >= top) {
+            setActiveSection(id === 'top' ? '' : id)
             break
           }
         }
       }
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
-    if (wasOpenRef.current && !open) menuButtonRef.current?.focus()
+    if (wasOpenRef.current && !open) {
+      menuButtonRef.current?.focus()
+    }
     wasOpenRef.current = open
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [open])
 
   useEffect(() => {
@@ -60,23 +72,29 @@ export default function Nav() {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? 'bg-background/85 backdrop-blur-md border-b border-border/80 py-4 shadow-lg shadow-black/20' : 'bg-transparent py-6'
+          scrolled
+            ? 'bg-background/80 backdrop-blur-xl border-b border-border/80 py-3.5 shadow-2xl shadow-black/40'
+            : 'bg-transparent py-5 md:py-6'
         }`}
       >
-        <nav className="max-w-container mx-auto flex items-center justify-between px-6 md:px-10" aria-label="Main navigation">
+        <nav
+          className="max-w-container mx-auto flex items-center justify-between px-6 md:px-10"
+          aria-label="Main navigation"
+        >
+          {/* Logo / Brand */}
           <a
             href="#top"
-            className="font-display text-sm tracking-widest font-semibold flex items-center gap-2 group"
+            className="font-display text-sm md:text-base tracking-widest font-semibold flex items-center gap-2.5 group"
             data-cursor="default"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-accent group-hover:scale-125 transition-transform" />
-            <span>
-              ARYAN <span className="text-accent">SHARMA</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-accent group-hover:scale-125 transition-transform duration-300 shadow-[0_0_10px_var(--accent)]" />
+            <span className="text-foreground tracking-[0.14em]">
+              ARYAN <span className="text-accent font-medium">SHARMA</span>
             </span>
           </a>
 
           {/* Desktop Navigation Links */}
-          <ul className="hidden md:flex items-center gap-8 text-eyebrow">
+          <ul className="hidden lg:flex items-center gap-7 text-eyebrow bg-surface/50 border border-border/70 backdrop-blur-md px-6 py-2 rounded-full shadow-inner shadow-white/[0.02]">
             {LINKS.map((l) => {
               const id = l.href.substring(1)
               const isActive = activeSection === id
@@ -84,7 +102,7 @@ export default function Nav() {
                 <li key={l.href}>
                   <a
                     href={l.href}
-                    className={`transition-colors relative py-1 ${
+                    className={`transition-colors relative py-1 text-xs tracking-wider ${
                       isActive ? 'text-accent font-medium' : 'text-muted hover:text-foreground'
                     }`}
                     data-cursor="open"
@@ -93,8 +111,8 @@ export default function Nav() {
                     {isActive && (
                       <motion.span
                         layoutId="activeNav"
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent"
-                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent rounded-full shadow-[0_0_8px_var(--accent)]"
+                        transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                       />
                     )}
                   </a>
@@ -103,12 +121,23 @@ export default function Nav() {
             })}
           </ul>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Desktop Action CTAs */}
+          <div className="hidden md:flex items-center gap-3">
+            {onOpenResume && (
+              <button
+                onClick={onOpenResume}
+                data-cursor="open"
+                className="text-eyebrow text-xs border border-border bg-surface/60 hover:border-accent/60 hover:text-accent px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5"
+              >
+                <FileText size={13} className="text-accent" />
+                <span>Resume</span>
+              </button>
+            )}
+
             <a
-              href="mailto:arayan11587kvrsodelhi@gmail.com"
+              href="#contact"
               data-cursor="open"
-              className="text-eyebrow border border-accent/40 bg-accent/5 text-accent hover:bg-accent hover:text-background px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5"
+              className="text-eyebrow text-xs border border-accent/50 bg-accent/10 text-accent hover:bg-accent hover:text-background px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 shadow-[0_0_15px_rgba(53,224,224,0.15)]"
             >
               <span>Get in Touch</span>
               <ArrowUpRight size={13} />
@@ -118,13 +147,13 @@ export default function Nav() {
           {/* Mobile Menu Button */}
           <button
             ref={menuButtonRef}
-            className="md:hidden text-foreground p-2 rounded hover:bg-white/10 transition-colors"
+            className="lg:hidden text-foreground p-2 rounded border border-border bg-surface/70 hover:border-accent/50 transition-colors"
             aria-label="Toggle navigation menu"
             aria-controls="mobile-navigation"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
-            {open ? <X size={24} /> : <Menu size={24} />}
+            {open ? <X size={22} className="text-accent" /> : <Menu size={22} />}
           </button>
         </nav>
       </header>
@@ -133,39 +162,73 @@ export default function Nav() {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-40 bg-background/98 backdrop-blur-xl flex flex-col justify-between px-8 py-24 md:hidden"
+            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            animate={{ opacity: 1, backdropFilter: 'blur(24px)' }}
+            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-40 bg-background/98 flex flex-col justify-between px-8 py-24 lg:hidden"
             id="mobile-navigation"
             role="dialog"
             aria-label="Mobile navigation"
           >
             <div className="flex flex-col gap-6">
               <span className="text-eyebrow text-accent">NAVIGATION</span>
-              {LINKS.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  aria-current={activeSection === l.href.substring(1) ? 'page' : undefined}
-                  className="text-display font-display hover:text-accent transition-colors"
-                >
-                  {l.label}
-                </a>
-              ))}
+              <div className="flex flex-col gap-4">
+                {LINKS.map((l, idx) => (
+                  <motion.a
+                    key={l.href}
+                    href={l.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 + 0.1, duration: 0.3 }}
+                    onClick={() => setOpen(false)}
+                    aria-current={activeSection === l.href.substring(1) ? 'page' : undefined}
+                    className={`font-display text-3xl sm:text-4xl transition-colors flex items-center justify-between ${
+                      activeSection === l.href.substring(1)
+                        ? 'text-accent font-medium'
+                        : 'text-foreground hover:text-accent'
+                    }`}
+                  >
+                    <span>{l.label}</span>
+                    <span className="text-xs font-mono text-muted">0{idx + 1}</span>
+                  </motion.a>
+                ))}
+              </div>
             </div>
 
             <div className="border-t border-border pt-6 flex flex-col gap-4">
-              <span className="text-eyebrow text-muted">DIRECT CONTACT</span>
-              <a
-                href="mailto:arayan11587kvrsodelhi@gmail.com"
-                className="text-accent font-display text-lg flex items-center justify-between"
-              >
-                <span>arayan11587kvrsodelhi@gmail.com</span>
-                <ArrowUpRight size={18} />
-              </a>
+              <div className="flex items-center gap-3">
+                {onOpenResume && (
+                  <button
+                    onClick={() => {
+                      setOpen(false)
+                      onOpenResume()
+                    }}
+                    className="flex-1 text-eyebrow border border-border bg-surface text-foreground hover:border-accent py-3 px-4 rounded-full text-center text-xs flex items-center justify-center gap-2"
+                  >
+                    <FileText size={14} className="text-accent" />
+                    <span>View Resume</span>
+                  </button>
+                )}
+                <a
+                  href="#contact"
+                  onClick={() => setOpen(false)}
+                  className="flex-1 text-eyebrow bg-accent text-background font-medium py-3 px-4 rounded-full text-center text-xs flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(53,224,224,0.3)]"
+                >
+                  <span>Contact Me</span>
+                  <ArrowUpRight size={14} />
+                </a>
+              </div>
+
+              <div className="text-xs text-muted flex items-center justify-between pt-2">
+                <span>Aryan Sharma · New Delhi</span>
+                <a
+                  href="mailto:arayan11587kvrsodelhi@gmail.com"
+                  className="text-accent hover:underline"
+                >
+                  arayan11587kvrsodelhi@gmail.com
+                </a>
+              </div>
             </div>
           </motion.div>
         )}
