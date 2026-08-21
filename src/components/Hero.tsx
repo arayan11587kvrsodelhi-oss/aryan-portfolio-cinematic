@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ArrowDown, ArrowUpRight, Sparkles, Code2, ShieldCheck, Terminal, FileText } from 'lucide-react'
+import { useSFX } from '../hooks/useSFX'
 import portrait from '../assets/photos/portrait.jpg'
 
 interface HeroProps {
@@ -8,6 +9,7 @@ interface HeroProps {
 }
 
 export default function Hero({ onOpenResume }: HeroProps) {
+  const { playSFX } = useSFX()
   const rootRef = useRef<HTMLElement>(null)
   const portraitCardRef = useRef<HTMLDivElement>(null)
 
@@ -133,6 +135,10 @@ export default function Hero({ onOpenResume }: HeroProps) {
           <div className="hero-fade flex flex-wrap items-center gap-4 mt-8">
             <a
               href="#work"
+              onClick={() => playSFX('click')}
+              onMouseEnter={(e) => {
+                playSFX('hover')
+              }}
               onMouseMove={handleMagnetic}
               onMouseLeave={handleMagneticLeave}
               data-cursor="open"
@@ -144,7 +150,11 @@ export default function Hero({ onOpenResume }: HeroProps) {
 
             {onOpenResume ? (
               <button
-                onClick={onOpenResume}
+                onClick={() => {
+                  playSFX('modalOpen')
+                  onOpenResume()
+                }}
+                onMouseEnter={() => playSFX('hover')}
                 onMouseMove={handleMagnetic}
                 onMouseLeave={handleMagneticLeave}
                 data-cursor="open"
@@ -157,6 +167,8 @@ export default function Hero({ onOpenResume }: HeroProps) {
             ) : (
               <a
                 href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Resume%20Request%20-%20Aryan%20Sharma"
+                onClick={() => playSFX('click')}
+                onMouseEnter={() => playSFX('hover')}
                 onMouseMove={handleMagnetic}
                 onMouseLeave={handleMagneticLeave}
                 data-cursor="open"
@@ -173,6 +185,7 @@ export default function Hero({ onOpenResume }: HeroProps) {
         <div
           ref={portraitCardRef}
           id="hero-portrait"
+          onMouseEnter={() => playSFX('projectHover')}
           className="hidden lg:block absolute right-[2%] top-1/2 -translate-y-1/2 w-[250px] h-[330px] xl:w-[290px] xl:h-[380px] rounded-md overflow-hidden border border-border bg-surface shadow-2xl shadow-cyan-950/25 group transition-shadow duration-500 hover:border-accent/40"
           data-cursor="view"
         >
@@ -213,6 +226,8 @@ export default function Hero({ onOpenResume }: HeroProps) {
 
         <a
           href="#work"
+          onClick={() => playSFX('click')}
+          onMouseEnter={() => playSFX('hover')}
           className="flex items-center gap-3 text-muted hover:text-accent transition-colors py-2"
           data-cursor="open"
         >

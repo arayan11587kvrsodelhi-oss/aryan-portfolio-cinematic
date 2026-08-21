@@ -19,6 +19,7 @@ import {
   Send,
   FileText
 } from 'lucide-react'
+import { useSFX } from '../hooks/useSFX'
 
 interface ContactProps {
   onOpenResume?: () => void
@@ -40,6 +41,7 @@ const INTENTS = [
 ]
 
 function MagneticCTA() {
+  const { playSFX } = useSFX()
   const ref = useRef<HTMLAnchorElement>(null)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -63,6 +65,8 @@ function MagneticCTA() {
     <a
       ref={ref}
       href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Portfolio%20Inquiry%20-%20Aryan%20Sharma"
+      onClick={() => playSFX('click')}
+      onMouseEnter={() => playSFX('hover')}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       data-cursor="open"
@@ -75,6 +79,7 @@ function MagneticCTA() {
 }
 
 export default function Contact({ onOpenResume }: ContactProps) {
+  const { playSFX } = useSFX()
   const [copied, setCopied] = useState(false)
   const [copyError, setCopyError] = useState(false)
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'error' | 'sent'>('idle')
@@ -100,6 +105,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText('arayan11587kvrsodelhi@gmail.com')
+      playSFX('success')
       setCopied(true)
       setCopyError(false)
     } catch {
@@ -127,6 +133,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
     }
 
     // Pre-fill email client draft
+    playSFX('success')
     setTimeout(() => {
       const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`)
       const body = encodeURIComponent(`Hi Aryan,\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)
@@ -136,6 +143,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
   }
 
   const scrollToTop = () => {
+    playSFX('click')
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -166,6 +174,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
           {INTENTS.map((item) => (
             <div
               key={item.title}
+              onMouseEnter={() => playSFX('hover')}
               className="bg-surface/80 border border-border p-5 rounded-md hover:border-accent/50 hover:shadow-lg hover:shadow-cyan-950/20 transition-all duration-300 group"
             >
               <item.icon size={20} className="text-accent mb-3 group-hover:scale-110 transition-transform" />
@@ -253,6 +262,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
 
             <button
               type="submit"
+              onMouseEnter={() => playSFX('hover')}
               className="inline-flex items-center gap-2 bg-accent text-background px-6 py-3 rounded-full font-display font-medium text-sm hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)] min-h-[44px]"
               data-cursor="open"
             >
@@ -268,6 +278,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
 
           <button
             onClick={copyEmail}
+            onMouseEnter={() => playSFX('hover')}
             data-cursor="open"
             className="inline-flex items-center gap-2 px-7 py-4 sm:py-5 border border-border bg-surface text-muted hover:text-accent hover:border-accent/60 rounded-full text-base font-display transition-all min-h-[48px]"
           >
@@ -291,7 +302,11 @@ export default function Contact({ onOpenResume }: ContactProps) {
 
           {onOpenResume && (
             <button
-              onClick={onOpenResume}
+              onClick={() => {
+                playSFX('modalOpen')
+                onOpenResume()
+              }}
+              onMouseEnter={() => playSFX('hover')}
               data-cursor="open"
               className="inline-flex items-center gap-2 px-6 py-4 sm:py-5 border border-border bg-surface text-muted hover:text-foreground hover:border-accent/60 rounded-full text-base font-display transition-all min-h-[48px]"
             >
@@ -309,6 +324,8 @@ export default function Contact({ onOpenResume }: ContactProps) {
               href={l.href}
               target={l.href.startsWith('http') ? '_blank' : undefined}
               rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              onClick={() => playSFX('click')}
+              onMouseEnter={() => playSFX('hover')}
               className="flex items-center gap-2 text-muted hover:text-accent transition-colors py-2 px-1 min-h-[44px]"
               data-cursor="open"
             >
@@ -330,6 +347,7 @@ export default function Contact({ onOpenResume }: ContactProps) {
 
           <button
             onClick={scrollToTop}
+            onMouseEnter={() => playSFX('hover')}
             className="inline-flex items-center gap-1.5 text-muted hover:text-accent transition-colors font-display p-2 min-h-[44px]"
             aria-label="Scroll back to top"
           >

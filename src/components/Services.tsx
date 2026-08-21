@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight, Sparkles } from 'lucide-react'
+import { useSFX } from '../hooks/useSFX'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -33,6 +34,7 @@ const SERVICES = [
 ]
 
 export default function Services() {
+  const { playSFX } = useSFX()
   const ref = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -66,6 +68,8 @@ export default function Services() {
           </div>
           <a
             href="#contact"
+            onClick={() => playSFX('click')}
+            onMouseEnter={() => playSFX('hover')}
             className="text-eyebrow text-accent flex items-center gap-1.5 hover:underline"
             data-cursor="open"
           >
@@ -78,6 +82,7 @@ export default function Services() {
           {SERVICES.map(([n, title, desc, tech]) => (
             <div
               key={String(n)}
+              onMouseEnter={() => playSFX('hover')}
               className="service-row group grid md:grid-cols-12 gap-4 md:gap-8 items-center py-8 md:py-10 px-4 -mx-4 hover:bg-surface/90 transition-all duration-300 rounded-md"
             >
               <span className="md:col-span-1 font-mono text-muted text-sm group-hover:text-accent font-medium">

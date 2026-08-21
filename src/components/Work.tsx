@@ -22,6 +22,7 @@ import {
   Code2
 } from 'lucide-react'
 import { projects, Project } from '../data/projects'
+import { useSFX } from '../hooks/useSFX'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -32,6 +33,7 @@ type ViewMode = 'carousel' | 'grid'
 type FilterCategory = 'ALL' | 'FLAGSHIP' | 'FINTECH' | 'CREATIVE' | 'SECURITY' | 'TOOLS'
 
 export default function Work() {
+  const { playSFX } = useSFX()
   const rootRef = useRef<HTMLElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
@@ -62,11 +64,18 @@ export default function Work() {
   })
 
   const goTo = (i: number, direction: number) => {
+    playSFX('nav')
     setDir(direction)
     setIndex(((i % total) + total) % total)
   }
-  const next = () => goTo(index + 1, 1)
-  const prev = () => goTo(index - 1, -1)
+  const next = () => {
+    playSFX('click')
+    goTo(index + 1, 1)
+  }
+  const prev = () => {
+    playSFX('click')
+    goTo(index - 1, -1)
+  }
 
   // Section entrance animation
   useEffect(() => {
@@ -128,6 +137,7 @@ export default function Work() {
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && activeModalProject) {
+        playSFX('modalClose')
         setActiveModalProject(null)
         modalTriggerRef.current?.focus()
         return
@@ -142,7 +152,7 @@ export default function Work() {
       io.disconnect()
       window.removeEventListener('keydown', onKeyDown)
     }
-  }, [index, activeModalProject, viewMode])
+  }, [index, activeModalProject, viewMode, playSFX])
 
   // Body scroll lock on modal open
   useEffect(() => {
@@ -206,7 +216,11 @@ export default function Work() {
             {/* View Mode Toggle */}
             <div className="flex items-center p-1 rounded-full border border-border bg-surface/80 backdrop-blur">
               <button
-                onClick={() => setViewMode('carousel')}
+                onClick={() => {
+                  playSFX('click')
+                  setViewMode('carousel')
+                }}
+                onMouseEnter={() => playSFX('hover')}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-display transition-all ${
                   viewMode === 'carousel'
                     ? 'bg-accent text-background font-semibold shadow-[0_0_12px_rgba(53,224,224,0.3)]'
@@ -218,7 +232,11 @@ export default function Work() {
                 <span>Cinematic Stage</span>
               </button>
               <button
-                onClick={() => setViewMode('grid')}
+                onClick={() => {
+                  playSFX('click')
+                  setViewMode('grid')
+                }}
+                onMouseEnter={() => playSFX('hover')}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-display transition-all ${
                   viewMode === 'grid'
                     ? 'bg-accent text-background font-semibold shadow-[0_0_12px_rgba(53,224,224,0.3)]'
@@ -251,7 +269,6 @@ export default function Work() {
                 if (!touchStartPos.current) return
                 const dx = e.changedTouches[0].clientX - touchStartPos.current.x
                 const dy = e.changedTouches[0].clientY - touchStartPos.current.y
-                // Only trigger if horizontal swipe is dominant over vertical scroll
                 if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
                   dx < 0 ? next() : prev()
                 }
@@ -264,6 +281,7 @@ export default function Work() {
                   <button
                     key={p.number}
                     onClick={() => goTo(i, i > index ? 1 : -1)}
+                    onMouseEnter={() => playSFX('hover')}
                     className="work-tab group"
                     aria-label={`Go to project ${p.number}: ${p.title}`}
                     data-cursor="open"
@@ -290,7 +308,11 @@ export default function Work() {
                   </button>
                 ))}
                 <button
-                  onClick={() => setPaused((v) => !v)}
+                  onClick={() => {
+                    playSFX('click')
+                    setPaused((v) => !v)
+                  }}
+                  onMouseEnter={() => playSFX('hover')}
                   className="work-pause"
                   aria-label={paused ? 'Play autoplay' : 'Pause autoplay'}
                   data-cursor="open"
@@ -304,6 +326,7 @@ export default function Work() {
                 ref={imageContainerRef}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
+                onMouseEnter={() => playSFX('projectHover')}
                 className="absolute inset-0 transition-transform duration-300 ease-out"
               >
                 <AnimatePresence mode="wait" custom={dir}>
@@ -388,7 +411,11 @@ export default function Work() {
                     <div className="md:col-span-4 lg:col-span-4 flex flex-wrap md:flex-col items-start md:items-end justify-between md:justify-end gap-3.5">
                       <button
                         ref={modalTriggerRef}
-                        onClick={() => setActiveModalProject(active)}
+                        onClick={() => {
+                          playSFX('projectOpen')
+                          setActiveModalProject(active)
+                        }}
+                        onMouseEnter={() => playSFX('hover')}
                         data-cursor="open"
                         className="inline-flex items-center gap-2 bg-accent/20 border border-accent text-accent hover:bg-accent hover:text-background transition-all px-5 py-3 rounded-full text-xs md:text-sm font-display font-medium shadow-[0_0_20px_rgba(53,224,224,0.25)] min-h-[44px]"
                       >
@@ -402,6 +429,8 @@ export default function Work() {
                             href={active.demoUrl}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => playSFX('click')}
+                            onMouseEnter={() => playSFX('hover')}
                             data-cursor="open"
                             className="inline-flex items-center gap-1.5 text-accent hover:text-white transition-colors font-medium min-h-[44px] px-1"
                           >
@@ -414,6 +443,8 @@ export default function Work() {
                             href={active.githubUrl}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => playSFX('click')}
+                            onMouseEnter={() => playSFX('hover')}
                             data-cursor="open"
                             className="inline-flex items-center gap-1.5 text-muted hover:text-foreground transition-colors font-medium min-h-[44px] px-1"
                           >
@@ -430,6 +461,7 @@ export default function Work() {
               {/* Nav Arrows */}
               <button
                 onClick={prev}
+                onMouseEnter={() => playSFX('hover')}
                 className="work-arrow work-arrow--left"
                 aria-label="Previous project"
                 data-cursor="drag"
@@ -438,6 +470,7 @@ export default function Work() {
               </button>
               <button
                 onClick={next}
+                onMouseEnter={() => playSFX('hover')}
                 className="work-arrow work-arrow--right"
                 aria-label="Next project"
                 data-cursor="drag"
@@ -452,6 +485,7 @@ export default function Work() {
                 <button
                   key={p.number}
                   onClick={() => goTo(i, i > index ? 1 : -1)}
+                  onMouseEnter={() => playSFX('hover')}
                   className={`work-thumb ${i === index ? 'is-active' : ''}`}
                   data-cursor="view"
                   aria-label={`View ${p.title}`}
@@ -474,7 +508,11 @@ export default function Work() {
               {(['ALL', 'FLAGSHIP', 'FINTECH', 'CREATIVE', 'SECURITY', 'TOOLS'] as FilterCategory[]).map((cat) => (
                 <button
                   key={cat}
-                  onClick={() => setActiveFilter(cat)}
+                  onClick={() => {
+                    playSFX('click')
+                    setActiveFilter(cat)
+                  }}
+                  onMouseEnter={() => playSFX('hover')}
                   className={`text-eyebrow text-xs px-4 py-2.5 rounded-full border transition-all min-h-[44px] ${
                     activeFilter === cat
                       ? 'border-accent bg-accent text-background font-semibold shadow-[0_0_12px_rgba(53,224,224,0.3)]'
@@ -497,7 +535,11 @@ export default function Work() {
                     {/* Project Image */}
                     <div
                       className="relative h-48 sm:h-52 overflow-hidden cursor-pointer"
-                      onClick={() => setActiveModalProject(p)}
+                      onClick={() => {
+                        playSFX('projectOpen')
+                        setActiveModalProject(p)
+                      }}
+                      onMouseEnter={() => playSFX('projectHover')}
                       data-cursor="view"
                     >
                       <img
@@ -521,7 +563,10 @@ export default function Work() {
                     {/* Content */}
                     <div className="p-5">
                       <h3
-                        onClick={() => setActiveModalProject(p)}
+                        onClick={() => {
+                          playSFX('projectOpen')
+                          setActiveModalProject(p)
+                        }}
                         className="font-display text-xl font-medium text-white hover:text-accent transition-colors cursor-pointer"
                       >
                         {p.title}
@@ -547,7 +592,11 @@ export default function Work() {
                   {/* Card Footer Actions */}
                   <div className="p-5 pt-0 border-t border-border/40 flex items-center justify-between gap-3 text-xs mt-3">
                     <button
-                      onClick={() => setActiveModalProject(p)}
+                      onClick={() => {
+                        playSFX('projectOpen')
+                        setActiveModalProject(p)
+                      }}
+                      onMouseEnter={() => playSFX('hover')}
                       className="text-accent hover:underline font-display flex items-center gap-1 min-h-[44px]"
                     >
                       <span>Deep Dive</span>
@@ -560,6 +609,8 @@ export default function Work() {
                           href={p.demoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => playSFX('click')}
+                          onMouseEnter={() => playSFX('hover')}
                           className="text-muted hover:text-white transition-colors p-2"
                           aria-label={`Open demo for ${p.title}`}
                         >
@@ -571,6 +622,8 @@ export default function Work() {
                           href={p.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => playSFX('click')}
+                          onMouseEnter={() => playSFX('hover')}
                           className="text-muted hover:text-white transition-colors p-2"
                           aria-label={`View GitHub repository for ${p.title}`}
                         >
@@ -598,7 +651,10 @@ export default function Work() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="case-study-title"
-            onClick={() => setActiveModalProject(null)}
+            onClick={() => {
+              playSFX('modalClose')
+              setActiveModalProject(null)
+            }}
           >
             <motion.div
               initial={{ scale: 0.94, opacity: 0, y: 24 }}
@@ -625,7 +681,11 @@ export default function Work() {
                 </div>
                 <button
                   ref={modalCloseRef}
-                  onClick={() => setActiveModalProject(null)}
+                  onClick={() => {
+                    playSFX('modalClose')
+                    setActiveModalProject(null)
+                  }}
+                  onMouseEnter={() => playSFX('hover')}
                   className="p-2 text-muted hover:text-foreground hover:bg-white/10 rounded-full transition-colors min-h-[44px] min-width-[44px] flex items-center justify-center"
                   aria-label="Close case study dialog"
                 >
@@ -751,6 +811,8 @@ export default function Work() {
                       href={activeModalProject.demoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => playSFX('click')}
+                      onMouseEnter={() => playSFX('hover')}
                       className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-accent text-background font-display text-xs md:text-sm font-semibold rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.35)] min-h-[44px]"
                     >
                       <span>Launch Live Demo</span>
@@ -762,6 +824,8 @@ export default function Work() {
                       href={activeModalProject.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => playSFX('click')}
+                      onMouseEnter={() => playSFX('hover')}
                       className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 border border-border bg-surface text-foreground hover:border-accent hover:text-accent font-display text-xs md:text-sm rounded-full transition-all min-h-[44px]"
                     >
                       <Github size={15} />
@@ -771,7 +835,11 @@ export default function Work() {
                 </div>
 
                 <button
-                  onClick={() => setActiveModalProject(null)}
+                  onClick={() => {
+                    playSFX('modalClose')
+                    setActiveModalProject(null)
+                  }}
+                  onMouseEnter={() => playSFX('hover')}
                   className="text-eyebrow text-muted hover:text-white transition-colors text-xs p-2 min-h-[44px]"
                 >
                   ESC OR CLICK OUTSIDE TO CLOSE

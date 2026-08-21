@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLenis } from './lib/useLenis'
+import { SoundProvider } from './context/SoundContext'
 import Cursor from './components/Cursor'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
@@ -12,7 +13,7 @@ import Experience from './components/Experience'
 import Contact from './components/Contact'
 import ResumeModal from './components/ResumeModal'
 
-export default function App() {
+function PortfolioContent() {
   useLenis()
   const [progress, setProgress] = useState(0)
   const [isResumeOpen, setIsResumeOpen] = useState(false)
@@ -62,7 +63,7 @@ export default function App() {
       {/* Custom Desktop Trailing Cursor */}
       <Cursor />
 
-      {/* Navigation Bar */}
+      {/* Navigation Bar with SoundToggle */}
       <Nav onOpenResume={() => setIsResumeOpen(true)} />
 
       {/* Main Content Landmark */}
@@ -83,5 +84,13 @@ export default function App() {
         onClose={() => setIsResumeOpen(false)}
       />
     </>
+  )
+}
+
+export default function App() {
+  return (
+    <SoundProvider>
+      <PortfolioContent />
+    </SoundProvider>
   )
 }

@@ -12,6 +12,7 @@ import {
   MapPin,
   ExternalLink
 } from 'lucide-react'
+import { useSFX } from '../hooks/useSFX'
 
 interface ResumeModalProps {
   isOpen: boolean
@@ -19,6 +20,7 @@ interface ResumeModalProps {
 }
 
 export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
+  const { playSFX } = useSFX()
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -27,17 +29,26 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     closeButtonRef.current?.focus()
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        playSFX('modalClose')
+        onClose()
+      }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => {
       document.body.style.overflow = ''
       window.removeEventListener('keydown', onKeyDown)
     }
-  }, [isOpen, onClose])
+  }, [isOpen, onClose, playSFX])
 
   const handlePrint = () => {
+    playSFX('click')
     window.print()
+  }
+
+  const handleClose = () => {
+    playSFX('modalClose')
+    onClose()
   }
 
   return (
@@ -52,7 +63,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
           role="dialog"
           aria-modal="true"
           aria-labelledby="resume-title"
-          onClick={onClose}
+          onClick={handleClose}
         >
           <motion.div
             initial={{ scale: 0.94, opacity: 0, y: 24 }}
@@ -73,6 +84,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               <div className="flex items-center gap-2">
                 <button
                   onClick={handlePrint}
+                  onMouseEnter={() => playSFX('hover')}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border text-xs font-display text-muted hover:text-foreground hover:border-accent transition-colors min-h-[38px]"
                   aria-label="Print or save as PDF"
                 >
@@ -81,6 +93,8 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 </button>
                 <a
                   href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Resume%20Request%20-%20Aryan%20Sharma"
+                  onClick={() => playSFX('click')}
+                  onMouseEnter={() => playSFX('hover')}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent/15 border border-accent text-xs font-display text-accent hover:bg-accent hover:text-background transition-colors min-h-[38px]"
                 >
                   <Mail size={13} />
@@ -88,7 +102,8 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 </a>
                 <button
                   ref={closeButtonRef}
-                  onClick={onClose}
+                  onClick={handleClose}
+                  onMouseEnter={() => playSFX('hover')}
                   className="p-2 text-muted hover:text-foreground hover:bg-white/10 rounded-full transition-colors ml-1 min-h-[40px] min-w-[40px] flex items-center justify-center"
                   aria-label="Close resume preview"
                 >
@@ -116,14 +131,14 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 </div>
 
                 <div className="flex flex-col gap-1 text-xs text-muted font-mono">
-                  <a href="mailto:arayan11587kvrsodelhi@gmail.com" className="hover:text-accent transition-colors">
+                  <a href="mailto:arayan11587kvrsodelhi@gmail.com" onClick={() => playSFX('click')} className="hover:text-accent transition-colors">
                     arayan11587kvrsodelhi@gmail.com
                   </a>
-                  <a href="https://github.com/arayan11587kvrsodelhi-oss/" target="_blank" rel="noreferrer" className="hover:text-accent transition-colors flex items-center gap-1">
+                  <a href="https://github.com/arayan11587kvrsodelhi-oss/" target="_blank" rel="noreferrer" onClick={() => playSFX('click')} className="hover:text-accent transition-colors flex items-center gap-1">
                     <span>github.com/arayan11587kvrsodelhi-oss</span>
                     <ExternalLink size={10} />
                   </a>
-                  <a href="https://www.linkedin.com/in/aryan-sharma-7681a3380/" target="_blank" rel="noreferrer" className="hover:text-accent transition-colors flex items-center gap-1">
+                  <a href="https://www.linkedin.com/in/aryan-sharma-7681a3380/" target="_blank" rel="noreferrer" onClick={() => playSFX('click')} className="hover:text-accent transition-colors flex items-center gap-1">
                     <span>linkedin.com/in/aryan-sharma</span>
                     <ExternalLink size={10} />
                   </a>
@@ -257,6 +272,8 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               <div className="flex items-center gap-3">
                 <a
                   href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Opportunity%20Inquiry%20-%20Aryan%20Sharma"
+                  onClick={() => playSFX('click')}
+                  onMouseEnter={() => playSFX('hover')}
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-background font-display text-xs sm:text-sm font-semibold rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)] min-h-[44px]"
                 >
                   <span>Connect with Aryan</span>
@@ -264,6 +281,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 </a>
                 <button
                   onClick={handlePrint}
+                  onMouseEnter={() => playSFX('hover')}
                   className="inline-flex items-center gap-1.5 px-4 py-2.5 border border-border bg-surface text-foreground hover:border-accent hover:text-accent font-display text-xs sm:text-sm rounded-full transition-colors min-h-[44px]"
                 >
                   <Printer size={14} />
@@ -272,7 +290,8 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               </div>
 
               <button
-                onClick={onClose}
+                onClick={handleClose}
+                onMouseEnter={() => playSFX('hover')}
                 className="text-eyebrow text-muted hover:text-white transition-colors text-xs p-2 min-h-[44px]"
               >
                 ESC TO CLOSE

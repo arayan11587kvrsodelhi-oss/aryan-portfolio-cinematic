@@ -12,6 +12,7 @@ import {
   FileText
 } from 'lucide-react'
 import portrait from '../assets/photos/portrait.jpg'
+import { useSFX } from '../hooks/useSFX'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -20,6 +21,7 @@ interface AboutProps {
 }
 
 export default function About({ onOpenResume }: AboutProps) {
+  const { playSFX } = useSFX()
   const ref = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -82,6 +84,7 @@ export default function About({ onOpenResume }: AboutProps) {
           {/* Portrait Image Specimen with Explicit Dimensions */}
           <div
             className="lg:col-span-5 relative min-h-[480px] sm:min-h-[540px] md:min-h-[620px] overflow-hidden bg-surface border border-border rounded-md group"
+            onMouseEnter={() => playSFX('projectHover')}
             data-cursor="view"
           >
             <img
@@ -118,6 +121,7 @@ export default function About({ onOpenResume }: AboutProps) {
                 {['FRONTEND ENGINEERING', 'MOTION KINEMATICS', 'WEB SECURITY', 'UI ARCHITECTURE'].map((tag) => (
                   <span
                     key={tag}
+                    onMouseEnter={() => playSFX('hover')}
                     className="text-eyebrow border border-accent/30 text-accent bg-accent/5 px-3 py-1.5 text-[0.65rem] rounded"
                   >
                     {tag}
@@ -143,17 +147,26 @@ export default function About({ onOpenResume }: AboutProps) {
 
             {/* Core Focus Pillars */}
             <div className="grid sm:grid-cols-3 gap-px bg-border/80 my-8 border border-border rounded-md overflow-hidden">
-              <div className="profile-stat bg-surface p-5 hover:bg-background/60 transition-colors">
+              <div
+                onMouseEnter={() => playSFX('hover')}
+                className="profile-stat bg-surface p-5 hover:bg-background/60 transition-colors"
+              >
                 <MapPin size={18} className="text-accent mb-3" />
                 <span className="text-eyebrow text-muted text-[0.62rem]">LOCATION</span>
                 <p className="mt-1 font-display text-lg text-white font-medium">New Delhi, IN</p>
               </div>
-              <div className="profile-stat bg-surface p-5 hover:bg-background/60 transition-colors">
+              <div
+                onMouseEnter={() => playSFX('hover')}
+                className="profile-stat bg-surface p-5 hover:bg-background/60 transition-colors"
+              >
                 <Code2 size={18} className="text-accent mb-3" />
                 <span className="text-eyebrow text-muted text-[0.62rem]">CORE FOCUS</span>
                 <p className="mt-1 font-display text-lg text-white font-medium">Creative Frontend</p>
               </div>
-              <div className="profile-stat bg-surface p-5 hover:bg-background/60 transition-colors">
+              <div
+                onMouseEnter={() => playSFX('hover')}
+                className="profile-stat bg-surface p-5 hover:bg-background/60 transition-colors"
+              >
                 <ShieldCheck size={18} className="text-accent mb-3" />
                 <span className="text-eyebrow text-muted text-[0.62rem]">RESEARCH</span>
                 <p className="mt-1 font-display text-lg text-white font-medium">Web Security</p>
@@ -178,7 +191,11 @@ export default function About({ onOpenResume }: AboutProps) {
               <div className="sm:col-span-5 sm:justify-self-end">
                 {onOpenResume ? (
                   <button
-                    onClick={onOpenResume}
+                    onClick={() => {
+                      playSFX('modalOpen')
+                      onOpenResume()
+                    }}
+                    onMouseEnter={() => playSFX('hover')}
                     className="inline-flex items-center gap-2 text-eyebrow border border-accent/50 bg-accent/10 text-accent px-5 py-3 rounded-full hover:bg-accent hover:text-background transition-all duration-300 shadow-[0_0_15px_rgba(53,224,224,0.2)] min-h-[44px]"
                     data-cursor="open"
                   >
@@ -188,6 +205,8 @@ export default function About({ onOpenResume }: AboutProps) {
                 ) : (
                   <a
                     href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Resume%20Request%20-%20Aryan%20Sharma"
+                    onClick={() => playSFX('click')}
+                    onMouseEnter={() => playSFX('hover')}
                     className="inline-flex items-center gap-2 text-eyebrow border border-accent/50 bg-accent/10 text-accent px-5 py-3 rounded-full hover:bg-accent hover:text-background transition-all duration-300 shadow-[0_0_15px_rgba(53,224,224,0.2)] min-h-[44px]"
                     data-cursor="open"
                   >

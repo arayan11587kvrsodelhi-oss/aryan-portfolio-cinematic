@@ -7,10 +7,10 @@ import {
   Database,
   Wrench,
   Shield,
-  Layers,
   Sparkles,
   Zap
 } from 'lucide-react'
+import { useSFX } from '../hooks/useSFX'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -93,6 +93,7 @@ const CATEGORIES: SkillGroup[] = [
 ]
 
 export default function Skills() {
+  const { playSFX } = useSFX()
   const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -135,6 +136,7 @@ export default function Skills() {
           {CATEGORIES.map((c) => (
             <div
               key={c.title}
+              onMouseEnter={() => playSFX('hover')}
               className="skill-card bg-surface/80 border border-border p-6 rounded-md hover:border-accent/40 hover:shadow-xl hover:shadow-cyan-950/20 transition-all duration-300 group flex flex-col justify-between"
             >
               <div>
@@ -154,6 +156,7 @@ export default function Skills() {
                   {c.items.map((item) => (
                     <li
                       key={item.name}
+                      onMouseEnter={() => playSFX('hover')}
                       className="text-xs text-foreground/80 border border-border/80 bg-background/60 px-3 py-1.5 rounded hover:border-accent/50 hover:text-accent transition-colors flex items-center gap-1.5"
                     >
                       <span>{item.name}</span>

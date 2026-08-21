@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X, ArrowUpRight, FileText } from 'lucide-react'
+import SoundToggle from './SoundToggle'
+import { useSFX } from '../hooks/useSFX'
 
 const LINKS = [
   { label: 'Work', href: '#work' },
@@ -16,6 +18,7 @@ interface NavProps {
 }
 
 export default function Nav({ onOpenResume }: NavProps) {
+  const { playSFX } = useSFX()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('')
@@ -62,11 +65,14 @@ export default function Nav({ onOpenResume }: NavProps) {
   useEffect(() => {
     if (!open) return
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false)
+      if (event.key === 'Escape') {
+        playSFX('mobileMenu')
+        setOpen(false)
+      }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [open])
+  }, [open, playSFX])
 
   return (
     <>
@@ -84,6 +90,8 @@ export default function Nav({ onOpenResume }: NavProps) {
           {/* Logo / Brand */}
           <a
             href="#top"
+            onClick={() => playSFX('nav')}
+            onMouseEnter={() => playSFX('hover')}
             className="font-display text-sm md:text-base tracking-widest font-semibold flex items-center gap-2.5 group"
             data-cursor="default"
           >
@@ -102,6 +110,8 @@ export default function Nav({ onOpenResume }: NavProps) {
                 <li key={l.href}>
                   <a
                     href={l.href}
+                    onClick={() => playSFX('nav')}
+                    onMouseEnter={() => playSFX('hover')}
                     className={`transition-colors relative py-1 text-xs tracking-wider ${
                       isActive ? 'text-accent font-medium' : 'text-muted hover:text-foreground'
                     }`}
@@ -121,13 +131,20 @@ export default function Nav({ onOpenResume }: NavProps) {
             })}
           </ul>
 
-          {/* Desktop Action CTAs */}
+          {/* Desktop Action CTAs & SoundToggle */}
           <div className="hidden md:flex items-center gap-3">
+            {/* SFX Audio Control Toggle */}
+            <SoundToggle />
+
             {onOpenResume && (
               <button
-                onClick={onOpenResume}
+                onClick={() => {
+                  playSFX('modalOpen')
+                  onOpenResume()
+                }}
+                onMouseEnter={() => playSFX('hover')}
                 data-cursor="open"
-                className="text-eyebrow text-xs border border-border bg-surface/60 hover:border-accent/60 hover:text-accent px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5"
+                className="text-eyebrow text-xs border border-border bg-surface/60 hover:border-accent/60 hover:text-accent px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 min-h-[38px]"
               >
                 <FileText size={13} className="text-accent" />
                 <span>Resume</span>
@@ -136,25 +153,33 @@ export default function Nav({ onOpenResume }: NavProps) {
 
             <a
               href="#contact"
+              onClick={() => playSFX('click')}
+              onMouseEnter={() => playSFX('hover')}
               data-cursor="open"
-              className="text-eyebrow text-xs border border-accent/50 bg-accent/10 text-accent hover:bg-accent hover:text-background px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 shadow-[0_0_15px_rgba(53,224,224,0.15)]"
+              className="text-eyebrow text-xs border border-accent/50 bg-accent/10 text-accent hover:bg-accent hover:text-background px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 shadow-[0_0_15px_rgba(53,224,224,0.15)] min-h-[38px]"
             >
               <span>Get in Touch</span>
               <ArrowUpRight size={13} />
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            ref={menuButtonRef}
-            className="lg:hidden text-foreground p-2 rounded border border-border bg-surface/70 hover:border-accent/50 transition-colors"
-            aria-label="Toggle navigation menu"
-            aria-controls="mobile-navigation"
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <X size={22} className="text-accent" /> : <Menu size={22} />}
-          </button>
+          {/* Mobile Right Bar: SoundToggle + Mobile Menu Button */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <SoundToggle showLabel={false} />
+            <button
+              ref={menuButtonRef}
+              className="text-foreground p-2 rounded border border-border bg-surface/70 hover:border-accent/50 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label="Toggle navigation menu"
+              aria-controls="mobile-navigation"
+              aria-expanded={open}
+              onClick={() => {
+                playSFX('mobileMenu')
+                setOpen((v) => !v)
+              }}
+            >
+              {open ? <X size={22} className="text-accent" /> : <Menu size={22} />}
+            </button>
+          </div>
         </nav>
       </header>
 
@@ -172,7 +197,10 @@ export default function Nav({ onOpenResume }: NavProps) {
             aria-label="Mobile navigation"
           >
             <div className="flex flex-col gap-6">
-              <span className="text-eyebrow text-accent">NAVIGATION</span>
+              <div className="flex items-center justify-between">
+                <span className="text-eyebrow text-accent">NAVIGATION</span>
+                <SoundToggle />
+              </div>
               <div className="flex flex-col gap-4">
                 {LINKS.map((l, idx) => (
                   <motion.a
@@ -181,9 +209,12 @@ export default function Nav({ onOpenResume }: NavProps) {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.05 + 0.1, duration: 0.3 }}
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      playSFX('nav')
+                      setOpen(false)
+                    }}
                     aria-current={activeSection === l.href.substring(1) ? 'page' : undefined}
-                    className={`font-display text-3xl sm:text-4xl transition-colors flex items-center justify-between ${
+                    className={`font-display text-3xl sm:text-4xl transition-colors flex items-center justify-between min-h-[44px] ${
                       activeSection === l.href.substring(1)
                         ? 'text-accent font-medium'
                         : 'text-foreground hover:text-accent'
@@ -201,10 +232,11 @@ export default function Nav({ onOpenResume }: NavProps) {
                 {onOpenResume && (
                   <button
                     onClick={() => {
+                      playSFX('modalOpen')
                       setOpen(false)
                       onOpenResume()
                     }}
-                    className="flex-1 text-eyebrow border border-border bg-surface text-foreground hover:border-accent py-3 px-4 rounded-full text-center text-xs flex items-center justify-center gap-2"
+                    className="flex-1 text-eyebrow border border-border bg-surface text-foreground hover:border-accent py-3 px-4 rounded-full text-center text-xs flex items-center justify-center gap-2 min-h-[44px]"
                   >
                     <FileText size={14} className="text-accent" />
                     <span>View Resume</span>
@@ -212,8 +244,11 @@ export default function Nav({ onOpenResume }: NavProps) {
                 )}
                 <a
                   href="#contact"
-                  onClick={() => setOpen(false)}
-                  className="flex-1 text-eyebrow bg-accent text-background font-medium py-3 px-4 rounded-full text-center text-xs flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(53,224,224,0.3)]"
+                  onClick={() => {
+                    playSFX('click')
+                    setOpen(false)
+                  }}
+                  className="flex-1 text-eyebrow bg-accent text-background font-medium py-3 px-4 rounded-full text-center text-xs flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(53,224,224,0.3)] min-h-[44px]"
                 >
                   <span>Contact Me</span>
                   <ArrowUpRight size={14} />
