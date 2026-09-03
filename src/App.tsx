@@ -10,7 +10,6 @@ import Achievements from './components/Achievements'
 import Certifications from './components/Certifications'
 import About from './components/About'
 import Skills from './components/Skills'
-import Services from './components/Services'
 import Experience from './components/Experience'
 import Contact from './components/Contact'
 import ResumeModal from './components/ResumeModal'
@@ -77,7 +76,6 @@ function PortfolioContent() {
         <Certifications />
         <About onOpenResume={() => setIsResumeOpen(true)} />
         <Skills />
-        <Services />
         <Experience />
         <Contact onOpenResume={() => setIsResumeOpen(true)} />
       </main>

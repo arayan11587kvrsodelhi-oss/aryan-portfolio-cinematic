@@ -9,7 +9,6 @@ const LINKS = [
   { label: 'Achievements', href: '#achievements' },
   { label: 'Certifications', href: '#certifications' },
   { label: 'About', href: '#about' },
-  { label: 'Capabilities', href: '#services' },
   { label: 'Toolkit', href: '#skills' },
   { label: 'Experience', href: '#experience' },
   { label: 'Contact', href: '#contact' },
@@ -33,7 +32,7 @@ export default function Nav({ onOpenResume }: NavProps) {
       setScrolled(window.scrollY > 30)
 
       // Section intersection detection with viewport-relative scoring
-      const sections = ['top', 'work', 'achievements', 'certifications', 'about', 'services', 'skills', 'experience', 'contact']
+      const sections = ['top', 'work', 'achievements', 'certifications', 'about', 'skills', 'experience', 'contact']
       const scrollPosition = window.scrollY + window.innerHeight * 0.35
 
       for (let i = sections.length - 1; i >= 0; i--) {
