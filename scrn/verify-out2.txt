@@ -1,0 +1,34 @@
+== launching headless chrome ==
+== page loaded, desktop 1440x900 ==
+[work] pin starts at scrollY=1590
+[work] start -> {"x":0,"counter":"01 / 15"}
+[shot] work-01.png
+[work] new counter -> x=0 counter=01 / 15
+[work] final -> {"x":0,"counter":"01 / 15"}
+[shot] work-end.png
+[work] release: y 11461 -> 11461 RELEASED=false
+[work] MOVED=false REACHED_15_15=false
+[cert] new counter -> 01 / 07
+[cert] final -> {"x":0,"counter":"01 / 07"}
+[shot] cert-end.png
+[cert] release: y 11461 -> 11461 RELEASED=false
+[shot] skills.png
+[shot] experience.png
+[mobile] {"overflowX":0,"mobileWork":true,"thumbs":15,"certScrollable":true,"certPanels":7,"workCounter":"(15)"}
+[shot] mobile-hero.png
+[shot] mobile-certs.png
+[mobile] cert counter after next -> 02 / 07
+[shot] mobile-work.png
+== console messages (error/warning/exception) ==
+NONE
+== SUMMARY ==
+PROJECTS_MOVED=false
+PROJECTS_15_15=false
+PROJECTS_RELEASED=false
+CERTS_FINAL={"x":0,"counter":"01 / 07"}
+CERTS_RELEASED=false
+MOBILE_OVERFLOW_X=0
+MOBILE_WORK_OK=true
+MOBILE_CERTS_OK=true
+MOBILE_CERT_NEXT=02 / 07
+CONSOLE_ISSUES=0

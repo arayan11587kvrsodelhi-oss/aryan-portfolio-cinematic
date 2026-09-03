@@ -1,0 +1,84 @@
+== launching headless chrome ==
+== page loaded, desktop 1440x900 ==
+[work] pin starts at scrollY=1590
+[work] start -> {"x":0,"counter":"01 / 15"}
+[shot] work-01.png
+[work] batch 1 -> x=0 counter=01 / 15
+[work] batch 2 -> x=0 counter=01 / 15
+[work] batch 3 -> x=0 counter=01 / 15
+[work] batch 4 -> x=0 counter=01 / 15
+[work] batch 5 -> x=0 counter=01 / 15
+[work] batch 6 -> x=0 counter=01 / 15
+[work] batch 7 -> x=0 counter=01 / 15
+[shot] work-mid.png
+[work] batch 8 -> x=0 counter=01 / 15
+[work] batch 9 -> x=0 counter=01 / 15
+[work] batch 10 -> x=0 counter=01 / 15
+[work] batch 11 -> x=0 counter=01 / 15
+[work] batch 12 -> x=0 counter=01 / 15
+[work] batch 13 -> x=0 counter=01 / 15
+[work] batch 14 -> x=0 counter=01 / 15
+[work] batch 15 -> x=0 counter=01 / 15
+[work] batch 16 -> x=0 counter=01 / 15
+[work] batch 17 -> x=0 counter=01 / 15
+[work] batch 18 -> x=0 counter=01 / 15
+[work] batch 19 -> x=0 counter=01 / 15
+[work] batch 20 -> x=0 counter=01 / 15
+[work] batch 21 -> x=0 counter=01 / 15
+[work] batch 22 -> x=0 counter=01 / 15
+[work] batch 23 -> x=0 counter=01 / 15
+[work] batch 24 -> x=0 counter=01 / 15
+[work] batch 25 -> x=0 counter=01 / 15
+[work] batch 26 -> x=0 counter=01 / 15
+[work] final -> {"x":0,"counter":"01 / 15"}
+[shot] work-end.png
+[work] MOVED=false REACHED_15_15=false
+[cert] batch 1 -> counter=01 / 07
+[cert] batch 2 -> counter=01 / 07
+[cert] batch 3 -> counter=01 / 07
+[cert] batch 4 -> counter=01 / 07
+[cert] batch 5 -> counter=01 / 07
+[cert] batch 6 -> counter=01 / 07
+[cert] batch 7 -> counter=01 / 07
+[cert] batch 8 -> counter=01 / 07
+[cert] batch 9 -> counter=01 / 07
+[cert] batch 10 -> counter=01 / 07
+[cert] batch 11 -> counter=01 / 07
+[cert] batch 12 -> counter=01 / 07
+[cert] batch 13 -> counter=01 / 07
+[cert] batch 14 -> counter=01 / 07
+[cert] batch 15 -> counter=01 / 07
+[cert] batch 16 -> counter=01 / 07
+[cert] batch 17 -> counter=01 / 07
+[cert] batch 18 -> counter=01 / 07
+[cert] batch 19 -> counter=01 / 07
+[cert] batch 20 -> counter=01 / 07
+[cert] batch 21 -> counter=01 / 07
+[cert] batch 22 -> counter=01 / 07
+[cert] batch 23 -> counter=01 / 07
+[cert] batch 24 -> counter=01 / 07
+[cert] batch 25 -> counter=01 / 07
+[cert] batch 26 -> counter=01 / 07
+[cert] batch 27 -> counter=01 / 07
+[cert] batch 28 -> counter=01 / 07
+[cert] batch 29 -> counter=01 / 07
+[cert] batch 30 -> counter=01 / 07
+[cert] final -> {"x":0,"counter":"01 / 07"}
+[shot] cert-end.png
+[shot] skills.png
+[shot] experience.png
+[mobile] {"overflowX":0,"mobileWork":true,"thumbs":15,"certScrollable":true,"certPanels":7,"workCounter":"(15)"}
+[shot] mobile-hero.png
+[shot] mobile-certs.png
+[mobile] cert counter after next -> ALL CERTIFICATES (07)
+[shot] mobile-work.png
+== console messages (error/warning/exception) ==
+NONE
+== SUMMARY ==
+PROJECTS_MOVED=false
+PROJECTS_15_15=false
+CERTS_FINAL={"x":0,"counter":"01 / 07"}
+MOBILE_OVERFLOW_X=0
+MOBILE_WORK_OK=true
+MOBILE_CERTS_OK=true
+CONSOLE_ISSUES=0
