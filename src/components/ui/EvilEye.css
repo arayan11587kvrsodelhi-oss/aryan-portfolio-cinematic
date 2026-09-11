@@ -2,3 +2,15 @@
   width: 100%;
   height: 100%;
 }
+
+/* Mobile-only presentation tuning:
+   Reduces visual intensity and glare on narrow mobile screens (below 768px)
+   by approximately 45–55%, making the central eye darker and reducing excessive glow
+   while preserving the vivid green/blue identity, fluid breathing, and visible motion.
+   Desktop (768px+) remains 100% untouched. */
+@media (max-width: 767px) {
+  .evil-eye-container {
+    filter: brightness(0.58) contrast(1.12) saturate(0.95);
+    opacity: 0.58;
+  }
+}

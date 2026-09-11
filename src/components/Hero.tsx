@@ -214,7 +214,7 @@ export default function Hero({
           flameSpeed={0.75}
           className="opacity-75"
         />
-        {/* Subtle radial vignette to guarantee crisp legibility for typography */}
+        {/* Subtle radial vignette to guarantee crisp legibility for typography (desktop base) */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_100%_90%_at_50%_45%,transparent_20%,rgba(3,7,6,0.55)_85%,rgba(3,7,6,0.92)_100%)]" />
       </div>
 
@@ -230,6 +230,33 @@ export default function Hero({
           opacity-20
           pointer-events-none
           z-[1]
+        "
+        aria-hidden="true"
+      />
+
+      {/* ================================================================
+          MOBILE-ONLY CONTRAST / VIGNETTE LAYER (widths < 768px)
+          Sits ABOVE Evil Eye background & grid, and BELOW Hero content.
+          Layer hierarchy:
+          Hero
+           ├── existing grid/background (z-[1])
+           ├── Evil Eye WebGL (z-0)
+           ├── mobile-only contrast/vignette layer (z-[2])
+           └── Hero content (z-10)
+          Darkens the center directly behind "ARYAN SHARMA" typography with
+          near-black / deep-green radial gradient (center ~0.65, edges ~0.35)
+          avoiding a flat rectangle while ensuring high contrast.
+          Hidden completely on desktop (md:hidden).
+          ================================================================= */}
+      <div
+        className="
+          hero-mobile-vignette
+          md:hidden
+          absolute
+          inset-0
+          z-[2]
+          pointer-events-none
+          bg-[radial-gradient(circle_at_50%_42%,rgba(3,7,6,0.68)_0%,rgba(3,7,6,0.56)_35%,rgba(3,7,6,0.30)_72%,rgba(3,7,6,0.70)_100%)]
         "
         aria-hidden="true"
       />
@@ -371,11 +398,11 @@ export default function Hero({
               select-none
             "
           >
-            <span className="block overflow-hidden text-white">
+            <span className="block overflow-hidden text-white drop-shadow-[0_2px_12px_rgba(3,7,6,0.7)] md:drop-shadow-none">
               {renderChars('ARYAN')}
             </span>
 
-            <span className="block text-accent overflow-hidden">
+            <span className="block text-accent overflow-hidden drop-shadow-[0_2px_14px_rgba(3,7,6,0.8)] md:drop-shadow-none">
               {renderChars('SHARMA')}
             </span>
           </h1>
