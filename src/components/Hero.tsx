@@ -182,6 +182,8 @@ export default function Hero({
         sm:pt-28
         pb-8
         sm:pb-10
+        max-md:pt-20
+        max-md:pb-5
         overflow-hidden
       "
     >
@@ -256,7 +258,7 @@ export default function Hero({
           inset-0
           z-[2]
           pointer-events-none
-          bg-[radial-gradient(circle_at_50%_42%,rgba(3,7,6,0.68)_0%,rgba(3,7,6,0.56)_35%,rgba(3,7,6,0.30)_72%,rgba(3,7,6,0.70)_100%)]
+          bg-[radial-gradient(circle_at_50%_44%,rgba(3,7,6,0.74)_0%,rgba(3,7,6,0.62)_32%,rgba(3,7,6,0.40)_62%,rgba(3,7,6,0.26)_82%,rgba(3,7,6,0.62)_100%)]
         "
         aria-hidden="true"
       />
@@ -349,6 +351,7 @@ export default function Hero({
           flex-col
           justify-center
           my-6
+          max-md:my-3
           z-10
         "
       >
@@ -402,7 +405,7 @@ export default function Hero({
               {renderChars('ARYAN')}
             </span>
 
-            <span className="block text-accent overflow-hidden drop-shadow-[0_2px_14px_rgba(3,7,6,0.8)] md:drop-shadow-none">
+            <span className="block text-[#030706] md:text-accent overflow-hidden drop-shadow-[0_0_1px_rgba(25,184,154,0.35)] md:drop-shadow-none">
               {renderChars('SHARMA')}
             </span>
           </h1>
