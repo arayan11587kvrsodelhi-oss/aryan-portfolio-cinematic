@@ -401,11 +401,28 @@ export default function Hero({
               select-none
             "
           >
-            <span className="block overflow-hidden text-white drop-shadow-[0_2px_12px_rgba(3,7,6,0.7)] md:drop-shadow-none">
+            <span
+              className="
+                block
+                overflow-hidden
+                text-white
+                [text-shadow:0_3px_20px_rgba(0,0,0,0.52),0_1px_6px_rgba(0,0,0,0.36)]
+                md:[text-shadow:0_3px_18px_rgba(0,0,0,0.45),0_1px_5px_rgba(0,0,0,0.30)]
+              "
+            >
               {renderChars('ARYAN')}
             </span>
 
-            <span className="block text-[#030706] md:text-accent overflow-hidden drop-shadow-[0_0_1px_rgba(25,184,154,0.35)] md:drop-shadow-none">
+            <span
+              className="
+                block
+                overflow-hidden
+                text-[#030706]
+                md:text-accent
+                [text-shadow:0_4px_24px_rgba(0,0,0,0.78),0_2px_8px_rgba(0,0,0,0.52)]
+                md:[text-shadow:0_4px_22px_rgba(0,0,0,0.70),0_2px_7px_rgba(0,0,0,0.45)]
+              "
+            >
               {renderChars('SHARMA')}
             </span>
           </h1>
