@@ -3,6 +3,8 @@ import amberHourImage from '../assets/photos/amber-hour.png'
 import portfolioImage from '../assets/photos/portfolio.png'
 import sentinelSocImage from '../assets/photos/sentinel-soc-v2.2.png'
 import nexusDashboardImage from '../assets/photos/nexus-dashboard.png'
+import hayaImage from '../assets/photos/haya-footwear.png'
+import vigilImage from '../assets/photos/vigil-cloud-security.png'
 export interface Project {
   id: string
   number: string
@@ -57,8 +59,38 @@ export const projects: Project[] = [
     badge: 'SECURITY OPERATIONS CENTER'
   },
   {
-    id: 'velora',
+    id: 'vigil-cloud-security',
     number: '02',
+    title: 'VIGIL — CLOUD SECURITY INTELLIGENCE',
+    category: 'CYBERSECURITY / CLOUD SECURITY',
+    tagline: 'ATTACK SURFACE. MAPPED. ANALYZED.',
+    description: 'A cloud security intelligence and attack-surface visualization platform built to explore vulnerability analysis, attack-path mapping, and security telemetry through an interactive command-center interface.',
+    problemSolved: 'Explores how cloud security risks — vulnerabilities, attack paths, and security telemetry — can be modeled, visualized, and analyzed in one unified security engineering workspace without requiring live production cloud environments.',
+    keyFeatures: [
+      'Interactive attack-surface visualization with node-graph exploration built on React Flow',
+      'Security risk dashboards and telemetry charts powered by Recharts',
+      'FastAPI backend exposing security intelligence over a REST API layer',
+      'Optional PostgreSQL persistence via SQLAlchemy for security records',
+      'Motion-driven command-center UI built with Framer Motion and React Router'
+    ],
+    architectureDetails: [
+      'Python FastAPI backend with a health-check endpoint and optional PostgreSQL/SQLAlchemy store',
+      'React + TypeScript + Vite frontend with Tailwind CSS styling',
+      'React Flow graph engine for attack-path and attack-surface topology views',
+      'Deployed frontend on GitHub Pages with a hosted backend instance'
+    ],
+    myContribution: 'Designed and built the full-stack security intelligence platform — the FastAPI service layer, data models, and the React command-center interface with graph and chart visualizations. Personal security engineering portfolio project, not a production cloud deployment.',
+    tech: ['React', 'TypeScript', 'Vite', 'FastAPI', 'Python', 'PostgreSQL', 'SQLAlchemy', 'React Flow', 'Recharts', 'Framer Motion'],
+    image: vigilImage,
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/vigil-cloud-security/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/vigil-cloud-security',
+    accentNote: 'Cloud security intelligence',
+    featured: true,
+    badge: 'SECURITY ENGINEERING'
+  },
+  {
+    id: 'velora',
+    number: '03',
     title: 'VELORA',
     category: 'FINTECH / FRONTEND CONCEPT',
     tagline: 'Banking clarity, explored as a concept',
@@ -89,7 +121,7 @@ export const projects: Project[] = [
   },
   {
     id: 'nexus-dashboard',
-    number: '03',
+    number: '04',
     title: 'NEXUS DASHBOARD',
     category: 'DEVELOPER INTELLIGENCE',
     tagline: 'GitHub Developer Intelligence Dashboard',
@@ -120,8 +152,37 @@ export const projects: Project[] = [
     badge: 'REAL-TIME ANALYTICS'
   },
   {
+    id: 'haya-footwear',
+    number: '05',
+    title: 'HAYA — PREMIUM FOOTWEAR CONCEPT',
+    category: 'CREATIVE FRONTEND / UI ENGINEERING',
+    tagline: 'Editorial art direction, engineered in motion.',
+    description: 'A premium footwear concept focused on editorial art direction and immersive product presentation — explicitly framed as a design study, not a commercial brand.',
+    problemSolved: 'Explores how a product-led brand story can be told through editorial layout, motion systems, and performance-conscious frontend engineering while remaining transparent as a fictional concept.',
+    keyFeatures: [
+      'Editorial art direction with immersive product presentation and imagery',
+      'Motion system built on Framer Motion with Lenis smooth scrolling',
+      'Responsive layout tuned across mobile, tablet, and desktop breakpoints',
+      'Accessibility care including reduced-motion support and real in-page navigation',
+      'Honest copywriting — fabricated stats, reviews, and press mentions removed'
+    ],
+    architectureDetails: [
+      'React + TypeScript + Vite with Tailwind CSS',
+      'Framer Motion choreography with Lenis momentum scrolling',
+      'Static deployment on Vercel'
+    ],
+    myContribution: 'Directed the visual concept, built the landing experience, and engineered the motion system and responsive layouts as a personal design-engineering study.',
+    tech: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Framer Motion', 'Lenis'],
+    image: hayaImage,
+    demoUrl: 'https://haya-footwear.vercel.app/',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/haya-footwear',
+    accentNote: 'Concept project — not a real brand',
+    featured: true,
+    badge: 'CREATIVE CONCEPT'
+  },
+  {
     id: 'amber-hour',
-    number: '04',
+    number: '06',
     title: 'AMBER HOUR',
     category: 'CREATIVE WEB EXPERIENCE',
     tagline: 'Cinematic Small-Batch Artisanal Coffee Experience',
@@ -150,7 +211,7 @@ export const projects: Project[] = [
   },
   {
     id: 'aryan-sharma-portfolio',
-    number: '05',
+    number: '07',
     title: 'ARYAN PORTFOLIO CINEMATIC',
     category: 'CREATIVE DEVELOPMENT',
     tagline: 'Cinematic Developer Portfolio & Interaction Laboratory',

@@ -11,6 +11,8 @@ import aryanImage from '../assets/photos/aryan-project.png'
 import nissanImage from '../assets/photos/nissan.jpg'
 import sentinelSocImage from '../assets/photos/sentinel-soc-v2.2.png'
 import nexusDashboardImage from '../assets/photos/nexus-dashboard.png'
+import hayaImage from '../assets/photos/haya-footwear.png'
+import vigilImage from '../assets/photos/vigil-cloud-security.png'
 
 export type RepoCategory =
   | 'FEATURED'
@@ -80,6 +82,66 @@ export const githubRepos: GitHubRepo[] = [
       'Sentinel AI defensive analyst with MITRE ATT&CK mapping and forensic steps'
     ],
     architecture: 'FastAPI asynchronous backend + SQLite event store + React Vite frontend with real-time WebSocket telemetry.'
+  },
+  {
+    id: 'vigil-cloud-security',
+    name: 'vigil-cloud-security',
+    displayName: 'VIGIL — CLOUD SECURITY INTELLIGENCE',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/vigil-cloud-security',
+    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/vigil-cloud-security/',
+    description: 'Cloud security intelligence and attack-surface visualization platform built to explore vulnerability analysis, attack-path mapping, and security telemetry through an interactive command-center interface.',
+    primaryLanguage: 'TypeScript',
+    technologies: ['React', 'TypeScript', 'Vite', 'FastAPI', 'Python', 'PostgreSQL', 'SQLAlchemy', 'React Flow', 'Recharts', 'Framer Motion'],
+    category: 'CYBERSECURITY',
+    status: 'Security Engineering Project',
+    isFeatured: true,
+    isExperiment: false,
+    isSmallerProject: false,
+    createdAt: '2026-09-01',
+    updatedAt: '2026-09-12',
+    stars: 0,
+    forks: 0,
+    topics: ['cloud-security', 'attack-surface', 'fastapi', 'react-flow', 'recharts'],
+    previewImage: vigilImage,
+    readmeSnippet: 'Cloud Security Intelligence platform for monitoring, analyzing, and visualizing security risks across cloud environments.',
+    keyHighlights: [
+      'Interactive attack-surface visualization with React Flow node graphs',
+      'Security risk dashboards and telemetry charts powered by Recharts',
+      'FastAPI backend exposing security intelligence over REST endpoints',
+      'Optional PostgreSQL persistence via SQLAlchemy data models',
+      'Command-center UI with motion-driven views and React Router navigation'
+    ],
+    architecture: 'Python FastAPI backend (optional PostgreSQL/SQLAlchemy store) + React/TypeScript Vite frontend with React Flow attack-path graphs and Recharts telemetry.'
+  },
+  {
+    id: 'haya-footwear',
+    name: 'haya-footwear',
+    displayName: 'HAYA — PREMIUM FOOTWEAR CONCEPT',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/haya-footwear',
+    demoUrl: 'https://haya-footwear.vercel.app/',
+    description: 'A premium footwear concept focused on editorial art direction, immersive product presentation, motion systems, and performance-conscious frontend implementation. Explicitly a design study, not a real brand.',
+    primaryLanguage: 'TypeScript',
+    technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Framer Motion', 'Lenis'],
+    category: 'CREATIVE EXPERIMENTS',
+    status: 'Creative Concept',
+    isFeatured: true,
+    isExperiment: false,
+    isSmallerProject: false,
+    createdAt: '2026-09-05',
+    updatedAt: '2026-09-10',
+    stars: 0,
+    forks: 0,
+    topics: ['editorial-design', 'framer-motion', 'lenis-scroll', 'concept-project'],
+    previewImage: hayaImage,
+    readmeSnippet: 'haya — a premium footwear concept with editorial art direction, product imagery, motion, and honest concept framing.',
+    keyHighlights: [
+      'Editorial art direction with immersive product presentation',
+      'Motion system built on Framer Motion with Lenis smooth scrolling',
+      'Responsive layout across mobile, tablet, and desktop breakpoints',
+      'Accessibility care including reduced-motion support and real navigation',
+      'Concept framing — fabricated stats, reviews, and press mentions removed'
+    ],
+    architecture: 'React + TypeScript + Vite with Tailwind CSS, Framer Motion choreography, and Lenis momentum scrolling, deployed on Vercel.'
   },
   {
     id: 'nexus-dashboard',
@@ -320,29 +382,30 @@ export const githubRepos: GitHubRepo[] = [
     name: 'portfolio-card',
     displayName: 'PORTFOLIO CARD',
     githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/portfolio-card',
-    demoUrl: 'https://arayan11587kvrsodelhi-oss.github.io/portfolio-card/',
-    description: 'A compact, shareable digital business card communicating core skills, availability status, and social entry points with electric border glow effects.',
-    primaryLanguage: 'CSS',
-    technologies: ['CSS3', 'HTML5', 'JavaScript', 'BorderGlow.js'],
-    category: 'CREATIVE EXPERIMENTS',
-    status: 'Interactive Component',
+    demoUrl: 'https://portfolio-card-lake.vercel.app/',
+    description: 'A full-stack personal contact/profile card — the original static card rebuilt as a Next.js + TypeScript + PostgreSQL application with API routes, server-side validation, and a rate-limited contact endpoint.',
+    primaryLanguage: 'TypeScript',
+    technologies: ['Next.js 14', 'TypeScript', 'React 18', 'Prisma 5', 'PostgreSQL', 'Zod', 'Vercel'],
+    category: 'FULL STACK',
+    status: 'Full-Stack Application',
     isFeatured: false,
-    isExperiment: true,
+    isExperiment: false,
     isSmallerProject: true,
     createdAt: '2026-08-05',
-    updatedAt: '2026-08-18',
+    updatedAt: '2026-09-08',
     stars: 0,
     forks: 0,
-    topics: ['card-interactions', 'electric-border', 'glow-effect'],
+    topics: ['nextjs', 'full-stack', 'prisma', 'postgresql', 'contact-form'],
     previewImage: portfolioCardImage,
-    readmeSnippet: 'Minimalist developer profile card featuring electric border and glow shader interactions.',
+    readmeSnippet: 'Full-stack portfolio card rebuilt with Next.js, TypeScript, Prisma, and PostgreSQL — preserving the original electric-border visual design.',
     keyHighlights: [
-      'Electric border animation with dynamic mouse tracking',
-      'Live availability status indicator',
-      'Concise developer introduction and stack breakdown',
-      'Lightweight sub-50KB bundle for instant rendering'
+      'Profile, skills, and projects served from PostgreSQL via a public API',
+      'Contact form with Zod validation, rate limiting, honeypot anti-spam, and persisted messages',
+      'Health endpoint checking live database connectivity',
+      'Original card visual design preserved: animated electric border, cursor-tracked glow, 3D tilt',
+      'Accessibility and reduced-motion support with responsive layout from 375px to 1920px'
     ],
-    architecture: 'Custom canvas-based electric border shader and responsive CSS card container.'
+    architecture: 'Next.js 14 App Router + TypeScript with Prisma 5 over PostgreSQL, API routes with server-side Zod validation, deployed on Vercel.'
   },
   {
     id: 'portfolio',
