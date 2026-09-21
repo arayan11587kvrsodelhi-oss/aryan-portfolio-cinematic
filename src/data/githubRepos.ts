@@ -11,8 +11,8 @@ import aryanImage from '../assets/photos/aryan-project.png'
 import nissanImage from '../assets/photos/nissan.jpg'
 import sentinelSocImage from '../assets/photos/sentinel-soc-v2.2.png'
 import nexusDashboardImage from '../assets/photos/nexus-dashboard.png'
-import hayaImage from '../assets/photos/haya-footwear.png'
-import vigilImage from '../assets/photos/vigil-cloud-security.png'
+import hayaImage from '../assets/photos/haya-project-preview.webp'
+import vigilImage from '../assets/photos/vigil-project-preview.webp'
 
 export type RepoCategory =
   | 'FEATURED'
