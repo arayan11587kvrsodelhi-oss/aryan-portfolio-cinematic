@@ -9,6 +9,7 @@ export type SoundType =
   | 'success'
   | 'mobileMenu'
   | 'toggle'
+  | 'pageFlip'
 
 class SoundManager {
   private ctx: AudioContext | null = null
@@ -39,7 +40,13 @@ class SoundManager {
     success: 0.68,
     mobileMenu: 0.7,
     toggle: 0.7,
+    // Page turn is deliberately very quiet: it plays on every page flip.
+    pageFlip: 0.34,
   }
+
+  // Hard throttle so rapid flipping can never stack into a loud drone.
+  private lastPageFlipTime = 0
+  private pageFlipThrottleMs = 260
 
   constructor() {
     // Intentionally do not create AudioContext here.
@@ -314,7 +321,64 @@ class SoundManager {
       case 'toggle':
         this.playToggle(now, level)
         break
+
+      case 'pageFlip':
+        this.playPageFlip(now, level)
+        break
     }
+  }
+
+  /**
+   * Short paper-rustle for the project book page turn.
+   *
+   * Synthesised (no audio asset to download): a brief band-passed noise burst
+   * with a fast decay, which reads as paper moving rather than a UI blip.
+   * Self-throttling and gesture-gated by play(), so it can never stack up or
+   * fire before a user interaction.
+   */
+  private playPageFlip(now: number, level: number) {
+    const performanceNow = performance.now()
+    if (performanceNow - this.lastPageFlipTime < this.pageFlipThrottleMs) {
+      return
+    }
+    this.lastPageFlipTime = performanceNow
+
+    if (!this.ctx || !this.masterGain) return
+
+    const duration = 0.16
+    const frameCount = Math.max(1, Math.floor(this.ctx.sampleRate * duration))
+    const buffer = this.ctx.createBuffer(1, frameCount, this.ctx.sampleRate)
+    const channel = buffer.getChannelData(0)
+
+    // Filtered noise: correlated samples give a softer, papery rustle.
+    let previous = 0
+    for (let i = 0; i < frameCount; i++) {
+      const white = Math.random() * 2 - 1
+      previous = previous * 0.72 + white * 0.28
+      channel[i] = previous
+    }
+
+    const source = this.ctx.createBufferSource()
+    source.buffer = buffer
+
+    const filter = this.ctx.createBiquadFilter()
+    filter.type = 'bandpass'
+    filter.frequency.setValueAtTime(2100, now)
+    filter.frequency.exponentialRampToValueAtTime(900, now + duration)
+    filter.Q.value = 0.7
+
+    const gain = this.ctx.createGain()
+    // Very low peak, fast decay: a page passing, not a notification.
+    gain.gain.setValueAtTime(0.0001, now)
+    gain.gain.exponentialRampToValueAtTime(0.16 * level, now + 0.012)
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration)
+
+    source.connect(filter)
+    filter.connect(gain)
+    gain.connect(this.masterGain)
+
+    source.start(now)
+    source.stop(now + duration + 0.02)
   }
 
   // 1. Subtle tactile button hover tick
