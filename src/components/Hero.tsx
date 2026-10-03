@@ -14,6 +14,7 @@ import {
 import { useSFX } from '../hooks/useSFX'
 import portrait from '../assets/photos/portrait.jpg'
 import EvilEye from './ui/EvilEye'
+import TechText from './TechText'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -39,19 +40,24 @@ export default function Hero({
     const ctx = gsap.context(() => {
       if (!prefersReducedMotion) {
         /* ================================================================
-           HERO TITLE REVEAL
+           HERO NAME REVEAL
+
+           The wordmark is a single <canvas>, so the old per-character
+           stagger no longer has elements to target. The entrance is
+           preserved as a single soft rise + fade on the wrapper: the
+           same moment in the hero choreography, the same delay, and
+           animating only opacity/transform means no layout shift.
            ================================================================= */
         gsap.fromTo(
-          '.hero-char',
+          '.hero-name-techtext',
           {
-            yPercent: 110,
+            yPercent: 18,
             opacity: 0,
           },
           {
             yPercent: 0,
             opacity: 1,
             duration: 1.05,
-            stagger: 0.025,
             ease: 'power4.out',
             delay: 0.15,
           }
@@ -149,19 +155,6 @@ export default function Hero({
       ctx.revert()
     }
   }, [])
-
-  /* ================================================================
-     LETTER-BY-LETTER HERO TITLE
-     ================================================================= */
-  const renderChars = (text: string) =>
-    text.split('').map((char, i) => (
-      <span
-        key={`${text}-${i}`}
-        className="hero-char inline-block will-change-transform"
-      >
-        {char}
-      </span>
-    ))
 
   return (
     <section
@@ -387,44 +380,42 @@ export default function Hero({
           </div>
 
           {/* ============================================================
-              HERO NAME
-              ============================================================ */}
-          <h1
-            className="
-              font-display
-              font-medium
-              text-hero
-              leading-[0.84]
-              -ml-1
-              tracking-[-0.055em]
-              my-3
-              select-none
-            "
-          >
-            <span
-              className="
-                block
-                overflow-hidden
-                text-white
-                [text-shadow:0_3px_20px_rgba(0,0,0,0.52),0_1px_6px_rgba(0,0,0,0.36)]
-                md:[text-shadow:0_3px_18px_rgba(0,0,0,0.45),0_1px_5px_rgba(0,0,0,0.30)]
-              "
-            >
-              {renderChars('ARYAN')}
-            </span>
+              HERO NAME — TechText (official React Bits Tech Text)
 
-            <span
-              className="
-                block
-                overflow-hidden
-                text-[#030706]
-                md:text-accent
-                [text-shadow:0_4px_24px_rgba(0,0,0,0.78),0_2px_8px_rgba(0,0,0,0.52)]
-                md:[text-shadow:0_4px_22px_rgba(0,0,0,0.70),0_2px_7px_rgba(0,0,0,0.45)]
-              "
-            >
-              {renderChars('SHARMA')}
-            </span>
+              Replaces the previous per-character DOM name. The canvas draws the
+              wordmark and carries role="img" / aria-label="Aryan Sharma", so
+              the name is still announced exactly once and this <h1> still owns
+              the heading outline. Nothing else in the hero changed: the badge,
+              value proposition, CTAs, socials, role strip, grid and portrait
+              are untouched.
+
+              Colour + type follow the portfolio: Space Grotesk 700 at -0.045em
+              tracking, warm off-white ink, restrained cyan interaction accent.
+              ============================================================ */}
+          <h1 className="hero-name my-3 select-none">
+            <div className="hero-name-techtext">
+              <TechText
+                text="Aryan Sharma"
+                fontFamily="'Space Grotesk', sans-serif"
+                fontWeight={700}
+                fontSize={150}
+                letterSpacing={-0.045}
+                color="#F2EDE2"
+                accentColor="#35E0E0"
+                reveal="letter"
+                reach={190}
+                softness={0.72}
+                dashLength={4}
+                dashGap={2}
+                strokeWidth={1.5}
+                specks={12}
+                selection={true}
+                labels={true}
+                draggable={true}
+                sweep={true}
+                speed={0.8}
+              />
+            </div>
           </h1>
 
           {/* ============================================================

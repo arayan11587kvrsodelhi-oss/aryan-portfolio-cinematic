@@ -1,8 +1,14 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight, Github, Star, GitFork } from 'lucide-react'
-import PageFlip, { type PageFlipDirection } from './PageFlip'
-import { useGitHubRepos, loadLocalImage, type ProjectRepo } from '../hooks/useGitHubRepos'
+import PageFlip, { type PageFlipDirection, type PageFlipHandle } from './PageFlip'
+import {
+  useGitHubRepos,
+  loadLocalImage,
+  hasLocalImage,
+  type ProjectRepo,
+} from '../hooks/useGitHubRepos'
 import { useSFX } from '../hooks/useSFX'
+import { useBookPointer } from '../hooks/useBookPointer'
 
 /* ==========================================================================
    PROJECT BOOK
@@ -23,7 +29,8 @@ import { useSFX } from '../hooks/useSFX'
 const pad2 = (n: number) => String(n).padStart(2, '0')
 
 /* ==========================================================================
-   FEATURED PROJECTS — a hand-curated selection of six repositories.
+   FEATURED PROJECTS — a hand-curated selection of repositories that ship a real
+   screenshot.
 
    This is a manual curation, NOT an objective ranking by stars, traffic,
    quality or popularity. Each entry maps to a real repository already present
@@ -33,6 +40,13 @@ const pad2 = (n: number) => String(n).padStart(2, '0')
    `name` must match the GitHub repository name exactly (case-sensitive), e.g.
    "Nexa-ai". If a repository does not resolve it is simply skipped rather than
    substituted with invented data.
+
+   An entry is ALSO skipped when the project has no real, committed screenshot:
+   a Featured card exists to show the work, and this section must never
+   advertise a project behind an empty frame. Screenshot-less projects are not
+   lost - they stay in the full book below under their existing honest
+   "no screenshot available" fallback and remain reachable with Previous /
+   Next. `hasLocalImage` is the single source of truth for that check.
    ========================================================================== */
 
 interface FeaturedSpec {
@@ -42,14 +56,18 @@ interface FeaturedSpec {
   label: string
 }
 
+/**
+ * Only repositories that ship a real screenshot are listed here.
+ *
+ * Nexa-ai and cyberdesk-incident-management-platform are deliberately absent:
+ * neither has an image in `src/assets/photos`, and fabricating one would be
+ * dishonest. Both remain valid projects - they are still bound as pages in the
+ * full book below, with their explicit no-screenshot fallback, and can be
+ * reached like any other project with Previous / Next.
+ */
 const FEATURED: FeaturedSpec[] = [
   { name: 'sentinel-soc', label: 'Sentinel SOC' },
-  { name: 'Nexa-ai', label: 'NEXA AI' },
   { name: 'velora-fintech-landing-page', label: 'VELORA' },
-  {
-    name: 'cyberdesk-incident-management-platform',
-    label: 'CyberDesk Incident Management Platform',
-  },
   { name: 'vigil-cloud-security', label: 'VIGIL — Cloud Security Intelligence' },
   { name: 'nexus-dashboard', label: 'Nexus Dashboard' },
 ]
@@ -77,13 +95,47 @@ interface ProjectPageProps {
   order: number
   total: number
   image?: string
+  /**
+   * Previous / Next over the WHOLE collection, not the featured subset. These
+   * are the book's own turn functions, so a click animates the leaf and plays
+   * the existing page-flip sound instead of snapping the page.
+   */
+  onPrev: () => void
+  onNext: () => void
+  canPrev: boolean
+  canNext: boolean
+  /**
+   * Neighbour names, used only for the compact hover peek on Previous / Next.
+   * Taken from the same `repos` array as everything else, so nothing extra is
+   * fetched and the peek can never describe a project that is not in the book.
+   */
+  prevName?: string
+  nextName?: string
 }
 
-function ProjectPage({ repo, order, total, image }: ProjectPageProps) {
+function ProjectPage({
+  repo,
+  order,
+  total,
+  image,
+  onPrev,
+  onNext,
+  canPrev,
+  canNext,
+  prevName,
+  nextName,
+}: ProjectPageProps) {
   const tone = toneFor(repo)
 
   return (
-    <article className="pbk-page" style={{ ['--pbk-accent' as string]: tone.accent }}>
+    /* Pointer + custom-cursor context for the page surface itself. The cursor
+       already understands these states; no second cursor is introduced. */
+    <article
+      className="pbk-page"
+      style={{ ['--pbk-accent' as string]: tone.accent }}
+      data-cursor="view"
+      data-cursor-text="VIEW"
+    >
       <div className="pbk-content">
         <header className="pbk-head">
           <span className="pbk-index">{pad2(order)}</span>
@@ -96,99 +148,169 @@ function ProjectPage({ repo, order, total, image }: ProjectPageProps) {
           </div>
         </header>
 
-        <h3 className="pbk-title">{repo.name}</h3>
-
-        <div className="pbk-visual" data-has-image={image ? 'true' : 'false'}>
-          {image ? (
-            <img
-              src={image}
-              alt={`Screenshot of ${repo.name}`}
-              className="pbk-visual-img"
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-            />
-          ) : (
-            /* Abstract cover built from real metadata. Explicitly NOT */
-            /* presented as a screenshot of the application. */
-            <div className="pbk-abstract" aria-hidden="true">
-              <span className="pbk-abstract-glyph">
-                {repo.name.slice(0, 2).toUpperCase()}
-              </span>
-              <span className="pbk-abstract-note">
-                No screenshot available for this repository
-              </span>
-            </div>
-          )}
-        </div>
-
-        <p className="pbk-desc">
-          {repo.status.hasDescription
-            ? repo.description
-            : 'No repository description provided.'}
-        </p>
-
-        {repo.technologies.length > 0 && (
-          <ul className="pbk-tech" aria-label="Technologies">
-            {repo.technologies.map((t) => (
-              <li key={t} className="pbk-chip">
-                {t}
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <footer className="pbk-foot">
-          <div className="pbk-stats">
-            <span className="pbk-stat">
-              <Star size={12} aria-hidden="true" />
-              <span>{repo.stars}</span>
-              <span className="sr-only"> stars</span>
-            </span>
-            <span className="pbk-stat">
-              <GitFork size={12} aria-hidden="true" />
-              <span>{repo.forks}</span>
-              <span className="sr-only"> forks</span>
-            </span>
-            {repo.license && <span className="pbk-license">{repo.license}</span>}
-          </div>
-
-          <div className="pbk-links">
-            <a
-              className="pbk-link"
-              href={repo.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Open GitHub repository ${repo.name}`}
-              data-cursor="open"
-              data-no-drag
-            >
-              <Github size={13} aria-hidden="true" />
-              <span>GitHub</span>
-            </a>
-
-            {/* Only rendered when GitHub actually reports a homepage. */}
-            {repo.status.hasLiveUrl && (
-              <a
-                className="pbk-link pbk-link--live"
-                href={repo.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Open live demo of ${repo.name}`}
-                data-cursor="open"
-                data-no-drag
-              >
-                <span>Live</span>
-                <ArrowUpRight size={13} aria-hidden="true" />
-              </a>
+        {/* Media sits beside the details on a wide page and stacks above them on
+            a narrow one, so the screenshot gets real room to be inspected. */}
+        <div className="pbk-body">
+          <div className="pbk-visual" data-has-image={image ? 'true' : 'false'}>
+            {image ? (
+              <img
+                src={image}
+                alt={`Screenshot of ${repo.name}`}
+                className="pbk-visual-img"
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+              />
+            ) : (
+              /* Explicit fallback. No capture exists for this repository and no
+                 substitute image is used in its place. */
+              <div className="pbk-abstract" aria-hidden="true">
+                <span className="pbk-abstract-glyph">
+                  {repo.name.slice(0, 2).toUpperCase()}
+                </span>
+                <span className="pbk-abstract-note">Project preview unavailable</span>
+              </div>
             )}
           </div>
-        </footer>
-      </div>
 
-      <span className="pbk-page-num" aria-hidden="true">
-        {pad2(order)} / {pad2(total)}
-      </span>
+          <div className="pbk-info">
+            <h3 className="pbk-title">{repo.name}</h3>
+
+            <p className="pbk-desc">
+              {repo.status.hasDescription
+                ? repo.description
+                : 'No repository description provided.'}
+            </p>
+
+            {repo.technologies.length > 0 && (
+              <ul className="pbk-tech" aria-label="Technologies">
+                {repo.technologies.map((t) => (
+                  <li key={t} className="pbk-chip">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <footer className="pbk-foot">
+              <div className="pbk-stats">
+                <span className="pbk-stat">
+                  <Star size={12} aria-hidden="true" />
+                  <span>{repo.stars}</span>
+                  <span className="sr-only"> stars</span>
+                </span>
+                <span className="pbk-stat">
+                  <GitFork size={12} aria-hidden="true" />
+                  <span>{repo.forks}</span>
+                  <span className="sr-only"> forks</span>
+                </span>
+                {repo.license && <span className="pbk-license">{repo.license}</span>}
+              </div>
+
+              {/* Same action treatment as the featured cards: one primary, and a
+                  secondary only when a real deployment URL exists. No disabled
+                  placeholder is ever rendered for a project without one. */}
+              <div className="pbk-actions">
+                <a
+                  className="pbk-action pbk-action--primary"
+                  href={repo.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View repository ${repo.name} on GitHub`}
+                  data-cursor="open"
+                  data-cursor-text="REPO"
+                  data-magnetic
+                  data-no-drag
+                >
+                  <Github size={14} aria-hidden="true" />
+                  <span>View Repository</span>
+                </a>
+
+                {repo.status.hasLiveUrl && repo.demoUrl && (
+                  <a
+                    className="pbk-action"
+                    href={repo.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`View live project ${repo.name}`}
+                    data-cursor="open"
+                    data-cursor-text="LIVE"
+                    data-magnetic
+                    data-no-drag
+                  >
+                    <span>View Live Project</span>
+                    <ArrowUpRight size={14} aria-hidden="true" />
+                  </a>
+                )}
+              </div>
+            </footer>
+          </div>
+        </div>
+
+        {/* Previous / Next across the COMPLETE collection, routed through the
+            book's own turn mechanism so the flip animation and the existing
+            page-flip sound are reused rather than duplicated. Both the position
+            and the total are derived from the live dataset. */}
+        <nav className="pbk-pagenav" aria-label="Project navigation">
+          <button
+            type="button"
+            className="pbk-nav"
+            onClick={onPrev}
+            disabled={!canPrev}
+            aria-label="Previous project"
+            data-cursor="drag"
+            data-cursor-text="PREV"
+            data-magnetic
+            data-no-drag
+          >
+            <ArrowLeft size={15} aria-hidden="true" />
+            <span className="pbk-nav-label">
+              Previous<span className="pbk-nav-word"> Project</span>
+            </span>
+            {/* Compact peek. Purely additive decoration: it is hidden from
+                assistive tech and the button already names itself. */}
+            {canPrev && prevName && (
+              <span className="pbk-peek" aria-hidden="true">
+                <span className="pbk-peek-kicker">Previous</span>
+                <span className="pbk-peek-name">{prevName}</span>
+              </span>
+            )}
+          </button>
+
+          <span className="pbk-pagenav-count" aria-hidden="true">
+            {/* `key` forces a remount per page so the CSS entry animation
+                replays. The value itself is still derived from the dataset. */}
+            <span className="pbk-pagenav-cur" key={'cur-' + order}>
+              {pad2(order)}
+            </span>
+            <span className="pbk-pagenav-sep">/</span>
+            <span className="pbk-pagenav-total">{pad2(total)}</span>
+          </span>
+
+          <button
+            type="button"
+            className="pbk-nav"
+            onClick={onNext}
+            disabled={!canNext}
+            aria-label="Next project"
+            data-cursor="drag"
+            data-cursor-text="NEXT"
+            data-magnetic
+            data-no-drag
+          >
+            <span className="pbk-nav-label">
+              Next<span className="pbk-nav-word"> Project</span>
+            </span>
+            <ArrowRight size={15} aria-hidden="true" />
+            {canNext && nextName && (
+              <span className="pbk-peek pbk-peek--next" aria-hidden="true">
+                <span className="pbk-peek-kicker">Next</span>
+                <span className="pbk-peek-name">{nextName}</span>
+              </span>
+            )}
+          </button>
+        </nav>
+      </div>
     </article>
   )
 }
@@ -294,22 +416,36 @@ export default function ProjectsBook() {
   const { playSFX, sfxEnabled, toggleSFX } = useSFX()
   const [index, setIndex] = useState(0)
   const [images, setImages] = useState<Record<string, string>>({})
+  /* Handle on the book, so the in-page Previous / Next buttons drive the
+     component's own animated turn instead of a second navigation path. */
+  const flipRef = useRef<PageFlipHandle>(null)
 
   const total = repos.length
 
   /**
-   * Resolve the curated six against the loaded repositories. Entries that do
-   * not match a real repository are dropped rather than replaced, so a naming
-   * mismatch can never surface fabricated data.
+   * Resolve the curated set against the loaded repositories, then keep only the
+   * entries that have a real, committed screenshot. Both drop reasons are
+   * counted separately so the section can explain itself honestly instead of
+   * silently showing fewer cards.
    */
-  const featured = useMemo(
-    () =>
-      FEATURED.flatMap(({ label, name }) => {
-        const repo = repos.find((r) => r.name === name)
-        return repo ? [{ label, repo }] : []
-      }),
-    [repos]
-  )
+  const featured = useMemo(() => {
+    const items: { label: string; repo: ProjectRepo }[] = []
+    let unresolved = 0
+    let imageLess = 0
+
+    for (const { label, name } of FEATURED) {
+      const repo = repos.find((r) => r.name === name)
+      if (!repo) {
+        unresolved += 1
+      } else if (!hasLocalImage(repo.name)) {
+        imageLess += 1
+      } else {
+        items.push({ label, repo })
+      }
+    }
+
+    return { items, unresolved, imageLess }
+  }, [repos])
 
   // Keep the index valid if the dataset shrinks (e.g. cache cleared).
   useEffect(() => {
@@ -328,7 +464,7 @@ export default function ProjectsBook() {
       ...[index - 1, index, index + 1]
         .filter((i) => i >= 0 && i < total)
         .map((i) => repos[i]),
-      ...featured.map((f) => f.repo),
+      ...featured.items.map((f) => f.repo),
     ].filter(Boolean)
 
     let cancelled = false
@@ -356,13 +492,27 @@ export default function ProjectsBook() {
     [playSFX]
   )
 
+  const canPrev = index > 0
+  const canNext = index < total - 1
+
+  /* Turns are requested from the book itself rather than by writing the index
+     here, so a button click runs the same animated commit as a swipe or an
+     arrow key, and fires the existing page-flip sound exactly once. */
   const goNext = useCallback(() => {
-    setIndex((i) => (i < total - 1 ? i + 1 : i))
-  }, [total])
+    flipRef.current?.next()
+  }, [])
 
   const goPrev = useCallback(() => {
-    setIndex((i) => (i > 0 ? i - 1 : i))
+    flipRef.current?.prev()
   }, [])
+
+  /* Pointer-reactive depth lives on the stage WRAPPER, so PageFlip keeps sole
+     ownership of the leaf's inline rotateY transform. Disabled for touch and for
+     prefers-reduced-motion inside the hook itself.
+
+     This MUST sit with the other hooks, above the early returns further down: a
+     hook called conditionally is a hooks-order violation that unmounts the tree. */
+  const stageRef = useBookPointer<HTMLDivElement>()
 
   const current = repos[index]
   const progressPercent = total > 0 ? ((index + 1) / total) * 100 : 0
@@ -371,9 +521,22 @@ export default function ProjectsBook() {
     (i: number) => {
       const repo = repos[i]
       if (!repo) return null
-      return <ProjectPage repo={repo} order={i + 1} total={total} image={images[repo.name]} />
+      return (
+        <ProjectPage
+          repo={repo}
+          order={i + 1}
+          total={total}
+          image={images[repo.name]}
+          onPrev={goPrev}
+          onNext={goNext}
+          canPrev={canPrev}
+          canNext={canNext}
+          prevName={repos[i - 1]?.name}
+          nextName={repos[i + 1]?.name}
+        />
+      )
     },
-    [repos, total, images]
+    [repos, total, images, goPrev, goNext, canPrev, canNext]
   )
 
   if (status === 'loading' && total === 0) {
@@ -428,28 +591,47 @@ export default function ProjectsBook() {
         </div>
       </header>
 
-      {/* ================== FEATURED PROJECTS (curated six) ================== */}
+      {/* ================== FEATURED PROJECTS (curated) ================== */}
       <div className="pbk-featured">
         <div className="pbk-featured-head">
           <h2 className="pbk-section-title">Featured Projects</h2>
-          <span className="pbk-featured-count">{pad2(featured.length)} Selected</span>
+          <span className="pbk-featured-count">{pad2(featured.items.length)} Selected</span>
         </div>
         <p className="pbk-featured-note">
           A hand-picked selection from the repositories below — a curation, not a ranking by
-          stars, traffic or popularity.
+          stars, traffic or popularity. Every project shown here ships a real screenshot
+          committed with this site.
         </p>
 
-        {/* Curated entries that exist only in live GitHub data drop out when the
-            snapshot is in use. Say so plainly instead of silently showing fewer. */}
-        {featured.length < FEATURED.length && (
+        {/* Two separate, honest explanations rather than one blanket excuse: an
+            entry can be missing because the local snapshot lacks it, or because
+            the project genuinely has no screenshot to show. */}
+        {featured.unresolved > 0 && (
           <p className="pbk-featured-partial">
-            Showing {pad2(featured.length)} of {pad2(FEATURED.length)} curated projects — the
-            remainder are available only from live GitHub data.
+            Showing {pad2(featured.items.length)} of {pad2(FEATURED.length)} curated projects —{' '}
+            {pad2(featured.unresolved)}{' '}
+            {featured.unresolved === 1 ? 'entry is' : 'entries are'} available only from live
+            GitHub data.
+          </p>
+        )}
+
+        {featured.imageLess > 0 && (
+          <p className="pbk-featured-partial">
+            {pad2(featured.imageLess)}{' '}
+            {featured.imageLess === 1 ? 'curated project has' : 'curated projects have'} no
+            screenshot to show, so {featured.imageLess === 1 ? 'it is' : 'they are'} listed in
+            the full book below instead.
+          </p>
+        )}
+
+        {featured.items.length === 0 && (
+          <p className="pbk-featured-partial">
+            No featured project currently has a committed screenshot to display.
           </p>
         )}
 
         <div className="pbk-featured-grid">
-          {featured.map(({ label, repo }) => (
+          {featured.items.map(({ label, repo }) => (
             <FeaturedCard
               key={repo.name}
               label={label}
@@ -478,8 +660,9 @@ export default function ProjectsBook() {
         </p>
       )}
 
-      <div className="pbk-stage">
+      <div className="pbk-stage" ref={stageRef}>
         <PageFlip
+          ref={flipRef}
           total={total}
           index={index}
           onIndexChange={setIndex}
@@ -495,45 +678,14 @@ export default function ProjectsBook() {
         />
       </div>
 
-      <div className="pbk-controls">
-        <button
-          type="button"
-          className="pbk-nav"
-          onClick={goPrev}
-          disabled={index === 0}
-          aria-label="Previous project"
-        >
-          <ArrowLeft size={15} aria-hidden="true" />
-          <span>Previous</span>
-        </button>
-
-        <div className="pbk-counter" aria-live="polite" aria-atomic="true">
-          <span className="pbk-counter-cur" aria-hidden="true">
-            {pad2(index + 1)}
-          </span>
-          <span className="pbk-counter-sep" aria-hidden="true">
-            /
-          </span>
-          <span className="pbk-counter-total" aria-hidden="true">
-            {pad2(total)}
-          </span>
-          <span className="sr-only">
-            Project {index + 1} of {total}
-            {current ? '. ' + current.name : ''}
-          </span>
-        </div>
-
-        <button
-          type="button"
-          className="pbk-nav"
-          onClick={goNext}
-          disabled={index >= total - 1}
-          aria-label="Next project"
-        >
-          <span>Next</span>
-          <ArrowRight size={15} aria-hidden="true" />
-        </button>
-      </div>
+      {/* The Previous / Next controls now live on the page itself, so this is
+          the section's only navigation. This live region is kept OUTSIDE the
+          flipping leaf: the leaf briefly contains a second copy of the page
+          mid-turn, and a duplicated live region would announce twice. */}
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        Project {index + 1} of {total}
+        {current ? '. ' + current.name : ''}
+      </p>
 
       <div className="pbk-rail" aria-hidden="true">
         <span className="pbk-rail-fill" style={{ width: progressPercent + '%' }} />

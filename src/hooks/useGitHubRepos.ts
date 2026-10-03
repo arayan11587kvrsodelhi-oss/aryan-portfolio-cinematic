@@ -112,6 +112,20 @@ export function loadLocalImage(repoName: string): Promise<string | undefined> {
   return loader().catch(() => undefined)
 }
 
+/**
+ * True when a real, committed screenshot exists for this repository name.
+ *
+ * Synchronous and side-effect free, so callers can decide *before* rendering
+ * whether an entry has a genuine visual. Used by the curated Featured selection
+ * to guarantee it only advertises projects that actually ship a screenshot,
+ * rather than showing an empty frame. Nothing is ever fabricated for repos
+ * that return false - they simply keep their honest no-image fallback in the
+ * full book below.
+ */
+export function hasLocalImage(repoName: string): boolean {
+  return Boolean(LOCAL_IMAGE_MAP[repoName])
+}
+
 /** Normalise one raw GitHub repository. Pure - no side effects. */
 function normalise(raw: RawRepo): ProjectRepo {
   const description = (raw.description ?? '').trim()

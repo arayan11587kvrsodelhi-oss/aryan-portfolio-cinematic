@@ -209,6 +209,35 @@ a {
   letter-spacing: -0.05em;
 }
 
+/* ==========================================================================
+   HERO NAME — TECHTEXT (official React Bits Tech Text)
+   --------------------------------------------------------------------------
+   The hero wordmark is drawn on a <canvas>, so it has no intrinsic size of its
+   own: the wrapper MUST declare a height or the canvas collapses to 1px. The
+   height is a clamp() rather than a fixed value so the hero never jumps and
+   never clips, and TechText's own layout pass scales the glyphs to 90% of the
+   available width / 66% of this height.
+
+   Sizing is matched to the old `.text-hero` treatment (10.5vw, 9.5rem cap) so
+   the name keeps the same dominance in the hero, and `max-width: 100%` plus the
+   fluid clamp guarantee no horizontal overflow from 375px upward.
+   ========================================================================== */
+
+.hero-name-techtext {
+  width: 100%;
+  max-width: 100%;
+  height: clamp(92px, 12vw, 180px);
+  margin-inline: 0;
+}
+
+/* Slightly taller frame on the narrow screens, where the single-line wordmark is
+   width-limited and would otherwise sit with a lot of empty space above it. */
+@media (max-width: 640px) {
+  .hero-name-techtext {
+    height: clamp(76px, 21vw, 120px);
+  }
+}
+
 .text-display {
   font-size: clamp(2rem, 5vw, 4.8rem);
   line-height: 0.98;
@@ -3017,7 +3046,8 @@ textarea:focus-visible {
 
   /* Let the two actions share the row evenly, or take a full row each when
      they no longer fit — never clip, never overflow. */
-  .pbk-fbtn {
+  .pbk-fbtn,
+  .pbk-action {
     flex: 1 1 auto;
   }
 }
@@ -3099,11 +3129,14 @@ textarea:focus-visible {
   margin-top: auto;
 }
 
-/* ---- Featured action buttons ------------------------------------------- */
+/* ---- Action buttons (shared: featured cards + project pages) ----------- */
 /* Two variants only: primary (accent) and secondary (outlined). Both keep a
-   44px touch target, a visible hover and a visible keyboard focus ring. */
+   44px touch target, a visible hover and a visible keyboard focus ring. The
+   project page reuses the exact same treatment so the section has one button
+   language rather than two. */
 
-.pbk-fbtn {
+.pbk-fbtn,
+.pbk-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -3123,19 +3156,23 @@ textarea:focus-visible {
 }
 
 .pbk-fbtn:hover,
-.pbk-fbtn:focus-visible {
+.pbk-fbtn:focus-visible,
+.pbk-action:hover,
+.pbk-action:focus-visible {
   color: var(--foreground);
   border-color: color-mix(in srgb, var(--pbk-accent) 50%, transparent);
   background: color-mix(in srgb, var(--pbk-accent) 10%, transparent);
 }
 
-.pbk-fbtn--primary {
+.pbk-fbtn--primary,
+.pbk-action--primary {
   color: var(--pbk-accent);
   border-color: color-mix(in srgb, var(--pbk-accent) 45%, transparent);
   background: color-mix(in srgb, var(--pbk-accent) 14%, transparent);
 }
 
-.pbk-fbtn:focus-visible {
+.pbk-fbtn:focus-visible,
+.pbk-action:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
@@ -3290,6 +3327,32 @@ textarea:focus-visible {
   margin-top: 1.75rem;
 }
 
+/* ---- Book size (project book only) ------------------------------------- */
+/* The .cflip-* geometry is shared with the certificate book, so the project
+   page's larger proportions are scoped here instead of being changed globally.
+   The certificate viewer keeps exactly the size it had.
+   Width and height are both fluid, so the page grows into the available screen
+   rather than sitting in a fixed 720 x 440 card. Height is clamped: the media
+   frame absorbs the leftover space (see .pbk-body), so a short viewport shrinks
+   the screenshot instead of pushing the page text out of the book. */
+.pbk-stage .cflip-book-3d {
+  width: 100%;
+  height: clamp(580px, 74vh, 640px);
+}
+
+@media (min-width: 860px) {
+  .pbk-stage .cflip-book-3d {
+    width: min(100%, 1120px);
+    height: clamp(520px, 56vh, 620px);
+  }
+}
+
+@media (min-width: 1440px) {
+  .pbk-stage .cflip-book-3d {
+    width: min(100%, 1280px);
+  }
+}
+
 .pbk-loading,
 .pbk-empty {
   display: flex;
@@ -3344,7 +3407,7 @@ textarea:focus-visible {
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
+  padding: 1.5rem 1.6rem 1.3rem;
   overflow: hidden;
   background: linear-gradient(168deg, rgba(6, 30, 25, 0.94), rgba(5, 20, 32, 0.92));
   border: 1px solid var(--border);
@@ -3371,6 +3434,28 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-height: 0;
+}
+
+/* ---- Page body: media + details --------------------------------------- */
+/* On a wide page the screenshot takes the larger column so it can actually be
+   inspected; the details sit beside it. The row is a flexible 1fr and the media
+   frame stretches to fill it, which is what stops a taller viewport from ever
+   pushing the text out of the book. */
+.pbk-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 1.5rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 1rem;
+}
+
+.pbk-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
   min-height: 0;
 }
 
@@ -3427,11 +3512,12 @@ textarea:focus-visible {
 
 .pbk-title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(1.35rem, 3.4vw, 2rem);
+  font-size: clamp(1.4rem, 2.6vw, 2.4rem);
   font-weight: 600;
   color: var(--foreground);
-  margin-top: 0.85rem;
+  margin-top: 0;
   line-height: 1.15;
+  min-width: 0;
   /* Long repository names must never blow out the page. */
   overflow-wrap: anywhere;
 }
@@ -3447,15 +3533,18 @@ textarea:focus-visible {
 
 /* ---- Visual ----------------------------------------------------------- */
 
+/* The frame is a flexible grid cell, not a fixed ratio box: it takes whatever
+   height the page has left after the text, so the page can never overflow its
+   own book. The image still fills it completely (cover) and crops from the
+   centre, so a tall screenshot is trimmed evenly at both ends. */
 .pbk-visual {
   position: relative;
-  margin-top: 1rem;
-  aspect-ratio: 16 / 9;
+  min-width: 0;
+  min-height: 0;
   border-radius: 6px;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border);
-  flex-shrink: 0;
 }
 
 /* The image is block-level: an inline image would sit on the text baseline
@@ -3588,60 +3677,16 @@ textarea:focus-visible {
   text-transform: uppercase;
 }
 
-.pbk-links {
+/* Action row. The buttons themselves reuse the shared .pbk-action treatment
+   defined alongside the featured cards; this block only handles placement, so a
+   project without a live URL keeps one properly aligned primary action instead
+   of a gap where a second button would have been. */
+.pbk-actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.pbk-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.45rem 0.7rem;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  color: var(--muted-light);
-  background: rgba(255, 255, 255, 0.03);
-  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-}
-
-.pbk-link:hover,
-.pbk-link:focus-visible {
-  color: var(--foreground);
-  border-color: color-mix(in srgb, var(--pbk-accent) 50%, transparent);
-  background: color-mix(in srgb, var(--pbk-accent) 10%, transparent);
-}
-
-.pbk-link--live {
-  color: var(--pbk-accent);
-  border-color: color-mix(in srgb, var(--pbk-accent) 40%, transparent);
-}
-
-.pbk-page-num {
-  position: absolute;
-  right: 1rem;
-  bottom: 0.65rem;
-  z-index: 2;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.56rem;
-  letter-spacing: 0.14em;
-  color: var(--muted);
-  opacity: 0.6;
-}
-
-/* ---- Controls --------------------------------------------------------- */
-
-.pbk-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  flex-wrap: wrap;
+  margin-left: auto;
 }
 
 .pbk-nav {
@@ -3672,23 +3717,42 @@ textarea:focus-visible {
   cursor: not-allowed;
 }
 
-.pbk-counter {
+/* ---- In-page project navigation --------------------------------------- */
+/* The book's only Previous / Next controls, so there is no second competing
+   navigation system. Both are real <button>s with a 44px target, a genuine
+   disabled state and a visible focus ring. */
+.pbk-pagenav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border);
+}
+
+.pbk-nav-label {
+  white-space: nowrap;
+}
+
+/* Position readout, mirroring the page counter of a real book. Its sr-only
+   twin lives outside the flipping leaf. */
+.pbk-pagenav-count {
   display: inline-flex;
   align-items: baseline;
   gap: 0.3rem;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
   color: var(--muted);
-  min-width: 4.5rem;
-  justify-content: center;
+  flex: 0 0 auto;
 }
 
-.pbk-counter-cur {
+.pbk-pagenav-cur {
   color: var(--foreground);
 }
 
-.pbk-counter-sep {
+.pbk-pagenav-sep {
   opacity: 0.5;
 }
 
@@ -3743,7 +3807,7 @@ textarea:focus-visible {
 
 /* ---- Accessible focus (visible on every interactive control) ---------- */
 .pbk-nav:focus-visible,
-.pbk-link:focus-visible,
+.pbk-action:focus-visible,
 .pbk-sound:focus-visible,
 .pbk-stage .cflip-book-3d:focus-visible {
   outline: 2px solid var(--accent);
@@ -3752,6 +3816,19 @@ textarea:focus-visible {
 
 /* ---- Responsive ------------------------------------------------------- */
 
+/* Below 860px the page stacks: media on top, details beneath. Row 1 still
+   flexes, so the screenshot simply gets shorter rather than cropping the text. */
+@media (max-width: 859px) {
+  .pbk-body {
+    grid-template-columns: minmax(0, 1fr);
+    /* The media row may shrink as far as it needs to: on a phone the written
+       details matter more than a tall screenshot, and this is what guarantees
+       the page can never outgrow its own book. */
+    grid-template-rows: minmax(96px, 1fr) auto;
+    gap: 1rem;
+  }
+}
+
 /* Tablet and below: tighten the page so the text column stays comfortable. */
 @media (max-width: 768px) {
   .pbk-page {
@@ -3759,15 +3836,20 @@ textarea:focus-visible {
   }
 
   .pbk-title {
-    font-size: clamp(1.15rem, 5.4vw, 1.5rem);
+    font-size: clamp(1.2rem, 4.6vw, 1.6rem);
   }
 
   .pbk-desc {
     font-size: 0.85rem;
   }
+}
 
-  .pbk-visual {
-    aspect-ratio: 16 / 10;
+@media (max-width: 520px) {
+  /* The words "Project" are dropped below this width so the two buttons and the
+     counter always fit on one row. The accessible name keeps the full wording
+     via aria-label, and the visible text stays a prefix of it. */
+  .pbk-nav-word {
+    display: none;
   }
 }
 
@@ -3781,8 +3863,10 @@ textarea:focus-visible {
     padding: 0.95rem;
   }
 
-  .pbk-controls {
-    gap: 0.6rem;
+  .pbk-pagenav {
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.7rem;
   }
 
   .pbk-nav {
@@ -3798,10 +3882,13 @@ textarea:focus-visible {
 /* ---- Reduced motion --------------------------------------------------- */
 /* The 3D turn is replaced by a short cross-fade; every control keeps
    working and navigation stays instant. Sound is unaffected. */
+/* ---- Reduced motion --------------------------------------------------- */
+/* The 3D turn is replaced by a short cross-fade; every control keeps
+   working and navigation stays instant. Sound is unaffected. */
 @media (prefers-reduced-motion: reduce) {
   .pbk-page,
   .pbk-rail-fill,
-  .pbk-link,
+  .pbk-action,
   .pbk-nav,
   .pbk-sound {
     transition-duration: 0.01ms !important;
@@ -3810,6 +3897,299 @@ textarea:focus-visible {
   .pbk-loading-dot {
     animation: none;
     opacity: 0.7;
+  }
+
+  /* No pointer-follow tilt, no image zoom, no title drift, no spotlight. The
+     book stays completely static but every control and every link remains
+     fully usable - reduced motion removes movement, never function. */
+  .pbk-stage,
+  .pbk-page:hover .pbk-visual-img,
+  .pbk-page:hover .pbk-title,
+  .pbk-stage.is-pointer .pbk-page::before {
+    transform: none !important;
+    opacity: 0 !important;
+    animation: none !important;
+  }
+
+  .pbk-peek,
+  .pbk-nav:hover .pbk-nav-word {
+    display: none !important;
+  }
+}
+
+/* ============================================================================
+   PROJECT BOOK - POINTER INTERACTION
+   The Projects Book borrows the interaction language already used by the Hero,
+   Explore and Recruiter sections: the same `data-magnetic` pull and the same
+   `data-cursor` / `data-cursor-text` states are handled centrally by Cursor.tsx,
+   so nothing here re-implements a magnetic button or a cursor.
+
+   Everything below is additive depth only. No control depends on hover to work:
+   keyboard, touch and reduced-motion users get the full book with none of it.
+
+   Ordering matters. `.pbk-page::after` (grain) sits at z-index 1 and
+   `.pbk-content` at 2, so the spotlight is placed at z-index 0, UNDERNEATH the
+   text. Pointer light can therefore never reduce contrast on any label.
+   ========================================================================== */
+
+.pbk-stage {
+  /* Neutral defaults, so the very first paint is already at rest even before
+     the pointer hook attaches. */
+  --pbk-rx: 0deg;
+  --pbk-ry: 0deg;
+  --pbk-tx: 0px;
+  --pbk-ty: 0px;
+  --pbk-mx: 50%;
+  --pbk-my: 50%;
+  transform: perspective(1600px) rotateX(var(--pbk-rx)) rotateY(var(--pbk-ry))
+    translate3d(var(--pbk-tx), var(--pbk-ty), 0);
+  transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Only promote while the pointer is actually inside, so idle pages do not hold
+   a compositing layer. */
+.pbk-stage.is-pointer {
+  will-change: transform;
+  transition-duration: 90ms;
+}
+
+/* ---- Pointer spotlight on the page surface ----------------------------- */
+/* Clipped by .pbk-page (overflow: hidden + border-radius), so it can never
+   bleed past the paper edge. */
+.pbk-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 340ms ease-out;
+  background: radial-gradient(
+    380px circle at var(--pbk-mx) var(--pbk-my),
+    color-mix(in srgb, var(--pbk-accent) 15%, transparent),
+    transparent 68%
+  );
+}
+
+.pbk-stage.is-pointer .pbk-page::before {
+  opacity: 1;
+}
+
+/* ---- Page hover: depth, not a jump -------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .pbk-page {
+    transition: border-color 320ms ease-out, box-shadow 320ms ease-out;
+  }
+
+  .pbk-page:hover {
+    border-color: color-mix(in srgb, var(--pbk-accent) 46%, var(--border));
+    box-shadow: 0 18px 44px -28px color-mix(in srgb, var(--pbk-accent) 55%, transparent);
+  }
+
+  /* Screenshot breathes very slightly. `display:block`, `object-fit:cover` and
+     `object-position:center` from the base rule are all left intact, so the
+     alignment fix cannot regress. */
+  .pbk-visual-img {
+    transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: auto;
+  }
+
+  .pbk-page:hover .pbk-visual-img {
+    transform: scale(1.022);
+  }
+
+  /* Title lifts a hair; the rest of the hierarchy stays put. */
+  .pbk-title {
+    transition: transform 380ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .pbk-page:hover .pbk-title {
+    transform: translateX(2px);
+  }
+
+  .pbk-index,
+  .pbk-tone,
+  .pbk-chip {
+    transition: opacity 320ms ease-out;
+  }
+
+  .pbk-page:hover .pbk-index {
+    opacity: 0.72;
+  }
+}
+
+/* ---- Action + navigation controls -------------------------------------- */
+/* The magnetic pull itself is NOT styled here: `data-magnetic` is handled by
+   Cursor.tsx, which writes an inline transform on the element. Styling
+   `transform` on these same nodes would fight it, so hover motion is applied to
+   the inner label and icon instead. */
+@media (hover: hover) and (pointer: fine) {
+  .pbk-action {
+    transition: border-color 260ms ease-out, background-color 260ms ease-out,
+      color 260ms ease-out;
+  }
+
+  .pbk-action:hover {
+    border-color: color-mix(in srgb, var(--pbk-accent) 60%, transparent);
+  }
+
+  /* Icon leads, text follows by a hair - the same "shift" cue used elsewhere. */
+  .pbk-action > * {
+    transition: transform 300ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .pbk-action:hover > *:first-child {
+    transform: translateX(2px);
+  }
+
+  .pbk-action:hover > *:last-child:not(:first-child) {
+    transform: translateX(2px);
+  }
+
+  .pbk-nav {
+    transition: border-color 260ms ease-out, background-color 260ms ease-out,
+      color 260ms ease-out;
+  }
+
+  /* Arrow slides outward, away from the label. */
+  .pbk-nav > svg {
+    transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .pbk-nav:hover:not(:disabled) > svg:first-child {
+    transform: translateX(-3px);
+  }
+
+  .pbk-nav:hover:not(:disabled) > svg:last-child {
+    transform: translateX(3px);
+  }
+
+  .pbk-nav:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--pbk-accent) 55%, transparent);
+    color: color-mix(in srgb, var(--pbk-accent) 78%, var(--foreground));
+  }
+
+  /* A short accent rule that wipes in under the label. */
+  .pbk-nav-word {
+    position: relative;
+    transition: color 260ms ease-out;
+  }
+
+  .pbk-nav:hover:not(:disabled) .pbk-nav-word::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.28rem;
+    height: 1px;
+    background: var(--pbk-accent);
+    animation: pbk-wipe 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+}
+
+@keyframes pbk-wipe {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---- Compact neighbour peek -------------------------------------------- */
+/* Decoration only: `aria-hidden`, and only rendered when the neighbour exists.
+   No extra image is fetched for it, so it costs nothing on slow connections. */
+.pbk-peek {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  max-width: 15rem;
+  padding: 0.3rem 0.5rem;
+  text-align: left;
+  background: rgba(4, 10, 14, 0.94);
+  border: 1px solid color-mix(in srgb, var(--pbk-accent) 34%, var(--border));
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(3px);
+  pointer-events: none;
+  transition: opacity 200ms ease-out, transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.pbk-peek--next {
+  left: auto;
+  right: 0;
+  text-align: right;
+}
+
+.pbk-nav:hover:not(:disabled) .pbk-peek,
+.pbk-nav:focus-visible .pbk-peek {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pbk-peek-kicker {
+  font-size: 0.5rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--pbk-accent) 82%, var(--foreground));
+}
+
+.pbk-peek-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- Counter transition ------------------------------------------------ */
+/* `key` on the current number remounts it per page, replaying this entry. Fast
+   enough to feel like a readout ticking over, not a loading animation. */
+@keyframes pbk-counter-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pbk-pagenav-cur {
+  display: inline-block;
+  animation: pbk-counter-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---- Coarse pointers ---------------------------------------------------- */
+/* Touch and pen: the book is static and no hover state is ever applied, so a
+   tap cannot leave something stuck in a hovered style. The hook independently
+   refuses to write pointer values on a non-fine pointer. */
+@media (hover: none), (pointer: coarse) {
+  .pbk-stage,
+  .pbk-stage.is-pointer {
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .pbk-page::before {
+    display: none;
+  }
+
+  .pbk-peek {
+    display: none;
+  }
+
+  .pbk-page:hover .pbk-visual-img,
+  .pbk-page:hover .pbk-title {
+    transform: none;
   }
 }
 

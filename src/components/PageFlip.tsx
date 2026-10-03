@@ -1,11 +1,14 @@
 import {
+  forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useRef,
   useState,
-  type ReactNode,
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+  type Ref,
 } from 'react'
 
 /* ==========================================================================
@@ -33,6 +36,20 @@ export const PAGE_COMMIT_THRESHOLD = 0.3
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
 
 export type PageFlipDirection = 'next' | 'prev'
+
+/**
+ * Imperative surface exposed by the book.
+ *
+ * External controls (the in-page Previous / Next buttons) use this instead of
+ * writing the page index directly, so a button click travels the exact same
+ * commit path as a swipe or an arrow key: the 3D turn runs, the transition lock
+ * applies, and `onTurn` fires once the leaf settles. That keeps ONE page-turn
+ * mechanism in the section rather than a competing second one.
+ */
+export interface PageFlipHandle {
+  next: () => void
+  prev: () => void
+}
 
 export interface PageFlipProps {
   /** Number of pages. Counter and bounds derive from this. */
@@ -66,16 +83,19 @@ interface DragState {
   activeDir: PageFlipDirection | null
 }
 
-export default function PageFlip({
-  total,
-  index,
-  onIndexChange,
-  renderPage,
-  renderPageBack,
-  label,
-  onTurn,
-  disableDrag = false,
-}: PageFlipProps) {
+function PageFlipImpl(
+  {
+    total,
+    index,
+    onIndexChange,
+    renderPage,
+    renderPageBack,
+    label,
+    onTurn,
+    disableDrag = false,
+  }: PageFlipProps,
+  ref: Ref<PageFlipHandle>
+) {
   const [transition, setTransition] = useState<FlipTransition | null>(null)
   const [isReducedMotion, setIsReducedMotion] = useState(false)
 
@@ -191,6 +211,19 @@ export default function PageFlip({
       commitTurn(dir)
     },
     [canNext, canPrev, commitTurn]
+  )
+
+  /* Exposed to the parent so the in-page Previous / Next buttons drive the very
+     same animated commit path as a swipe or an arrow key. startTurn already
+     refuses to start a turn while one is in flight or mid-drag, so the buttons
+     can never overlap or corrupt a transition. */
+  useImperativeHandle(
+    ref,
+    () => ({
+      next: () => startTurn('next'),
+      prev: () => startTurn('prev'),
+    }),
+    [startTurn]
   )
 
   const onKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
@@ -387,4 +420,13 @@ export default function PageFlip({
     </div>
   )
 }
+
+/**
+ * The shared page-turn book. Forwarding a ref is what lets the caller's
+ * Previous / Next buttons reuse this component's own animation and transition
+ * lock instead of re-implementing a second navigation path.
+ */
+const PageFlip = forwardRef<PageFlipHandle, PageFlipProps>(PageFlipImpl)
+
+export default PageFlip
 
