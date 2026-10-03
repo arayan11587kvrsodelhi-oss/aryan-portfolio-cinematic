@@ -229,14 +229,34 @@ a {
    `fontSize`, so the responsive values live here with the rest of the stylesheet
    instead of being duplicated as JS breakpoints.
 
-   `width: 100%` + the fluid ladder guarantee no horizontal overflow from 375px
-   upward. Row heights include the space TechText reserves for its selection
+   Row widths are pinned per line to exactly the box each line needs in order
+   to keep `fit` at 1.0, instead of stretching to 100% of the column. The
+   engine CENTRES every line inside its own box (`x = (width - ink) / 2`), so
+   box width is what actually decides where the name sits. Two consequences:
+
+     1. Glyph SIZE is untouched. TechText only shrinks text when the box is
+        narrower than `ink / 0.9`, and these widths are that bound plus a hair,
+        so both lines still render at exactly `--hero-name-size`.
+     2. The wordmark is flush to the LEFT of the hero column. With a 100%-wide
+        box the engine centred the name mid-hero, where it visually collided
+        with the portrait. Sizing each box to its own line means each line is
+        only inset by its own small overflow margin, so ARYAN and SHARMA start
+        within a few pixels of each other instead of ~65px apart.
+
+   The two multipliers are each line's measured ink ratio (ARYAN ~= 2.88,
+   SHARMA ~= 3.80, both stable across breakpoints) divided by TechText's 0.9
+   width factor, plus headroom. `min(100%, ...)` keeps the box inside the
+   column on the narrowest phones.
+   Row heights include the space TechText reserves for its selection
    frame and measurement label, which sit above the cap line.
    ========================================================================== */
 
 /* Default / narrowest. Mobile-first; each breakpoint below only raises it. */
 .hero-wordmark {
   --hero-name-size: 50px;
+  /* ink ratio / 0.9, per line. Used by the two width rules below. */
+  --hero-name-box-aryan: 3.2;
+  --hero-name-box-sharma: 4.23;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -245,9 +265,16 @@ a {
 }
 
 .hero-wordmark > .tech-text {
-  width: 100%;
   /* ink height + headroom for the selection frame / measurement label */
   height: calc(var(--hero-name-size) * 1.34);
+}
+
+.hero-wordmark__line--aryan {
+  width: min(100%, calc(var(--hero-name-size) * var(--hero-name-box-aryan)));
+}
+
+.hero-wordmark__line--sharma {
+  width: min(100%, calc(var(--hero-name-size) * var(--hero-name-box-sharma)));
 }
 
 @media (min-width: 430px) {

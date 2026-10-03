@@ -53,6 +53,34 @@ export default function Hero({
      ========================================================================== */
   const [wordmarkSize, setWordmarkSize] = useState(84)
 
+  /* ==========================================================================
+     WORDMARK COLOUR BRIDGE
+
+     TechText draws with `parseInt(hex, 16)`, so it cannot take a CSS `var()`.
+     Reading the two tokens off `:root` at mount keeps the canvas in lockstep
+     with `src/index.css`: if `--foreground` or `--accent` is retuned, the
+     wordmark follows automatically instead of drifting on a stale literal.
+
+     The literals below are only ever a same-tick fallback for the window
+     between first paint and this effect; the token wins immediately after.
+     ========================================================================== */
+  const [wordmarkColors, setWordmarkColors] = useState({
+    base: '#f2f2ed',
+    accent: '#19b89a',
+  })
+
+  useEffect(() => {
+    const styles = getComputedStyle(document.documentElement)
+    const read = (token: string, fallback: string) => {
+      const value = styles.getPropertyValue(token).trim()
+      return value || fallback
+    }
+    setWordmarkColors({
+      base: read('--foreground', '#f2f2ed'),
+      accent: read('--accent', '#19b89a'),
+    })
+  }, [])
+
   useEffect(() => {
     const el = wordmarkRef.current
     if (!el) return
@@ -432,10 +460,26 @@ export default function Hero({
               embedded newline would measure as a zero-width glyph and break the
               layout. Two instances each get a correctly measured box.
 
-              COLOUR: both lines are the same warm off-white #F2EDE2. Cyan
-              #35E0E0 is only ever the INTERACTION accent and is never a
-              permanent fill. The old static two-tone (ARYAN light, SHARMA
-              cyan) has been removed.
+              COLOUR: both lines are the portfolio's own tokens, read from
+              `src/index.css` rather than hardcoded:
+
+                color        var(--foreground) = #f2f2ed
+                accentColor  var(--accent)     = #19b89a
+
+              The intro/section-opening already speaks exactly this language —
+              `.text-statement` renders in `text-foreground` and every
+              `text-eyebrow` on it is `text-accent` — so the wordmark now uses
+              the same light-cream base with the teal accent reserved for the
+              interaction. That also retires the old #F2EDE2 / #35E0E0 pair,
+              which were left over from the projects-slider palette: #35E0E0
+              never became a token and is not part of the design system (the
+              `:root` block documents "Deep Green / Blue / Black"), so keeping
+              it would have made the Hero the only cyan element on the page.
+              Cyan survives in the slider as the slide-tone accent, untouched.
+
+              The accent is NEVER a permanent fill. Idle is plain cream; only
+              the lens/specks/selection frame pick up teal as the pointer moves,
+              so the name stays bright and readable at all times.
 
               HOVER is driven by the engine itself, not by CSS. With
               reveal="letter" the glyph under the lens cross-fades from a solid
@@ -457,13 +501,14 @@ export default function Hero({
 
             <div className="hero-wordmark" ref={wordmarkRef} aria-hidden="true">
               <TechText
+                className="hero-wordmark__line--aryan"
                 text="ARYAN"
                 fontFamily="'Space Grotesk', sans-serif"
                 fontWeight={700}
                 fontSize={wordmarkSize}
                 letterSpacing={-0.04}
-                color="#F2EDE2"
-                accentColor="#35E0E0"
+                color={wordmarkColors.base}
+                accentColor={wordmarkColors.accent}
                 reveal="letter"
                 reach={190}
                 softness={0.72}
@@ -478,13 +523,14 @@ export default function Hero({
                 speed={0.8}
               />
               <TechText
+                className="hero-wordmark__line--sharma"
                 text="SHARMA"
                 fontFamily="'Space Grotesk', sans-serif"
                 fontWeight={700}
                 fontSize={wordmarkSize}
                 letterSpacing={-0.04}
-                color="#F2EDE2"
-                accentColor="#35E0E0"
+                color={wordmarkColors.base}
+                accentColor={wordmarkColors.accent}
                 reveal="letter"
                 reach={190}
                 softness={0.72}
