@@ -1,66 +1,62 @@
 import { useCallback, useEffect, useRef } from 'react'
 
 /**
- * Pointer-reactive depth for the Projects Book.
+ * Pointer-reactive depth + spotlight for the project slider.
  *
- * Deliberately tiny numbers: the book should read as a physical object being
- * touched by the visitor's hand, not as a card being steered around.
+ * The same no-rerender discipline as the rest of this portfolio's pointer work:
  *
- * - Written as CSS custom properties from ONE requestAnimationFrame loop, so
- *   pointer movement never triggers a React render.
- * - Consumed by the `.pbk-stage` WRAPPER, never by the flipping leaf. PageFlip
- *   owns the leaf's inline `transform` (rotateY) and this must never fight it.
- * - Disabled for coarse pointers (touch / pen) and for prefers-reduced-motion,
- *   so those visitors get a static book with every control still working.
- * - On leave the values ease back to neutral via CSS transitions.
+ * - Everything is published as CSS custom properties from ONE
+ *   requestAnimationFrame loop, so pointer movement never triggers a React
+ *   render. A fast mouse can only ever queue one pending frame.
+ * - Deliberately tiny numbers. The card should read as a physical print being
+ *   tilted under a desk lamp, not as a panel being steered around.
+ * - Disabled for coarse pointers (touch/pen) and for prefers-reduced-motion, so
+ *   those visitors get a completely static card with navigation still working.
+ * - On leave the values are reset to neutral and the CSS transitions ease the
+ *   card back to rest.
  *
  * WHY A CALLBACK REF AND NOT `useRef` + `useEffect`:
  * this section renders a loading branch first, so on the first commit the
- * `.pbk-stage` node does not exist yet. A `useEffect` with `[]` deps would run
- * once, find `ref.current === null` and never re-run (an object ref does not
- * trigger a re-render), so the listeners would silently never attach.
+ * stage node does not exist yet. An effect with `[]` deps would run once, find
+ * `ref.current === null` and never re-run (an object ref does not trigger a
+ * render), so the listeners would silently never attach.
  */
 
-/** Peak tilt in degrees on each axis (total corner-to-corner ~4.4deg). */
-const MAX_ROT = 2.2
-/** Peak translation in px. */
-const MAX_SHIFT = 4
+/** Peak tilt in degrees on each axis (total corner-to-corner ~2.6deg). */
+const MAX_ROT = 1.3
+/** Peak card translation in px. */
+const MAX_SHIFT = 3
+/** Peak screenshot parallax in px (kept inside the 3-8px brief). */
+const MAX_PARALLAX = 6
 
-interface Pending {
-  rx: number
-  ry: number
-  tx: number
-  ty: number
-  mx: number
-  my: number
+const IDLE = { rx: 0, ry: 0, tx: 0, ty: 0, px: 50, py: 50, parX: 0, parY: 0 }
+
+function writeVars(el: HTMLElement, v: typeof IDLE) {
+  el.style.setProperty('--psl-rx', v.rx.toFixed(3) + 'deg')
+  el.style.setProperty('--psl-ry', v.ry.toFixed(3) + 'deg')
+  el.style.setProperty('--psl-tx', v.tx.toFixed(2) + 'px')
+  el.style.setProperty('--psl-ty', v.ty.toFixed(2) + 'px')
+  el.style.setProperty('--psl-spot-x', v.px.toFixed(2) + '%')
+  el.style.setProperty('--psl-spot-y', v.py.toFixed(2) + '%')
+  el.style.setProperty('--psl-par-x', v.parX.toFixed(2) + 'px')
+  el.style.setProperty('--psl-par-y', v.parY.toFixed(2) + 'px')
 }
 
-const IDLE: Pending = { rx: 0, ry: 0, tx: 0, ty: 0, mx: 50, my: 50 }
-
-function writeVars(el: HTMLElement, p: Pending) {
-  el.style.setProperty('--pbk-rx', p.rx.toFixed(3) + 'deg')
-  el.style.setProperty('--pbk-ry', p.ry.toFixed(3) + 'deg')
-  el.style.setProperty('--pbk-tx', p.tx.toFixed(2) + 'px')
-  el.style.setProperty('--pbk-ty', p.ty.toFixed(2) + 'px')
-  el.style.setProperty('--pbk-mx', p.mx.toFixed(2) + '%')
-  el.style.setProperty('--pbk-my', p.my.toFixed(2) + '%')
-}
-
-export function useBookPointer<T extends HTMLElement>() {
+export function useSliderPointer<T extends HTMLElement>() {
   const nodeRef = useRef<T | null>(null)
   const frame = useRef<number | null>(null)
-  const pending = useRef<Pending | null>(null)
+  const pending = useRef<typeof IDLE | null>(null)
   /** Pointer availability, re-synced from media queries; read by the handler. */
   const enabled = useRef(false)
 
-  const settle = useCallback(() => {
+  const reset = useCallback(() => {
     const el = nodeRef.current
     if (!el) return
     if (frame.current !== null) cancelAnimationFrame(frame.current)
     frame.current = null
     pending.current = null
     el.classList.remove('is-pointer')
-    // Neutral values; the CSS transition eases the book back to rest.
+    // Neutral values; the CSS transitions ease the card back to rest.
     writeVars(el, IDLE)
   }, [])
 
@@ -70,15 +66,14 @@ export function useBookPointer<T extends HTMLElement>() {
 
     const flush = () => {
       frame.current = null
-      const p = pending.current
-      if (!p) return
+      const v = pending.current
+      if (!v) return
       pending.current = null
-      writeVars(el, p)
+      writeVars(el, v)
     }
 
-    const schedule = (p: Pending) => {
-      // Coalesce to one write per frame: a fast mouse cannot queue a backlog.
-      pending.current = p
+    const schedule = (v: typeof IDLE) => {
+      pending.current = v
       if (frame.current === null) frame.current = requestAnimationFrame(flush)
     }
 
@@ -100,24 +95,21 @@ export function useBookPointer<T extends HTMLElement>() {
         ry: cx * MAX_ROT * 2,
         tx: cx * MAX_SHIFT * 2,
         ty: cy * MAX_SHIFT * 2,
-        mx: (cx + 0.5) * 100,
-        my: (cy + 0.5) * 100,
+        px: (cx + 0.5) * 100,
+        py: (cy + 0.5) * 100,
+        // Screenshot drifts opposite the tilt, which reads as depth rather than
+        // as the image being pushed around.
+        parX: cx * MAX_PARALLAX * -2,
+        parY: cy * MAX_PARALLAX * -2,
       })
       el.classList.add('is-pointer')
     }
 
-    const onPointerLeave = () => {
-      el.classList.remove('is-pointer')
-      pending.current = null
-      if (frame.current !== null) cancelAnimationFrame(frame.current)
-      frame.current = null
-      // Eases back to neutral via the transition on .pbk-stage.
-      writeVars(el, IDLE)
-    }
+    const onPointerLeave = () => reset()
 
     el.addEventListener('pointermove', onPointerMove, { passive: true })
     el.addEventListener('pointerleave', onPointerLeave, { passive: true })
-  }, [])
+  }, [reset])
 
   const detach = useCallback(() => {
     const el = nodeRef.current
@@ -150,7 +142,7 @@ export function useBookPointer<T extends HTMLElement>() {
 
     const sync = () => {
       enabled.current = fine.matches && !reduced.matches
-      if (!enabled.current) settle()
+      if (!enabled.current) reset()
     }
 
     fine.addEventListener('change', sync)
@@ -162,7 +154,7 @@ export function useBookPointer<T extends HTMLElement>() {
       reduced.removeEventListener('change', sync)
       detach()
     }
-  }, [settle, detach])
+  }, [reset, detach])
 
   return ref
 }

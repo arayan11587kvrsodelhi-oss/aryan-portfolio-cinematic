@@ -734,7 +734,7 @@ const TechText = ({
     if (document.fonts) document.fonts.ready.then(refreshFonts, refreshFonts);
 
     /* ADAPTATION (reduced motion) — live preference sync, mirroring the
-       pattern used by PageFlip / Certifications / Skills in this project. */
+       pattern used by Certifications / Skills in this project. */
     const onMotionChange = (event: MediaQueryListEvent) => {
       reducedMotion = event.matches;
       wakeRef.current();

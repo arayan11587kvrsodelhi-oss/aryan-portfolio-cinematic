@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
@@ -31,6 +31,50 @@ export default function Hero({
 
   const rootRef = useRef<HTMLElement>(null)
   const portraitCardRef = useRef<HTMLDivElement>(null)
+  const wordmarkRef = useRef<HTMLDivElement>(null)
+
+  /* ==========================================================================
+     WORDMARK SIZE BRIDGE
+
+     The wordmark's size ladder lives in CSS (one `--hero-name-size` clamp
+     ladder, so the responsive rules stay with the rest of the stylesheet), but
+     TechText takes its size as a JS prop. This reads the computed value back
+     and hands it to both TechText instances.
+
+     Why both lines share one number: TechText scales its glyphs to fit
+     `min(width * 0.9, height * 0.66)`. "ARYAN" and "SHARMA" are both
+     all-caps, so their ink HEIGHT is identical and only their ink WIDTH
+     differs. Sizing off a single shared value (with enough container width and
+     height that `fit` stays 1) means both lines render at exactly the same
+     pixel size instead of the longer word being silently shrunk to match.
+
+     The listener only commits when the computed value actually changes, so
+     dragging a window edge coalesces to at most one render per frame.
+     ========================================================================== */
+  const [wordmarkSize, setWordmarkSize] = useState(84)
+
+  useEffect(() => {
+    const el = wordmarkRef.current
+    if (!el) return
+
+    let frame = 0
+    const sync = () => {
+      frame = 0
+      const raw = parseFloat(getComputedStyle(el).getPropertyValue('--hero-name-size'))
+      if (Number.isNaN(raw)) return
+      setWordmarkSize((prev) => (Math.abs(prev - raw) > 0.5 ? raw : prev))
+    }
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(sync)
+    }
+
+    sync()
+    window.addEventListener('resize', schedule)
+    return () => {
+      window.removeEventListener('resize', schedule)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [])
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
@@ -49,7 +93,7 @@ export default function Hero({
            animating only opacity/transform means no layout shift.
            ================================================================= */
         gsap.fromTo(
-          '.hero-name-techtext',
+          '.hero-wordmark',
           {
             yPercent: 18,
             opacity: 0,
@@ -380,26 +424,65 @@ export default function Hero({
           </div>
 
           {/* ============================================================
-              HERO NAME — TechText (official React Bits Tech Text)
+              HERO NAME - TechText wordmark, two lines
 
-              Replaces the previous per-character DOM name. The canvas draws the
-              wordmark and carries role="img" / aria-label="Aryan Sharma", so
-              the name is still announced exactly once and this <h1> still owns
-              the heading outline. Nothing else in the hero changed: the badge,
-              value proposition, CTAs, socials, role strip, grid and portrait
-              are untouched.
+              The name reads ARYAN / SHARMA on two stacked lines. It is TWO
+              official React Bits <TechText> instances rather than a newline
+              inside one canvas: TechText measures a single line of text, so an
+              embedded newline would measure as a zero-width glyph and break the
+              layout. Two instances each get a correctly measured box.
 
-              Colour + type follow the portfolio: Space Grotesk 700 at -0.045em
-              tracking, warm off-white ink, restrained cyan interaction accent.
+              COLOUR: both lines are the same warm off-white #F2EDE2. Cyan
+              #35E0E0 is only ever the INTERACTION accent and is never a
+              permanent fill. The old static two-tone (ARYAN light, SHARMA
+              cyan) has been removed.
+
+              HOVER is driven by the engine itself, not by CSS. With
+              reveal="letter" the glyph under the lens cross-fades from a solid
+              fill to a DASHED STROKE (the official outlined state), so the letter
+              becomes hollow and the hero background genuinely shows through it,
+              while the cyan selection frame, specks and measurement label appear
+              around it. A spring-damped lens follows the pointer, so it lags and
+              settles like a physical overlay instead of snapping like an opacity
+              transition.
+
+              Both instances receive an IDENTICAL configuration so the two lines
+              always match; only the text differs.
               ============================================================ */}
           <h1 className="hero-name my-3 select-none">
-            <div className="hero-name-techtext">
+            {/* The wordmark is decorative pixels of the name below, so it is
+                exposed once as real text: the name is announced exactly once and
+                this <h1> still owns the heading outline. */}
+            <span className="sr-only">Aryan Sharma</span>
+
+            <div className="hero-wordmark" ref={wordmarkRef} aria-hidden="true">
               <TechText
-                text="Aryan Sharma"
+                text="ARYAN"
                 fontFamily="'Space Grotesk', sans-serif"
                 fontWeight={700}
-                fontSize={150}
-                letterSpacing={-0.045}
+                fontSize={wordmarkSize}
+                letterSpacing={-0.04}
+                color="#F2EDE2"
+                accentColor="#35E0E0"
+                reveal="letter"
+                reach={190}
+                softness={0.72}
+                dashLength={4}
+                dashGap={2}
+                strokeWidth={1.5}
+                specks={12}
+                selection={true}
+                labels={true}
+                draggable={true}
+                sweep={true}
+                speed={0.8}
+              />
+              <TechText
+                text="SHARMA"
+                fontFamily="'Space Grotesk', sans-serif"
+                fontWeight={700}
+                fontSize={wordmarkSize}
+                letterSpacing={-0.04}
                 color="#F2EDE2"
                 accentColor="#35E0E0"
                 reveal="letter"
