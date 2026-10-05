@@ -25,6 +25,9 @@ const certificateImages = {
   trinity404Makeover: asset('trinity-fiesta-404-makeover.jpg'),
   wscubeCybersecurity: asset('wscube-cybersecurity-2026.png'),
   networkBullsIndustrialVisit: asset('network-bulls-industrial-visit.jpg'),
+  owaspSecuritySummit: asset('owasp-security-summit-2026.png'),
+  be10xAiToolsWorkshop: asset('be10x-ai-tools-workshop.png'),
+  redTeamLeadersLlmSecurityExpert: asset('red-team-leaders-llm-security-expert.png'),
 } as const
 
 export const certifications: Certificate[] = [
@@ -132,6 +135,44 @@ export const certifications: Certificate[] = [
     date: 'July 4, 2026',
     image: certificateImages.networkBullsIndustrialVisit,
     description: 'Hands-on exposure to enterprise network routing, switching, and rack topologies.'
+  },
+  {
+    id: 'owasp-security-summit-2026',
+    order: 9,
+    number: '09',
+    title: 'OWASP SECURITY SUMMIT 2026',
+    issuer: 'OWASP',
+    category: 'Cybersecurity',
+    type: 'Certificate of Participation',
+    hierarchyTier: 'Workshop',
+    date: 'October 2, 2026',
+    image: certificateImages.owaspSecuritySummit,
+    description: 'Organized by Knight Secured Company in collaboration with Cyber Leelawat.'
+  },
+  {
+    id: 'be10x-ai-tools-workshop',
+    order: 10,
+    number: '10',
+    title: 'AI TOOLS WORKSHOP',
+    issuer: 'be10x',
+    category: 'Artificial Intelligence',
+    type: 'Certificate of Completion',
+    hierarchyTier: 'Workshop',
+    date: 'October 4, 2026',
+    image: certificateImages.be10xAiToolsWorkshop,
+    description: 'AI tools and ChatGPT workshop.'
+  },
+  {
+    id: 'red-team-leaders-cllmse',
+    order: 11,
+    number: '11',
+    title: 'CERTIFIED LLM SECURITY EXPERT (CLLMSE)',
+    issuer: 'Red Team Leaders',
+    category: 'Cybersecurity',
+    type: 'Certificate',
+    hierarchyTier: 'Industry Certification',
+    date: 'September 30, 2026',
+    image: certificateImages.redTeamLeadersLlmSecurityExpert
   }
 ]
 

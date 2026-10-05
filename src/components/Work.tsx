@@ -133,7 +133,7 @@ function ProjectSlide({ project, index, featured, onCaseStudy }: SlideProps) {
                   data-cursor="open"
                 >
                   <ArrowUpRight size={14} />
-                  <span>Live Demo</span>
+                  <span>{project.demoLabel || 'Live Demo'}</span>
                 </a>
               )}
               {project.githubUrl && (
@@ -590,7 +590,7 @@ const FILTERS: FilterCategory[] = ['ALL', 'FLAGSHIP', 'FINTECH', 'CREATIVE', 'SE
                           data-cursor="open"
                           onMouseEnter={() => playSFX('hover')}
                         >
-                          Live Demo
+                          {active.demoLabel || 'Live Demo'}
                           <ArrowUpRight size={14} />
                         </a>
                       )}
@@ -722,7 +722,7 @@ const FILTERS: FilterCategory[] = ['ALL', 'FLAGSHIP', 'FINTECH', 'CREATIVE', 'SE
                         className="inline-flex items-center gap-1.5 text-eyebrow text-muted hover:text-foreground transition"
                         data-cursor="open"
                       >
-                        Live
+                        {p.demoLabel || 'Live'}
                         <ExternalLinkIcon />
                       </a>
                     )}
@@ -911,7 +911,7 @@ function CaseStudyModal({ project, onClose }: { project: Project; onClose: () =>
                 className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-accent text-background font-display text-xs md:text-sm font-semibold rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.35)] min-h-[44px]"
                 data-cursor="open"
               >
-                <span>Launch Live Demo</span>
+                <span>{project.demoLabel || 'Launch Live Demo'}</span>
                 <ArrowUpRight size={14} />
               </a>
             )}
