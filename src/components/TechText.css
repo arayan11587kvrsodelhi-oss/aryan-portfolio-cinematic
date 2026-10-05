@@ -1,0 +1,32 @@
+.tech-text {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.tech-text-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   ADAPTATION — existing custom cursor
+   --------------------------------------------------------------------------
+   Upstream sets an inline `cursor: grab` / `grabbing` on the container while a
+   letter is hovered. This portfolio already hides the native cursor on
+   fine-pointer devices and draws its own ring/dot/label
+   (`body.custom-cursor-active`, see src/index.css), so letting that inline
+   value through would render TWO pointers at once.
+
+   Scoped under `body.custom-cursor-active`, so touch devices — which never get
+   that class — keep the native `grab` affordance untouched. Scoped under
+   `.tech-text` so no other element in the portfolio is affected.
+   ========================================================================== */
+@media (pointer: fine) and (hover: hover) {
+  body.custom-cursor-active .tech-text {
+    cursor: none !important;
+  }
+}
