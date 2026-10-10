@@ -6,13 +6,13 @@ import {
   Mail,
   ArrowUpRight,
   Download,
-  Eye,
+  FileText,
+  ExternalLink,
   GraduationCap,
   Briefcase,
   Code2,
   Shield,
-  MapPin,
-  ExternalLink
+  MapPin
 } from 'lucide-react'
 import { useSFX } from '../hooks/useSFX'
 import { RESUME_PDF_URL, RESUME_PDF_FILENAME } from '../data/resume'
@@ -156,8 +156,64 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               </div>
             </div>
 
-            {/* Resume Document Content */}
-            <div className="p-5 sm:p-8 md:p-10 overflow-y-auto space-y-8 print:p-0">
+            {/* ================================================================
+                EMBEDDED RESUME PDF
+
+                The real supplied document is rendered inside the site in a
+                responsive <iframe>, so the resume is read here rather than in
+                a separate browser tab. `#view=FitH` opens it fit-to-width and
+                hides the browser's own PDF toolbar, which keeps the viewer
+                inside the portfolio's visual design.
+
+                The URL is the single shared constant, BASE_URL-aware, so it
+                resolves identically in `vite dev` and in the built site. If a
+                browser cannot embed PDFs, the fallback link below still gives
+                the user the document.
+                ================================================================ */}
+            <section aria-labelledby="resume-document-heading" className="space-y-2.5">
+              <div className="flex items-center gap-2 border-b border-border/40 pb-1.5">
+                <FileText size={15} className="text-accent" aria-hidden="true" />
+                <h2
+                  id="resume-document-heading"
+                  className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-accent"
+                >
+                  Resume Document
+                </h2>
+                <span className="ml-auto font-mono text-[0.6rem] sm:text-xs text-muted">
+                  {RESUME_PDF_FILENAME}
+                </span>
+              </div>
+
+              <div className="rounded-md border border-border bg-black/50 overflow-hidden">
+                <iframe
+                  src={`${RESUME_PDF_URL}#view=FitH&toolbar=0&navpanes=0`}
+                  title="Aryan Sharma resume — embedded PDF viewer"
+                  /* Sized for readability on a phone and for a full page on a
+                     desktop, without ever exceeding the modal's height. */
+                  className="block w-full h-[60vh] sm:h-[68vh] bg-background"
+                  loading="lazy"
+                />
+              </div>
+
+              {/* Fallback for browsers that refuse to embed PDFs (some mobile
+                  browsers). Same single source-of-truth URL. */}
+              <p className="font-mono text-[0.65rem] sm:text-xs text-muted">
+                If the document does not display above,{' '}
+                <a
+                  href={RESUME_PDF_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent underline underline-offset-2 hover:text-white transition-colors"
+                >
+                  open the resume PDF in a new tab
+                </a>{' '}
+                or use Download Resume.
+              </p>
+            </section>
+
+            {/* Structured summary — the same content as the PDF above, kept so
+                the modal stays useful and printable when the PDF is unavailable. */}
+            <div className="space-y-8">
               {/* Header Title Section */}
               <div className="border-b border-border/80 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
@@ -314,8 +370,10 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             {/* Sticky Footer */}
             <div className="sticky bottom-0 z-20 p-4 sm:p-5 border-t border-border bg-background/95 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 print:hidden">
               <div className="flex items-center gap-3">
-                {/* Both actions point at the same current PDF.
-                    View opens it in a new tab; Download saves it with a
+                {/* Both actions point at the same current PDF. The document
+                    itself is rendered in the embedded viewer above, so these
+                    are convenience shortcuts and never the only way to read
+                    it. View opens the raw PDF; Download saves it with a
                     readable filename. */}
                 <a
                   href={RESUME_PDF_URL}
@@ -324,13 +382,13 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   onClick={() => playSFX('click')}
                   onMouseEnter={() => playSFX('hover')}
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-background font-display text-xs sm:text-sm font-semibold rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)] min-h-[44px]"
-                  aria-label={`View resume PDF (${RESUME_PDF_FILENAME}) — opens in a new tab`}
+                  aria-label="Open the resume PDF in a new browser tab"
                   data-magnetic
                   data-cursor="open"
-                  data-cursor-text="VIEW"
+                  data-cursor-text="OPEN"
                 >
-                  <Eye size={14} />
-                  <span>View Resume</span>
+                  <ExternalLink size={14} />
+                  <span>Open PDF</span>
                 </a>
                 <a
                   href={RESUME_PDF_URL}

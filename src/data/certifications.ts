@@ -183,3 +183,27 @@ export const certifications: Certificate[] = [
 ]
 
 export const orderedCertifications = [...certifications].sort((a, b) => a.order - b.order)
+
+/* ==========================================================================
+   TOP CERTIFICATES — the three credentials featured at the head of the
+   Recognition section, in this exact order:
+
+     1. EY AI Fundamentals & Applications  (Certificate of Merit)
+     2. AI TOOLS WORKSHOP — be10X
+     3. CERTIFIED LLM SECURITY EXPERT (CLLMSE) — Red Team Leaders
+
+   These are REFERENCES to the existing records above — not copies — so a
+   title, issuer, date, image or verification link can only ever exist in one
+   place and cannot drift or duplicate. The full archive below still shows
+   every credential.
+   ========================================================================== */
+
+const TOP_CERTIFICATE_IDS = [
+  'ey-anudip-ai',
+  'be10x-ai-tools-workshop',
+  'red-team-leaders-cllmse',
+] as const
+
+export const topCertifications: Certificate[] = TOP_CERTIFICATE_IDS.map(
+  (id) => certifications.find((c) => c.id === id)
+).filter((c): c is Certificate => Boolean(c))

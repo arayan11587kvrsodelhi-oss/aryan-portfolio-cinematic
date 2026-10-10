@@ -84,18 +84,27 @@ interface FeaturedSpec {
 }
 
 /**
- * Only repositories that ship a real screenshot are listed here.
+ * The six featured projects, in the exact order they must appear.
  *
- * Nexa-ai and cyberdesk-incident-management-platform are deliberately absent:
- * neither has an image in `src/assets/photos`, and fabricating one would be
- * dishonest. Both remain valid projects — they are still in the full slider
- * below, with their explicit no-screenshot fallback.
+ * This is a manual curation, NOT an objective ranking by stars, traffic,
+ * quality or popularity. Each entry maps to a real repository already present
+ * in `repos` by its exact GitHub name.
+ *
+ * CyberTag Arena is deliberately absent: it has been removed from the
+ * portfolio's featured content because it is incomplete. It is no longer
+ * presented as a featured project or as a playable game.
+ *
+ * `LIVE DEMO` and `VIEW SOURCE` are only rendered when the repository actually
+ * carries that URL (see ProjectActions), so nothing here can advertise a link
+ * that does not exist.
  */
 const FEATURED: FeaturedSpec[] = [
   { name: 'sentinel-soc', label: 'Sentinel SOC' },
-  { name: 'velora-fintech-landing-page', label: 'VELORA' },
+  { name: 'aryan-portfolio-cinematic', label: 'Aryan Sharma Portfolio' },
   { name: 'vigil-cloud-security', label: 'VIGIL — Cloud Security Intelligence' },
+  { name: 'Typing-car-race', label: '3D Typing Car Racer' },
   { name: 'nexus-dashboard', label: 'Nexus Dashboard' },
+  { name: 'velora-fintech-landing-page', label: 'VELORA Fintech Landing Page' },
 ]
 
 /** The screenshot frame. Shared by the featured grid and the slider card. */
@@ -134,7 +143,11 @@ function StatusFlags({ repo }: { repo: ProjectRepo }) {
   )
 }
 
-/** "View Repository" is always real; "Live" only when GitHub gave a homepage. */
+/**
+ * "View Source" is always real (the GitHub repository). "Live Demo" is only
+ * rendered when the repository actually carries a live URL, so a card can
+ * never advertise a deployment that does not exist.
+ */
 function ProjectActions({ repo, compact }: { repo: ProjectRepo; compact?: boolean }) {
   return (
     <div className={'psl-actions' + (compact ? ' psl-actions--compact' : '')}>
@@ -143,14 +156,14 @@ function ProjectActions({ repo, compact }: { repo: ProjectRepo; compact?: boolea
         href={repo.githubUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={'View repository ' + repo.name + ' on GitHub'}
+        aria-label={'View the ' + repo.name + ' source code on GitHub'}
         data-cursor="open"
-        data-cursor-text="REPO"
+        data-cursor-text="SOURCE"
         data-magnetic
         data-no-drag
       >
         <Github size={14} aria-hidden="true" />
-        <span>View Repository</span>
+        <span>View Source</span>
       </a>
 
       {repo.status.hasLiveUrl && repo.demoUrl && (
@@ -159,13 +172,13 @@ function ProjectActions({ repo, compact }: { repo: ProjectRepo; compact?: boolea
           href={repo.demoUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={'View live project ' + repo.name}
+          aria-label={'Open the live demo of ' + repo.name}
           data-cursor="open"
           data-cursor-text="LIVE"
           data-magnetic
           data-no-drag
         >
-          <span>View Live</span>
+          <span>Live Demo</span>
           <ArrowUpRight size={14} aria-hidden="true" />
         </a>
       )}

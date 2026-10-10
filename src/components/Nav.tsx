@@ -4,10 +4,11 @@ import { Menu, X, ArrowUpRight, FileText, Github, Zap, Gamepad2 } from 'lucide-r
 import SoundToggle from './SoundToggle'
 import { useSFX } from '../hooks/useSFX'
 import { GITHUB_PROFILE_URL } from '../data/githubRepos'
+import { TYPING_RACER } from '../data/games'
 
-/* `Play Game` is deliberately NOT in this list: both the desktop bar and the
-   mobile bar already carry a dedicated PLAY GAME action, and adding it here
-   as well would render the same entry twice. */
+/* `Play Game` is not in this list: the bars already carry a dedicated PLAY
+   GAME action that links straight to the live game, and listing it here as
+   well would render the same entry twice. */
 const LINKS = [
   { label: 'Projects', href: '#workbench' },
   { label: 'Capabilities', href: '#skills' },
@@ -35,7 +36,7 @@ export default function Nav({ onOpenResume, onOpenRecruiterView }: NavProps) {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30)
 
-      const sections = ['top', 'workbench', 'play-game', 'skills', 'recognition', 'about', 'contact']
+      const sections = ['top', 'workbench', 'skills', 'recognition', 'about', 'contact']
       const scrollPosition = window.scrollY + window.innerHeight * 0.35
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -167,18 +168,22 @@ export default function Nav({ onOpenResume, onOpenRecruiterView }: NavProps) {
             {/* Audio Control */}
             <SoundToggle />
 
-            {/* CyberTag Game + Typing Car Racer. Both games now live in the
-                Play Game section, so this lands on the arcade instead of
-                jumping straight to one deployment. */}
+            {/* Typing Car Racer — the portfolio's only featured game. This is a
+                direct link to the live deployment, opened in a new tab with
+                safe external-link attributes. It deliberately does NOT scroll
+                to a section and does NOT point at any local path. */}
             <a
-              href="#play-game"
+              href={TYPING_RACER.playUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => playSFX('nav')}
               onMouseEnter={() => playSFX('hover')}
               data-magnetic
               data-cursor="open"
+              data-cursor-text="PLAY"
               className="text-eyebrow text-xs border border-accent/35 bg-accent/10 hover:bg-accent hover:text-background text-accent px-3.5 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 min-h-[40px] font-mono shadow-[0_0_14px_rgba(53,224,224,0.08)]"
-              title="Play Game"
-              aria-label="Play Game — view the arcade section"
+              title="Play the 3D Typing Car Racer"
+              aria-label="Play Game — open the 3D Typing Car Racer in a new tab"
             >
               <Gamepad2 size={13} />
               <span>PLAY GAME</span>
@@ -219,9 +224,11 @@ export default function Nav({ onOpenResume, onOpenRecruiterView }: NavProps) {
               <span>{githubHovered ? 'OPEN GITHUB ↗' : 'GITHUB'}</span>
             </a>
 
-            {/* Resume Button */}
+            {/* Resume — opens the site's own Resume modal in place. It never
+                navigates away or opens a new browser tab. */}
             {onOpenResume && (
               <button
+                type="button"
                 onClick={() => {
                   playSFX('modalOpen')
                   onOpenResume()
@@ -229,10 +236,13 @@ export default function Nav({ onOpenResume, onOpenRecruiterView }: NavProps) {
                 onMouseEnter={() => playSFX('hover')}
                 data-magnetic
                 data-cursor="open"
-                className="text-eyebrow text-xs border border-border bg-surface/60 hover:border-accent/60 hover:text-accent px-3.5 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 min-h-[40px]"
+                data-cursor-text="RESUME"
+                title="Open resume"
+                aria-label="Resume — open the resume viewer"
+                className="text-eyebrow text-xs border border-border bg-surface/60 hover:border-accent/60 hover:text-accent px-3.5 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 min-h-[40px] font-mono"
               >
-                <FileText size={13} className="text-accent" />
-                <span>Resume</span>
+                <FileText size={13} className="text-accent" aria-hidden="true" />
+                <span>RESUME</span>
               </button>
             )}
           </div>
@@ -254,11 +264,13 @@ export default function Nav({ onOpenResume, onOpenRecruiterView }: NavProps) {
             )}
             <SoundToggle showLabel={false} />
             <a
-              href="#play-game"
+              href={TYPING_RACER.playUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => playSFX('nav')}
               className="min-h-[44px] px-2.5 rounded border border-accent/35 bg-accent/10 text-accent hover:bg-accent hover:text-background transition-colors flex items-center justify-center gap-1.5 font-mono text-[10px] tracking-wider"
-              title="Play Game"
-              aria-label="Play Game — view the arcade section"
+              title="Play the 3D Typing Car Racer"
+              aria-label="Play Game — open the 3D Typing Car Racer in a new tab"
             >
               <Gamepad2 size={14} />
               <span>PLAY</span>
@@ -324,6 +336,39 @@ export default function Nav({ onOpenResume, onOpenRecruiterView }: NavProps) {
 
               {/* Mobile Actions */}
               <div className="flex flex-col gap-3 pt-4">
+                {/* RESUME — opens the site's Resume modal in place, exactly like
+                    the desktop bar. Never a new tab and never the raw PDF. */}
+                {onOpenResume && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSFX('modalOpen')
+                      setOpen(false)
+                      onOpenResume()
+                    }}
+                    onMouseEnter={() => playSFX('hover')}
+                    className="w-full py-3 rounded-xl border border-accent/50 bg-accent/10 text-accent font-mono text-xs flex items-center justify-center gap-2 min-h-[44px]"
+                  >
+                    <FileText size={14} aria-hidden="true" />
+                    <span>RESUME</span>
+                  </button>
+                )}
+
+                <a
+                  href={TYPING_RACER.playUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    playSFX('nav')
+                    setOpen(false)
+                  }}
+                  className="w-full py-3 rounded-xl border border-accent/50 bg-accent/10 text-accent font-mono text-xs flex items-center justify-center gap-2 min-h-[44px]"
+                >
+                  <Gamepad2 size={14} aria-hidden="true" />
+                  <span>PLAY GAME</span>
+                  <ArrowUpRight size={13} aria-hidden="true" />
+                </a>
+
                 {onOpenRecruiterView && (
                   <button
                     type="button"

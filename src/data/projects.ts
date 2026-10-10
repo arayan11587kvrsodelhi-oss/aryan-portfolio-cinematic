@@ -5,7 +5,7 @@ import sentinelSocImage from '../assets/photos/sentinel-soc-v2.2.png'
 import nexusDashboardImage from '../assets/photos/nexus-dashboard.png'
 import hayaImage from '../assets/photos/haya-project-preview.webp'
 import vigilImage from '../assets/photos/vigil-project-preview.webp'
-import cybertagImage from '../assets/photos/cybertag-arena.png'
+import typingRacerImage from '../assets/photos/typing-racer-race.png'
 export interface Project {
   id: string
   number: string
@@ -238,27 +238,10 @@ export const projects: Project[] = [
     accentNote: 'Creative developer identity',
     featured: true,
     badge: 'PORTFOLIO V2'
-  },
-  {
-    id: 'cybertag-arena',
-    number: '08',
-    title: 'CYBERTAG ARENA',
-    category: 'INTERACTIVE GAME',
-    tagline: 'A neon arena for CyberTag',
-    description: 'A browser-based CyberTag Arena game presented through a neon cyber interface.',
-    problemSolved: 'Provides a dedicated interactive game experience alongside the portfolio work.',
-    keyFeatures: [
-      'Combatant profile configuration',
-      'Selectable laser blaster loadout'
-    ],
-    myContribution: 'Created the CyberTag Arena game experience.',
-    tech: ['React', 'Vite', 'Three.js', 'WebSocket'],
-    image: cybertagImage,
-    demoUrl: 'https://cybertag-arena-game.vercel.app/',
-    demoLabel: 'Play Game',
-    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/cyber-tag-game',
-    accentNote: 'Interactive game experience',
-    featured: true,
-    badge: 'CYBERTAG GAME'
-  },
+  }
 ]
+
+/* CyberTag Arena was previously project 08. It has been removed from the
+   portfolio's featured content because it is incomplete, and is no longer
+   presented as a playable game. Its asset (cybertag-arena.png) is left
+   untouched on disk: removing an unreferenced binary is unnecessary churn. */

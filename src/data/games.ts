@@ -1,28 +1,28 @@
 /* ==========================================================================
-   ARCADE / PLAY GAME — single source of truth
+   ARCADE — single source of truth for the Play Game action
 
-   Every field below is taken from the real projects:
-   - CyberTag Arena  -> existing portfolio entry (unchanged, live link kept).
-   - Typing Car Racer-> the `Typing-car-race` repository and its deployed build
-     at 3d-typing-racer-game.vercel.app.
+   The typing car racer is the only game featured in the portfolio. CyberTag
+   Arena has been removed from the portfolio's playable-game experience
+   because it is incomplete; it is no longer listed anywhere on the site.
 
-   NOTHING IS INVENTED. The racer's facts were read from the repository source:
-   `src/game/levels.ts` (campaign worlds + 12 level definitions),
-   `src/game/worlds.ts` (environments), `src/components/CampaignMap.tsx`
-   (2D world-selection map), `src/components/GameScreen.tsx` /
-   `src/game/car3D.ts` (React Three Fiber race scenes) and `package.json`
-   (the actual dependency list).
+   The facts below were read from the real repository
+   (`src/game/levels.ts`, `worlds.ts`, `components/CampaignMap.tsx`,
+   `components/GameScreen.tsx`, `game/car3D.ts`, `package.json`):
 
-   `status` is deliberately "In Development": the live build is playable, but
-   only the first campaign world is finished. It is NOT described as complete.
+   - 2D campaign map for world/stage selection
+   - a planned 12-stage campaign across Neon City, Sunset Mesa, Alpine Dawn
+   - Neon City is the first world and opens unlocked; stage 1 is built and
+     tested, later stages are still in progress
+   - 3D race scenes rendered with React Three Fiber + Three.js
+
+   `status` stays "In Development": the live build is playable, but the
+   campaign is not finished. It is never described as complete.
    ========================================================================== */
 
 export interface Game {
   id: string
   /** Curated display title. */
   title: string
-  /** Exact GitHub repository name (used to resolve the real screenshot). */
-  repoName: string
   category: string
   tagline: string
   description: string
@@ -32,8 +32,6 @@ export interface Game {
   keyFeatures: string[]
   /** Real dependency list from the game's own package.json / source. */
   tech: string[]
-  /** Authentic screenshot from the game repository. */
-  image: string
   /** Always the real deployed game. Never a source-code URL. */
   playUrl: string
   /** Always the real GitHub repository. */
@@ -41,18 +39,17 @@ export interface Game {
   accent: string
 }
 
-export const GAME_LINKS = {
-  typingRacerPlay: 'https://3d-typing-racer-game.vercel.app/',
-  typingRacerSource: 'https://github.com/arayan11587kvrsodelhi-oss/Typing-car-race',
-  cybertagPlay: 'https://cybertag-arena-game.vercel.app/',
-  cybertagSource: 'https://github.com/arayan11587kvrsodelhi-oss/cyber-tag-game',
+export const TYPING_RACER = {
+  /** Opens the live game. This is the URL the navigation PLAY GAME targets. */
+  playUrl: 'https://3d-typing-racer-game.vercel.app/',
+  sourceUrl: 'https://github.com/arayan11587kvrsodelhi-oss/Typing-car-race',
 } as const
 
+/** The single game the portfolio now features. */
 export const games: Game[] = [
   {
     id: 'typing-car-racer',
-    title: 'TYPING CAR RACER',
-    repoName: 'Typing-car-race',
+    title: '3D TYPING CAR RACER',
     category: 'INTERACTIVE GAME',
     tagline: 'TYPE TO ACCELERATE.',
     description:
@@ -64,34 +61,14 @@ export const games: Game[] = [
       'Neon City is the first world and opens unlocked — stage 1 "Neon Streets" is built, tested and playable; later stages are still in progress',
       'Live race HUD with position, speed, instant and average WPM, accuracy, score, combo multiplier and nitro',
       'Garage with 3D car previews for customising and upgrading the build',
-      'Local high-score table and campaign progress persistence'
+      'Local high-score table and campaign progress persistence',
     ],
     tech: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'React Three Fiber', 'Three.js'],
-    image: 'typing-racer-race',
-    playUrl: GAME_LINKS.typingRacerPlay,
-    sourceUrl: GAME_LINKS.typingRacerSource,
+    playUrl: TYPING_RACER.playUrl,
+    sourceUrl: TYPING_RACER.sourceUrl,
     accent: '#22d3ee',
-  },
-  {
-    id: 'cybertag-arena',
-    title: 'CYBERTAG ARENA',
-    repoName: 'cyber-tag-game',
-    category: 'INTERACTIVE GAME',
-    tagline: 'A NEON ARENA FOR CYBERTAG.',
-    description:
-      'A browser-based CyberTag Arena game presented through a neon cyber interface.',
-    status: 'Playable',
-    keyFeatures: ['Combatant profile configuration', 'Selectable laser blaster loadout'],
-    tech: ['React', 'Vite', 'Three.js', 'WebSocket'],
-    image: 'cybertag-arena',
-    playUrl: GAME_LINKS.cybertagPlay,
-    sourceUrl: GAME_LINKS.cybertagSource,
-    accent: '#19b89a',
   },
 ]
 
-/** Case-insensitive lookup so callers never depend on exact repo casing. */
-export function gameById(id: string): Game | undefined {
-  const key = id.toLowerCase()
-  return games.find((g) => g.id === key)
-}
+/** The featured game, for the navigation and the featured project card. */
+export const typingRacer = games[0]

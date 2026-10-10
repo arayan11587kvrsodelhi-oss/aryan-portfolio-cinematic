@@ -1,12 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, ExternalLink } from 'lucide-react'
+import { X, ExternalLink, Award } from 'lucide-react'
 import type { Certificate } from '../data/certifications'
-import { orderedCertifications } from '../data/certifications'
+import { orderedCertifications, topCertifications } from '../data/certifications'
 import CertificateViewer from './CertificateViewer'
 import { useSFX } from '../hooks/useSFX'
 
 const EASE = [0.16, 1, 0.3, 1] as const
+
+/* Short display title for the featured strip. The full title stays the source
+   of truth and is what the modal shows. */
+const TOP_SHORT_TITLES: Record<string, string> = {
+  'ey-anudip-ai': 'EY AI Fundamentals & Applications',
+  'be10x-ai-tools-workshop': 'AI TOOLS WORKSHOP',
+  'red-team-leaders-cllmse': 'LLM SECURITY EXPERT (CLLMSE)',
+}
 
 export default function Certifications() {
   const { playSFX } = useSFX()
@@ -44,10 +52,10 @@ export default function Certifications() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-medium tracking-tight text-white">
-              CERTIFICATES &amp; MERIT
+              TOP CERTIFICATES
             </h2>
             <p className="text-muted text-sm sm:text-base mt-2 max-w-2xl font-mono">
-              A tactile archive of verified merit recognition, industry certifications, and academic achievements.
+              The three credentials that represent this work most strongly. The complete archive follows below.
             </p>
           </div>
           <div className="hidden md:flex items-center gap-2 text-xs font-mono text-white/40">
@@ -56,7 +64,32 @@ export default function Certifications() {
         </div>
       </div>
 
+      {/* ---- TOP CERTIFICATES: exactly the three featured credentials ---- */}
+      <div className="max-w-container mx-auto px-4 sm:px-6 md:px-10 pb-10">
+        <ul className="topcerts-grid" aria-label="Top certificates">
+          {topCertifications.map((cert) => (
+            <li key={cert.id}>
+              <TopCertCard
+                cert={cert}
+                shortTitle={TOP_SHORT_TITLES[cert.id] ?? cert.title}
+                onHover={() => playSFX('hover')}
+                onInspect={() => {
+                  playSFX('click')
+                  setActive(cert)
+                }}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* ---- FULL ARCHIVE: every credential, unchanged -------------------- */}
       <div className="max-w-container mx-auto px-4 sm:px-6 md:px-10 pb-[var(--spacing-section)]">
+        <div className="flex items-center gap-3 mb-5 border-t border-border pt-8">
+          <span className="text-eyebrow text-muted">FULL ARCHIVE</span>
+          <span className="h-[1px] flex-1 bg-border" />
+          <span className="text-xs font-mono text-white/40">ALL {total} CREDENTIALS</span>
+        </div>
         <CertificateViewer
           certs={orderedCertifications}
           onInspect={(cert) => {
@@ -190,5 +223,91 @@ function CertificateModal({ item, onClose, reduced }: { item: Certificate; onClo
         </motion.div>
       </div>
     </motion.div>
+  )
+}
+
+/* -------------------------------------------------------------------------- */
+/* One featured certificate card                                              */
+/* -------------------------------------------------------------------------- */
+
+function TopCertCard({
+  cert,
+  shortTitle,
+  onHover,
+  onInspect,
+}: {
+  cert: Certificate
+  shortTitle: string
+  onHover: () => void
+  onInspect: () => void
+}) {
+  return (
+    <article className="topcerts-card" onMouseEnter={onHover}>
+      <div className="topcerts-badges">
+        <span className="topcerts-badge">
+          <Award size={11} aria-hidden="true" />
+          {cert.hierarchyTier}
+        </span>
+        <span className="topcerts-num" aria-hidden="true">
+          #{cert.number}
+        </span>
+      </div>
+
+      {/* The authentic certificate image. object-contain keeps the real aspect
+          ratio, so the scan is never stretched or cropped. */}
+      <button
+        type="button"
+        className="topcerts-media"
+        onClick={onInspect}
+        aria-label={`Inspect the ${cert.title} certificate from ${cert.issuer}`}
+        data-cursor="view"
+        data-cursor-text="VIEW"
+      >
+        <img
+          src={cert.image}
+          alt={`${cert.title} certificate — ${cert.issuer}`}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+        />
+      </button>
+
+      <div className="topcerts-body">
+        <h3 className="topcerts-title">{shortTitle}</h3>
+        <p className="topcerts-issuer">
+          {cert.issuer} · {cert.type}
+          {cert.date ? ` · ${cert.date}` : ''}
+        </p>
+        {cert.description && <p className="topcerts-desc">{cert.description}</p>}
+
+        <div className="topcerts-actions">
+          {cert.verificationUrl && (
+            <a
+              className="topcerts-btn topcerts-btn--primary"
+              href={cert.verificationUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onHover}
+              aria-label={`View the ${cert.title} certificate on the issuer's site — opens in a new tab`}
+              data-cursor="open"
+              data-cursor-text="VERIFY"
+            >
+              <span>View Certificate</span>
+              <ExternalLink size={13} aria-hidden="true" />
+            </a>
+          )}
+          <button
+            type="button"
+            className="topcerts-btn"
+            onClick={onInspect}
+            aria-label={`Open the ${cert.title} certificate image`}
+            data-cursor="view"
+            data-cursor-text="VIEW"
+          >
+            <span>Inspect</span>
+          </button>
+        </div>
+      </div>
+    </article>
   )
 }

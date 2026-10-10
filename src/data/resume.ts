@@ -11,7 +11,7 @@
    "View" and "Download" buttons can never drift apart or go stale.
    ========================================================================== */
 
-/** Public URL of the current resume PDF. Opens in a browser tab. */
+/** Public URL of the current resume PDF. Embedded in the Resume modal. */
 export const RESUME_PDF_URL = `${import.meta.env.BASE_URL}files/aryan-sharma-resume.pdf`
 
 /** Filename offered to the browser when the PDF is downloaded. */

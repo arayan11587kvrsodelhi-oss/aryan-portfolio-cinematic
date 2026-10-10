@@ -220,8 +220,8 @@ export default function About({ onOpenResume }: AboutProps) {
                       <FileText size={14} />
                       <span>View Resume</span>
                     </button>
-                    {/* The real PDF. Same document as the modal's own actions,
-                        so there is never a competing or stale resume link. */}
+                    {/* The real PDF, always the current one. Download saves it
+                        with a readable filename. */}
                     <a
                       href={RESUME_PDF_URL}
                       download={RESUME_PDF_FILENAME}

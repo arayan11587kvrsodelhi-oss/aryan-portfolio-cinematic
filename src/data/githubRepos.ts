@@ -13,6 +13,7 @@ import sentinelSocImage from '../assets/photos/sentinel-soc-v2.2.png'
 import nexusDashboardImage from '../assets/photos/nexus-dashboard.png'
 import hayaImage from '../assets/photos/haya-project-preview.webp'
 import vigilImage from '../assets/photos/vigil-project-preview.webp'
+import typingRacerImage from '../assets/photos/typing-racer-race.png'
 
 export type RepoCategory =
   | 'FEATURED'
@@ -260,6 +261,36 @@ export const githubRepos: GitHubRepo[] = [
       'Desktop custom trailing cursor with contextual interaction states'
     ],
     architecture: 'React + TypeScript + Vite with GSAP ScrollTrigger animation pipeline and Lenis momentum physics.'
+  },
+  {
+    id: 'typing-car-race',
+    name: 'Typing-car-race',
+    displayName: '3D TYPING CAR RACER',
+    githubUrl: 'https://github.com/arayan11587kvrsodelhi-oss/Typing-car-race',
+    demoUrl: 'https://3d-typing-racer-game.vercel.app/',
+    description: 'A browser-based typing racing game with 3D race scenes rendered using React Three Fiber and Three.js, where typing speed and accuracy drive the car through a staged campaign.',
+    primaryLanguage: 'TypeScript',
+    technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'React Three Fiber', 'Three.js'],
+    category: 'WEB / FRONTEND',
+    status: 'In Development',
+    isFeatured: true,
+    isExperiment: false,
+    isSmallerProject: false,
+    createdAt: '2026-09-20',
+    updatedAt: '2026-10-08',
+    stars: 0,
+    forks: 0,
+    topics: ['game', 'typing', 'threejs', 'react-three-fiber', 'vite'],
+    previewImage: typingRacerImage,
+    readmeSnippet: 'A browser typing racing game: React Three Fiber and Three.js race scenes combined with a 2D campaign map and a typing-accuracy driven gameplay loop.',
+    keyHighlights: [
+      '2D campaign map with world and stage selection',
+      'Planned 12-stage campaign across Neon City, Sunset Mesa and Alpine Dawn',
+      'Neon City is the first world; stage 1 is built and tested, later stages are in progress',
+      'Live race HUD with WPM, accuracy, score, combo and nitro',
+      'Garage with 3D car previews for build customisation'
+    ],
+    architecture: 'React + TypeScript + Vite frontend using React Three Fiber and Three.js for 3D race scenes, with local persistence for campaign progress, scores and profile.'
   },
   {
     id: 'calc',
