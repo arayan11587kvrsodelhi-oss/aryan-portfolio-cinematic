@@ -153,14 +153,20 @@ export const certifications: Certificate[] = [
     id: 'be10x-ai-tools-workshop',
     order: 10,
     number: '10',
+    /* Title and issuer are taken from the issued credential itself, which
+       reads "AI TOOLS WORKSHOP" over the be10X wordmark. */
     title: 'AI TOOLS WORKSHOP',
-    issuer: 'be10x',
+    issuer: 'be10X',
     category: 'Artificial Intelligence',
     type: 'Certificate of Completion',
     hierarchyTier: 'Workshop',
     date: 'October 4, 2026',
     image: certificateImages.be10xAiToolsWorkshop,
-    description: 'AI tools and ChatGPT workshop.'
+    /* The credential text names "AI tools and ChatGPT workshop", so that is
+       what is described here. Nothing beyond the credential is claimed. */
+    description: 'AI tools and ChatGPT workshop. Covers creating presentations, analysing data, and coding/debugging with AI.',
+    verificationUrl: 'https://app.aicareeraccelerator.in/certificate/ZKBPKq-pRYlbwjZ',
+    credentialId: 'ZKBPKq-pRYlbwjZ',
   },
   {
     id: 'red-team-leaders-cllmse',

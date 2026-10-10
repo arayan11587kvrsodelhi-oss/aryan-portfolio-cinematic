@@ -103,6 +103,9 @@ const LOCAL_IMAGE_MAP: Record<string, () => Promise<string>> = {
     import('../assets/photos/business-landing.png').then((m) => m.default),
   'nissan-gtr-clone': () => import('../assets/photos/nissan.jpg').then((m) => m.default),
   aryan: () => import('../assets/photos/aryan-project.png').then((m) => m.default),
+  /* Typing Car Racer — real in-game capture taken from the game repository,
+     so the slider shows the actual gameplay rather than an abstract frame. */
+  'Typing-car-race': () => import('../assets/photos/typing-racer-race.png').then((m) => m.default),
 }
 
 /** Resolve a local screenshot URL without pulling it into the critical path. */

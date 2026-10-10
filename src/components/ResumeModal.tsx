@@ -5,6 +5,8 @@ import {
   Printer,
   Mail,
   ArrowUpRight,
+  Download,
+  Eye,
   GraduationCap,
   Briefcase,
   Code2,
@@ -13,6 +15,7 @@ import {
   ExternalLink
 } from 'lucide-react'
 import { useSFX } from '../hooks/useSFX'
+import { RESUME_PDF_URL, RESUME_PDF_FILENAME } from '../data/resume'
 
 interface ResumeModalProps {
   isOpen: boolean
@@ -311,11 +314,43 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             {/* Sticky Footer */}
             <div className="sticky bottom-0 z-20 p-4 sm:p-5 border-t border-border bg-background/95 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 print:hidden">
               <div className="flex items-center gap-3">
+                {/* Both actions point at the same current PDF.
+                    View opens it in a new tab; Download saves it with a
+                    readable filename. */}
+                <a
+                  href={RESUME_PDF_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => playSFX('click')}
+                  onMouseEnter={() => playSFX('hover')}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-background font-display text-xs sm:text-sm font-semibold rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)] min-h-[44px]"
+                  aria-label={`View resume PDF (${RESUME_PDF_FILENAME}) — opens in a new tab`}
+                  data-magnetic
+                  data-cursor="open"
+                  data-cursor-text="VIEW"
+                >
+                  <Eye size={14} />
+                  <span>View Resume</span>
+                </a>
+                <a
+                  href={RESUME_PDF_URL}
+                  download={RESUME_PDF_FILENAME}
+                  onClick={() => playSFX('click')}
+                  onMouseEnter={() => playSFX('hover')}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 border border-accent/50 bg-accent/10 text-accent hover:bg-accent hover:text-background font-display text-xs sm:text-sm rounded-full transition-colors min-h-[44px]"
+                  aria-label={`Download resume PDF (${RESUME_PDF_FILENAME})`}
+                  data-magnetic
+                  data-cursor="open"
+                  data-cursor-text="SAVE"
+                >
+                  <Download size={14} />
+                  <span>Download Resume</span>
+                </a>
                 <a
                   href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Opportunity%20Inquiry%20-%20Aryan%20Sharma"
                   onClick={() => playSFX('click')}
                   onMouseEnter={() => playSFX('hover')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-background font-display text-xs sm:text-sm font-semibold rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(53,224,224,0.3)] min-h-[44px]"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 border border-border bg-surface text-foreground hover:border-accent hover:text-accent font-display text-xs sm:text-sm rounded-full transition-colors min-h-[44px]"
                 >
                   <span>Connect with Aryan</span>
                   <ArrowUpRight size={14} />

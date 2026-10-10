@@ -164,6 +164,9 @@ function CertificateModal({ item, onClose, reduced }: { item: Certificate; onClo
             </div>
 
             <div className="flex items-center gap-3">
+              {/* Label is deliberately generic: this action serves any issuer
+                  (Credly for IBM, the AI Career Accelerator portal for be10X),
+                  so it must not claim a specific verification platform. */}
               {item.verificationUrl && (
                 <a
                   href={item.verificationUrl}
@@ -171,7 +174,7 @@ function CertificateModal({ item, onClose, reduced }: { item: Certificate; onClo
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-accent text-black font-semibold hover:bg-accent/90 transition-colors"
                 >
-                  <span>VERIFY ON CREDLY</span>
+                  <span>VIEW CERTIFICATE</span>
                   <ExternalLink size={13} />
                 </a>
               )}

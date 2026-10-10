@@ -4102,3 +4102,294 @@ textarea:focus-visible {
     transition: none !important;
   }
 }
+
+/* ==========================================================================
+   PLAY GAME (05. ARCADE) — game selection cards
+
+   Deliberately built from the SAME primitives as the project cards
+   (.psl-fcard / .psl-btn / .psl-chip) so the arcade reads as part of the
+   existing design system rather than a new one: same surfaces, same borders,
+   same JetBrains Mono micro-type, same 44px touch targets and focus rings.
+
+   The per-card accent arrives as --pg-accent and is consumed exactly the way
+   --psl-accent is, including through color-mix().
+   ========================================================================== */
+
+.pg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pg-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(168deg, rgba(6, 30, 25, 0.94), rgba(5, 20, 32, 0.92));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.4s ease;
+}
+
+.pg-card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--pg-accent) 42%, transparent);
+  box-shadow: 0 18px 40px -26px rgba(0, 0, 0, 0.9);
+}
+
+/* ---- Screenshot frame ---------------------------------------------------- */
+/* Fixed 16 / 9 frame matching the real captures (1280x720). object-fit:cover
+   fills it evenly, so the aspect ratio of the source is preserved and the
+   image is never stretched. */
+.pg-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.45);
+  border-bottom: 1px solid var(--border);
+}
+
+.pg-card-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pg-card:hover .pg-card-img {
+  transform: scale(1.03);
+}
+
+/* Honest status label. "In Development" is styled as a caution, not a claim. */
+.pg-card-status {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.24rem 0.5rem;
+  border-radius: 3px;
+  color: var(--pg-accent, var(--accent));
+  border: 1px solid color-mix(in srgb, var(--pg-accent, var(--accent)) 45%, transparent);
+  background: rgba(3, 7, 6, 0.82);
+  backdrop-filter: blur(6px);
+}
+
+.pg-card-status--dev {
+  color: #e0b464;
+  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(3, 7, 6, 0.82);
+}
+
+/* Explicit no-screenshot fallback. Never a fabricated gameplay image. */
+.pg-card-noimg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(139, 150, 146, 0.55);
+}
+
+
+/* ---- Body ---------------------------------------------------------------- */
+
+.pg-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 1.1rem 1.15rem 1.15rem;
+}
+
+.pg-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.55rem;
+}
+
+.pg-card-cat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pg-accent, var(--accent));
+}
+
+.pg-card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.pg-card-tagline {
+  margin: 0.2rem 0 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  color: var(--muted-light);
+}
+
+.pg-card-desc {
+  margin: 0.7rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.pg-card-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+}
+
+.pg-card-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  padding: 0.22rem 0.45rem;
+  border-radius: 3px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ---- Actions ------------------------------------------------------------- */
+/* Same contract as .psl-btn: 44px target, visible hover, visible focus ring. */
+
+.pg-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1.1rem;
+}
+
+.pg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.6rem 0.85rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--muted-light);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.pg-btn:hover,
+.pg-btn:focus-visible {
+  color: var(--foreground);
+  border-color: color-mix(in srgb, var(--pg-accent, var(--accent)) 50%, transparent);
+  background: color-mix(in srgb, var(--pg-accent, var(--accent)) 10%, transparent);
+}
+
+.pg-btn--primary {
+  color: var(--pg-accent, var(--accent));
+  border-color: color-mix(in srgb, var(--pg-accent, var(--accent)) 45%, transparent);
+  background: color-mix(in srgb, var(--pg-accent, var(--accent)) 14%, transparent);
+}
+
+.pg-btn--ghost {
+  margin-left: auto;
+}
+
+.pg-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Decorative accent wash. Purely presentational, and never rendered under
+   prefers-reduced-motion (the component skips it entirely). */
+.pg-card-glow {
+  position: absolute;
+  inset: auto -30% -60% -30%;
+  height: 60%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--pg-accent, var(--accent)) 16%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.pg-card:hover .pg-card-glow {
+  opacity: 1;
+}
+
+/* Single column on small screens so both cards stay readable and tappable. */
+@media (max-width: 640px) {
+  .pg-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pg-btn--ghost {
+    margin-left: 0;
+  }
+}
+
+/* No hover-lift, no image zoom and no glow on touch. */
+@media (hover: none), (pointer: coarse) {
+  .pg-card:hover {
+    transform: none;
+  }
+
+  .pg-card-img,
+  .pg-card:hover .pg-card-img {
+    transform: none;
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-card:hover {
+    transform: none;
+  }
+
+  .pg-card-img,
+  .pg-card:hover .pg-card-img {
+    transform: none !important;
+    transition: none !important;
+  }
+}

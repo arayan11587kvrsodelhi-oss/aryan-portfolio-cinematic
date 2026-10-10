@@ -5,8 +5,9 @@ import SoundToggle from './SoundToggle'
 import { useSFX } from '../hooks/useSFX'
 import { GITHUB_PROFILE_URL } from '../data/githubRepos'
 
-const CYBERTAG_URL = '/cybertag/'
-
+/* `Play Game` is deliberately NOT in this list: both the desktop bar and the
+   mobile bar already carry a dedicated PLAY GAME action, and adding it here
+   as well would render the same entry twice. */
 const LINKS = [
   { label: 'Projects', href: '#workbench' },
   { label: 'Capabilities', href: '#skills' },
@@ -34,7 +35,7 @@ export default function Nav({ onOpenResume, onOpenRecruiterView }: NavProps) {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30)
 
-      const sections = ['top', 'workbench', 'skills', 'recognition', 'about', 'contact']
+      const sections = ['top', 'workbench', 'play-game', 'skills', 'recognition', 'about', 'contact']
       const scrollPosition = window.scrollY + window.innerHeight * 0.35
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -166,18 +167,18 @@ export default function Nav({ onOpenResume, onOpenRecruiterView }: NavProps) {
             {/* Audio Control */}
             <SoundToggle />
 
-            {/* CyberTag Game */}
+            {/* CyberTag Game + Typing Car Racer. Both games now live in the
+                Play Game section, so this lands on the arcade instead of
+                jumping straight to one deployment. */}
             <a
-              href="https://cybertag-arena-game.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#play-game"
               onClick={() => playSFX('nav')}
               onMouseEnter={() => playSFX('hover')}
               data-magnetic
               data-cursor="open"
               className="text-eyebrow text-xs border border-accent/35 bg-accent/10 hover:bg-accent hover:text-background text-accent px-3.5 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 min-h-[40px] font-mono shadow-[0_0_14px_rgba(53,224,224,0.08)]"
-              title="Play CyberTag"
-              aria-label="Play CyberTag"
+              title="Play Game"
+              aria-label="Play Game — view the arcade section"
             >
               <Gamepad2 size={13} />
               <span>PLAY GAME</span>
@@ -253,13 +254,11 @@ export default function Nav({ onOpenResume, onOpenRecruiterView }: NavProps) {
             )}
             <SoundToggle showLabel={false} />
             <a
-              href={CYBERTAG_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#play-game"
               onClick={() => playSFX('nav')}
               className="min-h-[44px] px-2.5 rounded border border-accent/35 bg-accent/10 text-accent hover:bg-accent hover:text-background transition-colors flex items-center justify-center gap-1.5 font-mono text-[10px] tracking-wider"
-              title="Play CyberTag"
-              aria-label="Play CyberTag"
+              title="Play Game"
+              aria-label="Play Game — view the arcade section"
             >
               <Gamepad2 size={14} />
               <span>PLAY</span>

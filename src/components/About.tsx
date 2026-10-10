@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import portrait from '../assets/photos/portrait.jpg'
 import { useSFX } from '../hooks/useSFX'
+import { RESUME_PDF_URL, RESUME_PDF_FILENAME } from '../data/resume'
 // ThreeUI SparkBadge — registered source, byte-exact (see src/shaders/).
 import { SparkBadge } from '../shaders/spark-badge/SparkBadge'
 import '../shaders/threeui.css'
@@ -206,18 +207,34 @@ export default function About({ onOpenResume }: AboutProps) {
 
               <div className="sm:col-span-5 sm:justify-self-end">
                 {onOpenResume ? (
-                  <button
-                    onClick={() => {
-                      playSFX('modalOpen')
-                      onOpenResume()
-                    }}
-                    onMouseEnter={() => playSFX('hover')}
-                    className="inline-flex items-center gap-2 text-eyebrow border border-accent/50 bg-accent/10 text-accent px-5 py-3 rounded-full hover:bg-accent hover:text-background transition-all duration-300 shadow-[0_0_15px_rgba(53,224,224,0.2)] min-h-[44px]"
-                    data-cursor="open"
-                  >
-                    <FileText size={14} />
-                    <span>View Resume</span>
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                    <button
+                      onClick={() => {
+                        playSFX('modalOpen')
+                        onOpenResume()
+                      }}
+                      onMouseEnter={() => playSFX('hover')}
+                      className="inline-flex items-center gap-2 text-eyebrow border border-accent/50 bg-accent/10 text-accent px-5 py-3 rounded-full hover:bg-accent hover:text-background transition-all duration-300 shadow-[0_0_15px_rgba(53,224,224,0.2)] min-h-[44px]"
+                      data-cursor="open"
+                    >
+                      <FileText size={14} />
+                      <span>View Resume</span>
+                    </button>
+                    {/* The real PDF. Same document as the modal's own actions,
+                        so there is never a competing or stale resume link. */}
+                    <a
+                      href={RESUME_PDF_URL}
+                      download={RESUME_PDF_FILENAME}
+                      onClick={() => playSFX('click')}
+                      onMouseEnter={() => playSFX('hover')}
+                      className="inline-flex items-center gap-2 text-eyebrow border border-border bg-surface/60 text-foreground px-5 py-3 rounded-full hover:border-accent hover:text-accent transition-all duration-300 min-h-[44px]"
+                      aria-label={`Download resume PDF (${RESUME_PDF_FILENAME})`}
+                      data-cursor="open"
+                    >
+                      <Download size={14} />
+                      <span>Download</span>
+                    </a>
+                  </div>
                 ) : (
                   <a
                     href="mailto:arayan11587kvrsodelhi@gmail.com?subject=Resume%20Request%20-%20Aryan%20Sharma"

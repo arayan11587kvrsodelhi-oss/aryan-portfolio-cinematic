@@ -24,6 +24,7 @@ import Hero from './components/Hero'
 
 const loadIntro = () => import('./components/Intro')
 const loadProjectsSlider = () => import('./components/ProjectsSlider')
+const loadPlayGame = () => import('./components/PlayGame')
 const loadSkills = () => import('./components/Skills')
 const loadAchievements = () => import('./components/Achievements')
 const loadCertifications = () => import('./components/Certifications')
@@ -36,6 +37,7 @@ const loadRecruiterView = () => import('./components/RecruiterView')
 
 const Intro = lazy(loadIntro)
 const ProjectsSlider = lazy(loadProjectsSlider)
+const PlayGame = lazy(loadPlayGame)
 const Skills = lazy(loadSkills)
 const Achievements = lazy(loadAchievements)
 const Certifications = lazy(loadCertifications)
@@ -83,6 +85,7 @@ function PortfolioContent() {
     const prefetchAll = () => {
       loadIntro()
       loadProjectsSlider()
+      loadPlayGame()
       loadSkills()
       loadAchievements()
       loadCertifications()
@@ -161,7 +164,13 @@ function PortfolioContent() {
             <ProjectsSlider />
           </section>
 
-          {/* 04. Capabilities & Architecture (Connected to Projects & Certs) */}
+          {/* 04. Play Game - the arcade. CyberTag Arena plus the Typing Car
+              Racer, each opening its own real live deployment. The existing
+              navigation PLAY GAME button keeps working and now also lands
+              here, so both games are reachable from one place. */}
+          <PlayGame />
+
+          {/* 05. Capabilities & Architecture (Connected to Projects & Certs) */}
           <Skills />
 
           {/* 07. Verified Merit Achievement Spotlight */}
