@@ -22,7 +22,7 @@ import Hero from './components/Hero'
    ========================================================================== */
 
 const loadIntro = () => import('./components/Intro')
-const loadProjectsSlider = () => import('./components/ProjectsSlider')
+const loadProjectDirectory = () => import('./components/ProjectDirectory')
 const loadSkills = () => import('./components/Skills')
 const loadAchievements = () => import('./components/Achievements')
 const loadCertifications = () => import('./components/Certifications')
@@ -34,7 +34,7 @@ const loadResumeModal = () => import('./components/ResumeModal')
 const loadRecruiterView = () => import('./components/RecruiterView')
 
 const Intro = lazy(loadIntro)
-const ProjectsSlider = lazy(loadProjectsSlider)
+const ProjectDirectory = lazy(loadProjectDirectory)
 const Skills = lazy(loadSkills)
 const Achievements = lazy(loadAchievements)
 const Certifications = lazy(loadCertifications)
@@ -81,7 +81,7 @@ function PortfolioContent() {
   useEffect(() => {
     const prefetchAll = () => {
       loadIntro()
-      loadProjectsSlider()
+      loadProjectDirectory()
       loadSkills()
       loadAchievements()
       loadCertifications()
@@ -153,11 +153,11 @@ function PortfolioContent() {
           {/* 02. Manifesto / Creative Intro */}
           <Intro />
 
-          {/* 03. Project slider - every public repository, one slide each.
+          {/* 03. Project directory — featured selection + full numbered archive.
               Keeps the #workbench anchor so existing navigation and the
               active-section logic in Nav keep working unchanged. */}
           <section id="workbench">
-            <ProjectsSlider />
+            <ProjectDirectory />
           </section>
 
           {/* 04. Capabilities & Architecture (Connected to Projects & Certs) */}
