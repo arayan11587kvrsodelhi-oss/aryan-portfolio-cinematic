@@ -207,6 +207,14 @@ export default function EvilEye({
     const textureSize = isMobile ? 128 : 256;
     const maxDpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2);
 
+    // Reduced motion: render one representative static frame instead of the
+    // continuous flame/breathing loop. The eye stays fully visible; nothing
+    // animates unless the viewport is resized (which just repaints it).
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const STATIC_TIME = 2.5;
+
     const renderer = new Renderer({
       alpha: true,
       premultipliedAlpha: false,
@@ -256,6 +264,11 @@ export default function EvilEye({
       if (program) {
         program.uniforms.uResolution.value = [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height];
       }
+      // Canvas resize clears the buffer — in reduced-motion mode request one
+      // static repaint instead of relying on the (stopped) animation loop.
+      if (prefersReducedMotion && program && !animationFrameId) {
+        animationFrameId = requestAnimationFrame(loop);
+      }
     }
     window.addEventListener('resize', resize);
     resize();
@@ -297,6 +310,16 @@ export default function EvilEye({
     function loop(time: number) {
       if (!isRunning()) {
         animationFrameId = 0;
+        return;
+      }
+      if (prefersReducedMotion) {
+        // Reduced motion: one static, representative frame — no flame or
+        // breathing animation and no pointer-following pupil. The eye stays
+        // fully visible; frames are only re-requested on resize.
+        animationFrameId = 0;
+        program.uniforms.uMouse.value = [0, 0];
+        program.uniforms.uTime.value = STATIC_TIME;
+        renderer.render({ scene: mesh });
         return;
       }
       animationFrameId = requestAnimationFrame(loop);

@@ -4,13 +4,14 @@
 }
 
 /* Mobile-only presentation tuning:
-   Reduces visual intensity and glare on narrow mobile screens (below 768px)
-   by approximately 45–55%, making the central eye darker and reducing excessive glow
-   while preserving the vivid green/blue identity, fluid breathing, and visible motion.
-   Desktop (768px+) remains 100% untouched. */
+   Phones previously dimmed the eye to ~34% effective opacity (0.58 filter x
+   0.58 opacity on top of the hero's own opacity-75), which on real recordings
+   made it disappear into the dark graphite background. Keep a slight mobile
+   softening for glare, but leave the eye clearly recognizable — outline, iris
+   and pupil stay visible without turning into a generic glow. */
 @media (max-width: 767px) {
   .evil-eye-container {
-    filter: brightness(0.58) contrast(1.12) saturate(0.95);
-    opacity: 0.58;
+    filter: brightness(0.95) contrast(1.05) saturate(1);
+    opacity: 0.88;
   }
 }

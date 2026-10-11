@@ -2147,24 +2147,39 @@ textarea:focus-visible {
       transparent 52%);
 }
 
+/* Name centred INSIDE the eye, over the pupil. The label is a child of the
+   portal, so it scales with the form-in / contract-out animations and stays
+   optically centred. Fluid size + tracking keep "ARYAN SHARMA" readable from
+   320px phones up to desktop without ever becoming tiny. */
 .portal-loader__label {
   position: absolute;
 
   left: 50%;
-  top: calc(50% + clamp(130px, 19vmin, 175px));
+  top: 50%;
 
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+  /* Half the trailing letter-spacing keeps the glyphs optically centred. */
+  margin-left: 0.15em;
 
-  font-size: 10px;
+  z-index: 1;
 
-  letter-spacing: 0.3em;
+  pointer-events: none;
+
+  font-size: clamp(12px, 4.4vmin, 16px);
+
+  letter-spacing: clamp(0.18em, 1.2vmin, 0.3em);
 
   text-transform: uppercase;
 
   white-space: nowrap;
 
-  color:
-    rgba(242, 242, 237, 0.72);
+  /* Warm off-white, matching the portfolio's text identity, with a dark
+     halo so it stays legible over the canvas energy behind it. */
+  color: #f2ede2;
+
+  text-shadow:
+    0 1px 8px rgba(3, 7, 6, 0.95),
+    0 0 18px rgba(3, 7, 6, 0.8);
 }
 
 /* Exit — contract toward center, brighten, fade; overlay reveals hero */
@@ -2244,13 +2259,30 @@ textarea:focus-visible {
 }
 
 @media (max-width: 480px) {
+  /* Slightly larger stage on phones so the name inside the pupil keeps a
+     comfortable margin at 320–430px instead of being shrunk to unreadable
+     sizes (requirement: scale the eye, not the text). */
   .portal-loader__portal {
-    width: clamp(160px, 46vmin, 200px);
-    height: clamp(160px, 46vmin, 200px);
+    width: clamp(200px, 58vmin, 250px);
+    height: clamp(200px, 58vmin, 250px);
+
+    /* Crisper outline against #030706 and a tighter glow: the previous
+       70/150px haze washed the eye into the background on phones. */
+    border-color: rgba(79, 209, 197, 0.8);
+
+    box-shadow:
+      0 0 24px rgba(79, 209, 197, 0.3),
+      0 0 48px rgba(25, 184, 154, 0.16),
+      inset 0 0 40px rgba(10, 70, 80, 0.6);
   }
 
-  .portal-loader__label {
-    top: calc(50% + clamp(95px, 27vmin, 125px));
+  /* Iris rings — stronger contrast on mobile, still restrained. */
+  .portal-loader__portal::before {
+    border-color: rgba(79, 209, 197, 0.55);
+  }
+
+  .portal-loader__portal::after {
+    border-color: rgba(25, 184, 154, 0.7);
   }
 }
 

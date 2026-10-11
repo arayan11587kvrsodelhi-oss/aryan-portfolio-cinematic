@@ -327,9 +327,12 @@ export default function PortalLoader() {
           className="portal-loader__canvas"
           aria-hidden="true"
         />
-      </div>
 
-      <div className="portal-loader__label">ARYAN SHARMA</div>
+        {/* The name sits INSIDE the eye, centred on the pupil, as a child of
+            the portal so it forms in and contracts out with the eye itself —
+            it can never drift out of alignment, clip, or sit under a layer. */}
+        <div className="portal-loader__label">ARYAN SHARMA</div>
+      </div>
 
       <div className="portal-loader__flash" aria-hidden="true" />
     </div>
