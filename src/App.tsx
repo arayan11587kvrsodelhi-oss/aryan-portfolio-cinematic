@@ -166,7 +166,7 @@ function PortfolioContent() {
           {/* 07. Verified Merit Achievement Spotlight */}
           <Achievements />
 
-          {/* 08. Verified Certifications & Recognition Archive */}
+          {/* 08. Verified Certifications & Achievements Archive */}
           <Certifications />
 
           {/* 09. Educational Background & Philosophy */}

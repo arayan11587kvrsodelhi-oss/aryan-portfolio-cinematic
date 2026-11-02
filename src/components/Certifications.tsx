@@ -12,15 +12,54 @@ const EASE = [0.16, 1, 0.3, 1] as const
    of truth and is what the modal shows. */
 const TOP_SHORT_TITLES: Record<string, string> = {
   'ey-anudip-ai': 'EY AI Fundamentals & Applications',
-  'be10x-ai-tools-workshop': 'AI TOOLS WORKSHOP',
   'red-team-leaders-cllmse': 'LLM SECURITY EXPERT (CLLMSE)',
+  'ibm-web-development': 'IBM Web Development Fundamentals',
+  'be10x-ai-tools-workshop': 'AI TOOLS WORKSHOP',
+}
+
+const CATEGORY_FILTERS = [
+  'All',
+  'Cybersecurity',
+  'Artificial Intelligence',
+  'Web Development',
+  'Professional Development',
+] as const
+
+type CategoryFilter = (typeof CATEGORY_FILTERS)[number]
+
+const matchesCategory = (cert: Certificate, filter: CategoryFilter): boolean => {
+  if (filter === 'All') return true
+  switch (filter) {
+    case 'Cybersecurity':
+      return cert.category === 'Cybersecurity'
+    case 'Artificial Intelligence':
+      return (
+        cert.category === 'Artificial Intelligence' ||
+        cert.category === 'AI & Decision Making'
+      )
+    case 'Web Development':
+      return cert.category === 'Web Development'
+    case 'Professional Development':
+      return (
+        cert.category === 'Professional Development' ||
+        cert.category === 'College / IT Fiesta' ||
+        cert.category === 'Networking'
+      )
+    default:
+      return cert.category === filter
+  }
 }
 
 export default function Certifications() {
   const { playSFX } = useSFX()
   const [active, setActive] = useState<Certificate | null>(null)
   const [reduced, setReduced] = useState(false)
+  const [selectedFilter, setSelectedFilter] = useState<CategoryFilter>('All')
   const total = orderedCertifications.length
+
+  const filteredCertifications = orderedCertifications.filter((cert) =>
+    matchesCategory(cert, selectedFilter)
+  )
 
   useEffect(() => {
     const handleOpenCert = (event: Event) => {
@@ -42,20 +81,20 @@ export default function Certifications() {
   }, [])
 
   return (
-    <section id="recognition" className="relative z-10 bg-background text-foreground">
+    <section id="certifications" className="relative z-10 bg-background text-foreground">
       <div className="max-w-container mx-auto px-4 sm:px-6 md:px-10 pt-[var(--spacing-section)] pb-8">
         <div className="flex items-center gap-3 mb-3">
-          <span className="text-eyebrow text-accent">[ 06. RECOGNITION ]</span>
+          <span className="text-eyebrow text-accent">[ 06. CERTIFICATIONS & ACHIEVEMENTS ]</span>
           <span className="h-[1px] w-12 bg-border" />
           <span className="text-xs font-mono text-white/50">{total} Verified Credentials</span>
         </div>
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-medium tracking-tight text-white">
-              TOP CERTIFICATES
+              CERTIFICATIONS & ACHIEVEMENTS
             </h2>
-            <p className="text-muted text-sm sm:text-base mt-2 max-w-2xl font-mono">
-              The three credentials that represent this work most strongly. The complete archive follows below.
+            <p className="text-muted text-sm sm:text-base mt-3 max-w-2xl font-mono leading-relaxed">
+              Continuous learning through practical projects, technical training and industry-recognised learning programs.
             </p>
           </div>
           <div className="hidden md:flex items-center gap-2 text-xs font-mono text-white/40">
@@ -66,6 +105,13 @@ export default function Certifications() {
 
       {/* ---- TOP CERTIFICATES: exactly the three featured credentials ---- */}
       <div className="max-w-container mx-auto px-4 sm:px-6 md:px-10 pb-10">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+            <span className="text-eyebrow text-accent">FEATURED CREDENTIALS</span>
+          </div>
+          <span className="text-xs font-mono text-white/40">TOP 3 SPOTLIGHT</span>
+        </div>
         <ul className="topcerts-grid" aria-label="Top certificates">
           {topCertifications.map((cert) => (
             <li key={cert.id}>
@@ -83,15 +129,63 @@ export default function Certifications() {
         </ul>
       </div>
 
-      {/* ---- FULL ARCHIVE: every credential, unchanged -------------------- */}
+      {/* ---- FULL ARCHIVE: interactive filtered ledger -------------------- */}
       <div className="max-w-container mx-auto px-4 sm:px-6 md:px-10 pb-[var(--spacing-section)]">
-        <div className="flex items-center gap-3 mb-5 border-t border-border pt-8">
-          <span className="text-eyebrow text-muted">FULL ARCHIVE</span>
-          <span className="h-[1px] flex-1 bg-border" />
-          <span className="text-xs font-mono text-white/40">ALL {total} CREDENTIALS</span>
+        <div className="border-t border-border pt-8 mb-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+            <div className="flex items-center gap-3">
+              <span className="text-eyebrow text-muted">FULL ARCHIVE</span>
+              <span className="h-[1px] w-8 bg-border" />
+              <span className="text-xs font-mono text-white/40">
+                SHOWING {filteredCertifications.length} OF {total} CREDENTIALS
+              </span>
+            </div>
+
+            {/* 5 Category Filters */}
+            <div
+              className="flex flex-wrap items-center gap-2"
+              role="tablist"
+              aria-label="Filter certifications by category"
+            >
+              {CATEGORY_FILTERS.map((cat) => {
+                const isSelected = selectedFilter === cat
+                const count = orderedCertifications.filter((c) => matchesCategory(c, cat)).length
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    role="tab"
+                    aria-selected={isSelected}
+                    onClick={() => {
+                      playSFX('click')
+                      setSelectedFilter(cat)
+                    }}
+                    onMouseEnter={() => playSFX('hover')}
+                    className={`group relative px-3.5 py-1.5 rounded-lg text-xs font-mono transition-all duration-200 border flex items-center gap-2 ${
+                      isSelected
+                        ? 'bg-accent/15 border-accent text-accent shadow-[0_0_16px_rgba(34,211,238,0.22)]'
+                        : 'bg-white/[0.03] border-white/10 text-white/60 hover:text-white hover:border-white/25 hover:bg-white/[0.06]'
+                    }`}
+                  >
+                    <span>{cat}</span>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded-md font-semibold transition-colors ${
+                        isSelected
+                          ? 'bg-accent text-black font-bold'
+                          : 'bg-white/10 text-white/50 group-hover:text-white group-hover:bg-white/15'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
+
         <CertificateViewer
-          certs={orderedCertifications}
+          certs={filteredCertifications}
           onInspect={(cert) => {
             playSFX('click')
             setActive(cert)
@@ -183,12 +277,42 @@ function CertificateModal({ item, onClose, reduced }: { item: Certificate; onClo
           </div>
 
           <div className="rounded-xl overflow-hidden bg-black/60 border border-white/10 p-2 sm:p-4 mb-6">
-            <img
-              src={item.image}
-              alt={`${item.title} certificate`}
-              decoding="async"
-              className="max-h-[62vh] w-full object-contain mx-auto"
-            />
+            {item.image ? (
+              <img
+                src={item.image}
+                alt={`${item.title} certificate`}
+                decoding="async"
+                className="max-h-[62vh] w-full object-contain mx-auto"
+              />
+            ) : item.pdfUrl ? (
+              <div className="py-12 px-4 flex flex-col items-center justify-center text-center bg-gradient-to-b from-white/[0.03] to-transparent rounded-lg">
+                <div className="w-16 h-16 rounded-2xl bg-accent/10 border border-accent/30 flex items-center justify-center text-accent mb-4 shadow-[0_0_24px_rgba(34,211,238,0.2)]">
+                  <Award size={32} />
+                </div>
+                <p className="font-display text-2xl text-white font-medium mb-1">
+                  {item.title}
+                </p>
+                <p className="text-white/60 text-xs font-mono max-w-md mb-6">
+                  {item.issuer} · {item.type} {item.date ? `(${item.date})` : ''}
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <a
+                    href={item.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-black font-semibold hover:bg-accent/90 transition-colors text-xs font-mono"
+                  >
+                    <span>OPEN ORIGINAL PDF IN NEW TAB</span>
+                    <ExternalLink size={14} />
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="py-12 flex flex-col items-center justify-center text-center">
+                <p className="font-display text-xl text-white mb-2">{item.title}</p>
+                <p className="text-white/60 text-sm font-mono">{item.issuer}</p>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/10 text-xs font-mono">
@@ -263,13 +387,23 @@ function TopCertCard({
         data-cursor="view"
         data-cursor-text="VIEW"
       >
-        <img
-          src={cert.image}
-          alt={`${cert.title} certificate — ${cert.issuer}`}
-          loading="lazy"
-          decoding="async"
-          draggable={false}
-        />
+        {cert.image ? (
+          <img
+            src={cert.image}
+            alt={`${cert.title} certificate — ${cert.issuer}`}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+          />
+        ) : (
+          <div className="w-full h-full min-h-[200px] flex flex-col justify-between p-6 bg-gradient-to-b from-[#141824] to-[#0c0d12] border border-accent/25 rounded-xl text-left select-none relative overflow-hidden">
+            <span className="text-[10px] font-mono tracking-widest text-accent uppercase font-semibold">
+              [ VERIFIED CREDENTIAL ]
+            </span>
+            <p className="font-display text-xl text-white font-medium mt-2">{cert.title}</p>
+            <p className="text-white/50 text-xs font-mono">{cert.issuer}</p>
+          </div>
+        )}
       </button>
 
       <div className="topcerts-body">

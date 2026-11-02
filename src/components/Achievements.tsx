@@ -24,7 +24,7 @@ export default function Achievements() {
 
   const handleOpenCertificate = () => {
     playSFX('click')
-    const target = document.querySelector('#recognition') || document.querySelector('#certifications')
+    const target = document.querySelector('#certifications')
     target?.scrollIntoView({ behavior: 'smooth' })
     window.dispatchEvent(new CustomEvent('certifications:open', { detail: 0 }))
   }

@@ -12,7 +12,7 @@ import { TYPING_RACER } from '../data/games'
 const LINKS = [
   { label: 'Projects', href: '#workbench' },
   { label: 'Capabilities', href: '#skills' },
-  { label: 'Recognition', href: '#recognition' },
+  { label: 'Certifications', href: '#certifications' },
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
 ]
@@ -36,7 +36,7 @@ export default function Nav({ onOpenResume, onOpenRecruiterView }: NavProps) {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30)
 
-      const sections = ['top', 'workbench', 'skills', 'recognition', 'about', 'contact']
+      const sections = ['top', 'workbench', 'skills', 'certifications', 'about', 'contact']
       const scrollPosition = window.scrollY + window.innerHeight * 0.35
 
       for (let i = sections.length - 1; i >= 0; i--) {

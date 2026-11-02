@@ -40,13 +40,42 @@ function CertCard({ cert, total, onInspect }: CertCardProps) {
         data-cursor-text="VIEW"
         aria-label={`Inspect ${cert.title} certificate`}
       >
-        <img
-          src={cert.image}
-          alt={`${cert.title} — ${cert.issuer} certificate`}
-          loading="eager"
-          decoding="async"
-          draggable={false}
-        />
+        {cert.image ? (
+          <img
+            src={cert.image}
+            alt={`${cert.title} — ${cert.issuer} certificate`}
+            loading="eager"
+            decoding="async"
+            draggable={false}
+          />
+        ) : (
+          <div className="w-full h-full min-h-[220px] flex flex-col justify-between p-6 bg-gradient-to-b from-[#141824] to-[#0c0d12] border border-accent/25 rounded-xl text-left select-none relative overflow-hidden">
+            <div className="flex items-center justify-between relative z-10">
+              <span className="text-[10px] font-mono tracking-widest text-accent uppercase font-semibold">
+                [ VERIFIED CREDENTIAL ]
+              </span>
+              {cert.credentialId && (
+                <span className="text-[10px] font-mono text-white/40">
+                  ID: {cert.credentialId}
+                </span>
+              )}
+            </div>
+            <div className="my-auto py-3 relative z-10">
+              <p className="font-display text-2xl text-white font-medium tracking-tight leading-snug">
+                {cert.title}
+              </p>
+              <p className="text-white/60 text-xs font-mono mt-1.5">
+                {cert.issuer}
+              </p>
+            </div>
+            <div className="flex items-center justify-between pt-3 border-t border-white/10 text-[11px] font-mono relative z-10">
+              <span className="text-white/40">{cert.type}</span>
+              <span className="text-accent flex items-center gap-1 font-semibold">
+                INSPECT <ArrowUpRight size={12} />
+              </span>
+            </div>
+          </div>
+        )}
         <span className="cflip-media-hint" aria-hidden="true">
           INSPECT ↗
         </span>
@@ -108,6 +137,13 @@ export default function CertificateViewer({ certs, onInspect }: CertificateViewe
     mq.addEventListener('change', updateMotion)
     return () => mq.removeEventListener('change', updateMotion)
   }, [])
+
+  // Reset page index when certs list changes (e.g. filtering)
+  useEffect(() => {
+    setIndex(0)
+    setTransition(null)
+    transitionRef.current = null
+  }, [certs])
 
   // Listen for external open events (e.g. from Merit spotlight)
   useEffect(() => {
@@ -380,6 +416,14 @@ export default function CertificateViewer({ certs, onInspect }: CertificateViewe
     }
   }, [index, certs, total])
 
+  if (total === 0) {
+    return (
+      <div className="py-20 text-center border border-white/10 rounded-2xl bg-white/[0.02]">
+        <p className="text-white/60 font-mono text-sm">No credentials found in this category.</p>
+      </div>
+    )
+  }
+
   const currentCert = certs[index]
   const progressPercent = ((index + 1) / total) * 100
 
@@ -412,7 +456,7 @@ export default function CertificateViewer({ certs, onInspect }: CertificateViewe
         <div>
           <span className="text-eyebrow text-accent">INTERACTIVE LEDGER — 3D PAGE TURN</span>
           <h3 className="font-display text-xl md:text-2xl text-white mt-2">
-            Flip through the recognition archive.
+            Flip through the certifications archive.
           </h3>
         </div>
         <p className="cflip-hint" aria-hidden="true">
